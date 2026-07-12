@@ -54,7 +54,7 @@ Create the seating grid representation (2 rows x 8 columns).
   * `get_unique_passengers() -> Array[Passenger]`
   * `get_adjacent_neighbors(passenger: Passenger) -> Array[Passenger]`
 
-#### [NEW] [rule_validator.gd](file:///c:/Users/HP%20LAPTOP%2015s/Tabi-Tabi/scripts/rule_validator.gd)
+#### [NEW] [rule_validator.gd](scripts/rule_validator.gd)
 Create the central validation engine to assess constraints and happiness.
 * **Checks**:
   * **Tagabot (Fare Passer) Rule**: Ensure row indices `7` do not contain sleeping, bulky-baggage, or baby-holding passengers.
