@@ -24,10 +24,10 @@ This component defines the base passenger data structure, the jeepney seating gr
 Create the custom Resource definition for passengers. Designers can instantiate this Resource in Godot to build passenger types.
 * **Attributes**:
   * `id`: String (unique identifier, e.g. "student_sleepy")
-  * `display_name`: String (e.g. "Juan")
-  * `size`: int = 1 (Standard = 1, Bulky = 2)
+  * `passenger_name`: String (e.g. "Juan")
+  * `seat_size_passenger`: int = 1 (Standard = 1, Bulky = 2)
   * `monologue_text`: String (clues)
-  * `anger_max`: float = 60.0 (seconds before they walk away)
+  * `anger_meter_max`: float = 60.0 (seconds before they walk away)
   * **Flags**:
     * `is_senior`: bool
     * `is_pwd`: bool
