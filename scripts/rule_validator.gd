@@ -6,20 +6,22 @@ extends RefCounted
 # {
 #     "is_valid": bool,
 #     "violated_rules": Array[String],
-#     "passenger_status": Dictionary (key: String (passenger.id), value: {"is_happy": bool, "complaints": Array[String]})
+#     "passenger_status": Dictionary (key: String, value: {"is_happy": bool, "complaints": Array[String]})
 # }
 static func validate(grid: JeepneyGrid) -> Dictionary:
 	var report = {
 		"is_valid": true,
 		"violated_rules": [],
-		"passenger_status": {}
+		"passenger_status": {},
+		"passenger_status_keys": {}
 	}
 	
 	var seated_passengers = grid.get_unique_passengers()
 	
 	# Initialize passenger status
 	for p in seated_passengers:
-		report.passenger_status[p.id] = {
+		var status_key = _get_status_key(report, p)
+		report.passenger_status[status_key] = {
 			"is_happy": true,
 			"complaints": []
 		}
@@ -36,6 +38,8 @@ static func validate(grid: JeepneyGrid) -> Dictionary:
 	for p_id in report.passenger_status:
 		if not report.passenger_status[p_id]["is_happy"]:
 			report.is_valid = false
+			
+	report.erase("passenger_status_keys")
 			
 	return report
 
@@ -54,7 +58,7 @@ static func _check_tagabot_rule(grid: JeepneyGrid, report: Dictionary) -> void:
 				p.is_pregnant
 			)
 			if cannot_pass_fare:
-				_mark_unhappy(report, p.id, "tagabot", "Hindi ako makakapag-abot ng bayad dito (may condition/tulog/bulky).")
+				_mark_unhappy(report, p, "tagabot", "Hindi ako makakapag-abot ng bayad dito (may condition/tulog/bulky).")
 
 # 2. The Accessibility Rule
 # Seniors, PWDs, Pregnant must sit closer to the entrance 
@@ -81,8 +85,8 @@ static func _check_accessibility_rule(grid: JeepneyGrid, report: Dictionary) -> 
 					if not p2_is_priority:
 						# If non-priority (p2) is closer to the entrance (lower index) than priority (p1)
 						if min_cols[p2.id] < min_cols[p1.id]:
-							_mark_unhappy(report, p1.id, "accessibility", "Dapat mas malapit ako sa sakayan/entrance (rear) kaysa sa mga regular.")
-							_mark_unhappy(report, p2.id, "accessibility", "Nakaharang ako sa priority seat area ng mga nangangailangan.")
+							_mark_unhappy(report, p1, "accessibility", "Dapat mas malapit ako sa sakayan/entrance (rear) kaysa sa mga regular.")
+							_mark_unhappy(report, p2, "accessibility", "Nakaharang ako sa priority seat area ng mga nangangailangan.")
 
 # 3. Palengke Conflict (is_wet next to is_employee)
 static func _check_palengke_conflict(grid: JeepneyGrid, report: Dictionary) -> void:
@@ -92,8 +96,8 @@ static func _check_palengke_conflict(grid: JeepneyGrid, report: Dictionary) -> v
 			var neighbors = grid.get_adjacent_neighbors(p)
 			for n in neighbors:
 				if n.is_employee:
-					_mark_unhappy(report, p.id, "palengke", "Basa ako, baka madumihan ko ang katabi kong office worker.")
-					_mark_unhappy(report, n.id, "palengke", "Basa yung katabi ko, madudumihan ang uniporme ko!")
+					_mark_unhappy(report, p, "palengke", "Basa ako, baka madumihan ko ang katabi kong office worker.")
+					_mark_unhappy(report, n, "palengke", "Basa yung katabi ko, madudumihan ang uniporme ko!")
 
 # 4. Introvert Conflict (is_introvert next to is_loud)
 static func _check_introvert_conflict(grid: JeepneyGrid, report: Dictionary) -> void:
@@ -103,8 +107,8 @@ static func _check_introvert_conflict(grid: JeepneyGrid, report: Dictionary) -> 
 			var neighbors = grid.get_adjacent_neighbors(p)
 			for n in neighbors:
 				if n.is_loud:
-					_mark_unhappy(report, p.id, "introvert_conflict", "Masyadong maingay ang katabi ko, gusto ko ng katahimikan.")
-					_mark_unhappy(report, n.id, "introvert_conflict", "Maingay ako, mukhang naiirita ang katabi ko.")
+					_mark_unhappy(report, p, "introvert_conflict", "Masyadong maingay ang katabi ko, gusto ko ng katahimikan.")
+					_mark_unhappy(report, n, "introvert_conflict", "Maingay ako, mukhang naiirita ang katabi ko.")
 
 # 5. Magkasama (Companion) Rule
 # Companions must be side-by-side or directly facing.
@@ -120,14 +124,14 @@ static func _check_magkasama_rule(grid: JeepneyGrid, report: Dictionary) -> void
 					break
 					
 			if companion == null:
-				_mark_unhappy(report, p.id, "magkasama", "Nahiwalay ako sa kasama ko na hindi nakasakay.")
+				_mark_unhappy(report, p, "magkasama", "Nahiwalay ako sa kasama ko na hindi nakasakay.")
 				continue
 				
 			var slots_p = grid.get_occupied_slots(p)
 			var slots_c = grid.get_occupied_slots(companion)
 			
 			if slots_p.is_empty() or slots_c.is_empty():
-				_mark_unhappy(report, p.id, "magkasama", "Nahiwalay ako sa aking kasama.")
+				_mark_unhappy(report, p, "magkasama", "Nahiwalay ako sa aking kasama.")
 				continue
 				
 			var row_p = slots_p[0].x
@@ -145,8 +149,8 @@ static func _check_magkasama_rule(grid: JeepneyGrid, report: Dictionary) -> void
 				
 				var is_adjacent = (max_p + 1 == min_c) or (max_c + 1 == min_p)
 				if not is_adjacent:
-					_mark_unhappy(report, p.id, "magkasama", "Dapat katabi ko ang kasama ko sa upuan.")
-					_mark_unhappy(report, companion.id, "magkasama", "Dapat katabi ko ang kasama ko sa upuan.")
+					_mark_unhappy(report, p, "magkasama", "Dapat katabi ko ang kasama ko sa upuan.")
+					_mark_unhappy(report, companion, "magkasama", "Dapat katabi ko ang kasama ko sa upuan.")
 					
 			# Case B: Opposite rows (must face each other directly by sharing column index)
 			else:
@@ -156,8 +160,8 @@ static func _check_magkasama_rule(grid: JeepneyGrid, report: Dictionary) -> void
 						overlaps = true
 						break
 				if not overlaps:
-					_mark_unhappy(report, p.id, "magkasama", "Dapat kaharap ko ang kasama ko sa kabilang bench.")
-					_mark_unhappy(report, companion.id, "magkasama", "Dapat kaharap ko ang kasama ko sa kabilang bench.")
+					_mark_unhappy(report, p, "magkasama", "Dapat kaharap ko ang kasama ko sa kabilang bench.")
+					_mark_unhappy(report, companion, "magkasama", "Dapat kaharap ko ang kasama ko sa kabilang bench.")
 
 # 6. The Uso Umuwi Rule (destination_stop = 1 cannot have a bulky passenger closer to the exit than them)
 static func _check_uso_umuwi_rule(grid: JeepneyGrid, report: Dictionary) -> void:
@@ -174,15 +178,28 @@ static func _check_uso_umuwi_rule(grid: JeepneyGrid, report: Dictionary) -> void
 			for c in range(min_col):
 				var blocker = grid.get_passenger_at(row, c)
 				if blocker != null and blocker.seat_size_passenger > 1:
-					_mark_unhappy(report, p.id, "uso_umuwi", "Mahihirapan akong bumaba dahil nakaharang ang bulky passenger sa exit.")
+					_mark_unhappy(report, p, "uso_umuwi", "Mahihirapan akong bumaba dahil nakaharang ang bulky passenger sa exit.")
 					break
 
 # Helper to mark passenger unhappy and record complaint
-static func _mark_unhappy(report: Dictionary, p_id: String, rule_name: String, complaint: String) -> void:
-	if report.passenger_status.has(p_id):
-		report.passenger_status[p_id]["is_happy"] = false
-		if not report.passenger_status[p_id]["complaints"].has(complaint):
-			report.passenger_status[p_id]["complaints"].append(complaint)
+static func _mark_unhappy(report: Dictionary, passenger: Passenger, rule_name: String, complaint: String) -> void:
+	var p_key = _get_status_key(report, passenger)
+	if report.passenger_status.has(p_key):
+		report.passenger_status[p_key]["is_happy"] = false
+		if not report.passenger_status[p_key]["complaints"].has(complaint):
+			report.passenger_status[p_key]["complaints"].append(complaint)
 	
 	if not report.violated_rules.has(rule_name):
 		report.violated_rules.append(rule_name)
+
+static func _get_status_key(report: Dictionary, passenger: Passenger) -> String:
+	var instance_key = str(passenger.get_instance_id())
+	if report.passenger_status_keys.has(instance_key):
+		return report.passenger_status_keys[instance_key]
+	
+	var status_key = passenger.id
+	if status_key == "" or report.passenger_status.has(status_key):
+		status_key = "__passenger_%s" % instance_key
+	
+	report.passenger_status_keys[instance_key] = status_key
+	return status_key

@@ -28,6 +28,7 @@ func run_tests() -> bool:
 	overall_pass = test_introvert_conflict() and overall_pass
 	overall_pass = test_magkasama_rule() and overall_pass
 	overall_pass = test_uso_umuwi_rule() and overall_pass
+	overall_pass = test_passenger_status_handles_empty_or_duplicate_ids() and overall_pass
 	
 	return overall_pass
 
@@ -269,5 +270,36 @@ func test_uso_umuwi_rule() -> bool:
 	report = RuleValidator.validate(grid)
 	test_ok = assert_true(not report.is_valid, "Early exit passenger blocked by bulky passenger closer to exit is invalid") and test_ok
 	test_ok = assert_true(report.violated_rules.has("uso_umuwi"), "Uso Umuwi rule flagged") and test_ok
+	
+	return test_ok
+
+func test_passenger_status_handles_empty_or_duplicate_ids() -> bool:
+	print("--- Running Test: Passenger Status Keys Handle Empty/Duplicate IDs ---")
+	var grid = JeepneyGrid.new()
+	var test_ok = true
+	
+	var early_exit = Passenger.new()
+	early_exit.destination_stop = 1
+	
+	var bulky = Passenger.new()
+	bulky.seat_size_passenger = 2
+	
+	# Both passengers intentionally keep default empty IDs.
+	grid.place_passenger(early_exit, 0, 4)
+	grid.place_passenger(bulky, 0, 2)
+	
+	var report = RuleValidator.validate(grid)
+	test_ok = assert_true(report.passenger_status.size() == 2, "Passengers with empty/duplicate IDs keep separate status entries") and test_ok
+	
+	var happy_count = 0
+	var unhappy_count = 0
+	for status_key in report.passenger_status:
+		if report.passenger_status[status_key]["is_happy"]:
+			happy_count += 1
+		else:
+			unhappy_count += 1
+	
+	test_ok = assert_true(unhappy_count == 1, "Exactly one passenger is unhappy for Uso Umuwi violation") and test_ok
+	test_ok = assert_true(happy_count == 1, "Other passenger remains happy and is not overwritten") and test_ok
 	
 	return test_ok
