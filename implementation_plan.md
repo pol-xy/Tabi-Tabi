@@ -63,7 +63,7 @@ Create the central validation engine to assess constraints and happiness.
   * **Magkasama (Companion) Rule**: Companions must sit adjacent in the same row or directly face each other in the same column across rows.
   * **Uso Umuwi Rule**: Passenger with early exit (`destination_stop = 1`) cannot have any bulky passenger (`size = 2`) seated closer to the entrance (`col < passenger_col`) in their row.
 
-#### [NEW] [test_runner.gd](file:///c:/Users/HP%20LAPTOP%2015s/Tabi-Tabi/scripts/test_runner.gd)
+#### [NEW] [test_runner.gd](scripts/test_runner.gd)
 A standalone test script that sets up passenger configurations, places them on a `JeepneyGrid`, and runs assertions on `RuleValidator` to ensure all mathematical/logic checks are correct.
 
 ---
