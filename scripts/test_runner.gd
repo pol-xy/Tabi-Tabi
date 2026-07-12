@@ -168,6 +168,15 @@ func test_palengke_conflict() -> bool:
 	report = RuleValidator.validate(grid)
 	test_ok = assert_true(report.is_valid, "Separated wet passenger and employee are valid") and test_ok
 	
+	# Bulky passenger adjacency should still be detected correctly (wet occupies 2 slots)
+	grid.clear_grid()
+	wet_p.seat_size_passenger = 2
+	grid.place_passenger(wet_p, 0, 2) # occupies col 2-3
+	grid.place_passenger(employee, 0, 4) # adjacent to wet passenger's right edge
+	report = RuleValidator.validate(grid)
+	test_ok = assert_true(not report.is_valid, "Bulky wet passenger next to employee violates Palengke Conflict") and test_ok
+	test_ok = assert_true(report.violated_rules.has("palengke"), "Palengke rule flagged for bulky adjacency") and test_ok
+	
 	return test_ok
 
 func test_introvert_conflict() -> bool:
