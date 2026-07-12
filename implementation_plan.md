@@ -20,7 +20,7 @@ No open questions at this stage. We have aligned on using **Option A (Fixed Grid
 ### Core Logic Component
 This component defines the base passenger data structure, the jeepney seating grid, and the validation engine.
 
-#### [NEW] [passenger.gd](file:///c:/Users/HP%20LAPTOP%2015s/Tabi-Tabi/scripts/passenger.gd)
+#### [NEW] [passenger.gd](scripts/passenger.gd)
 Create the custom Resource definition for passengers. Designers can instantiate this Resource in Godot to build passenger types.
 * **Attributes**:
   * `id`: String (unique identifier, e.g. "student_sleepy")
