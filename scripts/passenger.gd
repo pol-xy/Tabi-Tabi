@@ -1,0 +1,28 @@
+class_name Passenger
+extends Resource
+
+# Attributes of our passenger
+@export var id: String = ""
+@export var passenger_name: String = ""
+@export var seat_size_passenger: int = 1 # 1 = standard, 2 = bulky 
+@export_multiline var monologue_text: String = ""
+@export var anger_meter_max: float = 60.0
+
+# Priority / accessibility flags / status
+@export var is_senior: bool = false
+@export var is_pwd: bool = false
+@export var is_pregnant: bool = false
+@export var is_student: bool = false
+@export var is_employee: bool = false
+@export var is_badjao: bool = false   # Non-passenger (e.g. envelope distributor)
+@export var is_companion: bool = false # Person who must sit with another
+
+# Behavioral / state flags
+@export var is_wet: bool = false       # Carrying wet fish or wet umbrella
+@export var is_asleep: bool = false    # Sleeping passenger
+@export var is_loud: bool = false      # Listening to loud music or noisy
+@export var is_introvert: bool = false # Dislikes loud neighbors
+
+# Trip info
+@export var destination_stop: int = 1  # Stop number when they alight
+@export var companion_id: String = ""  # ID of companion they want to sit with or face
