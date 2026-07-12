@@ -39,7 +39,7 @@ Create the custom Resource definition for passengers. Designers can instantiate 
     * `destination_stop`: int = 1 (1 is early, 5 is late)
     * `companion_id`: String = "" (companion they must sit with or face)
 
-#### [NEW] [jeepney_grid.gd](file:///c:/Users/HP%20LAPTOP%2015s/Tabi-Tabi/scripts/jeepney_grid.gd)
+#### [NEW] [jeepney_grid.gd](scripts/jeepney_grid.gd)
 Create the seating grid representation (2 rows x 8 columns).
 * **Indices representation**:
   * Row `0`: Top Bench
