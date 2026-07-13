@@ -14,20 +14,25 @@ extends Button
 # the card are derived below from the boolean flags. "sweaty" was on the
 # original trait list from the concept doc but has no matching flag on
 # Passenger yet -- flag this to Dev 1 if it's still wanted.
+#
+# UI PASS (Dev 3): trait badges are drawn in code (colored circle + short
+# label) instead of loading image icons, so this scene has zero dependency
+# on external art files. Swap _make_trait_badge() for real icon textures
+# once final art exists -- everything else (derivation, layout) stays the same.
 
 signal card_selected(passenger: Passenger)
 
-const TRAIT_ICON_PATHS := {
-	"sleepy": "res://Assets/Icons/status/sleepy.png",
-	"introvert": "res://Assets/Icons/status/introvert.png",
-	"noisy": "res://Assets/Icons/status/noisy.png",
-	"wet": "res://Assets/Icons/status/wet.png",
-	"heavy_load": "res://Assets/Icons/status/heavy_load.png",
-	"near_stop": "res://Assets/Icons/status/near_stop.png",
+const TRAIT_BADGES := {
+	"sleepy": {"text": "Z", "color": Color(0.55, 0.45, 0.75)},
+	"introvert": {"text": "I", "color": Color(0.35, 0.55, 0.65)},
+	"noisy": {"text": "!", "color": Color(0.85, 0.55, 0.15)},
+	"wet": {"text": "~", "color": Color(0.23, 0.49, 0.65)},
+	"heavy_load": {"text": "B", "color": Color(0.71, 0.47, 0.18)},
+	"near_stop": {"text": "»", "color": Color(0.78, 0.18, 0.16)},
 }
 const MAX_VISIBLE_TRAIT_ICONS := 3
 
-@onready var portrait: TextureRect = $VBox/Portrait
+@onready var portrait: Control = $VBox/Portrait
 @onready var name_label: Label = $VBox/NameLabel
 @onready var trait_row: HBoxContainer = $VBox/TraitRow
 
@@ -69,19 +74,38 @@ func _populate_traits(trait_ids: Array[String]) -> void:
 	for child in trait_row.get_children():
 		child.queue_free()
 	for i in min(trait_ids.size(), MAX_VISIBLE_TRAIT_ICONS):
-		var trait_id: String = trait_ids[i]
-		var icon := TextureRect.new()
-		icon.custom_minimum_size = Vector2(16, 16)
-		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		if TRAIT_ICON_PATHS.has(trait_id) and ResourceLoader.exists(TRAIT_ICON_PATHS[trait_id]):
-			icon.texture = load(TRAIT_ICON_PATHS[trait_id])
-		trait_row.add_child(icon)
+		trait_row.add_child(_make_trait_badge(trait_ids[i]))
 	if trait_ids.size() > MAX_VISIBLE_TRAIT_ICONS:
 		var overflow := Label.new()
 		overflow.text = "+%d" % (trait_ids.size() - MAX_VISIBLE_TRAIT_ICONS)
 		overflow.add_theme_font_size_override("font_size", 10)
 		trait_row.add_child(overflow)
+
+## Builds a small colored circle badge with a short label -- placeholder
+## stand-in for a real trait icon sprite. No external files required.
+func _make_trait_badge(trait_id: String) -> Control:
+	var info: Dictionary = TRAIT_BADGES.get(trait_id, {"text": "?", "color": Color(0.5, 0.5, 0.5)})
+	var badge := PanelContainer.new()
+	badge.custom_minimum_size = Vector2(16, 16)
+	var box := StyleBoxFlat.new()
+	box.bg_color = info["color"]
+	box.set_corner_radius_all(8)
+	box.set_border_width_all(1)
+	box.border_color = Color(0.227, 0.153, 0.094, 1)
+	box.content_margin_left = 0
+	box.content_margin_right = 0
+	box.content_margin_top = 0
+	box.content_margin_bottom = 0
+	badge.add_theme_stylebox_override("panel", box)
+
+	var label := Label.new()
+	label.text = info["text"]
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 10)
+	label.add_theme_color_override("font_color", Color(0.98, 0.96, 0.92, 1))
+	badge.add_child(label)
+	return badge
 
 func _on_pressed() -> void:
 	emit_signal("card_selected", passenger_data)

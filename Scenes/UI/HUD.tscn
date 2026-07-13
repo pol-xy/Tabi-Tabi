@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" path="res://Scenes/UI/StageBanner.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Notification.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Tooltip.tscn" id="8"]
-[ext_resource type="Theme" path="res://Resources/Theme/jeepney_theme.tres" id="9"]
+[ext_resource type="Theme" path="res://Scenes/UI/jeepney_theme.tres" id="9"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1")

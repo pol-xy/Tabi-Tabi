@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=2 format=3]
 
 [ext_resource type="Script" path="res://scripts/UI/passenger_card.gd" id="1"]
-[ext_resource type="Texture2D" path="res://Assets/Portraits/placeholder_silhouette.svg" id="2"]
 
 [node name="PassengerCard" type="Button"]
 custom_minimum_size = Vector2(76, 100)
@@ -13,12 +12,9 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 4
 
-[node name="Portrait" type="TextureRect" parent="VBox"]
+[node name="Portrait" type="Panel" parent="VBox"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-texture = ExtResource("2")
-expand_mode = 1
-stretch_mode = 5
 mouse_filter = 2
 
 [node name="NameLabel" type="Label" parent="VBox"]
