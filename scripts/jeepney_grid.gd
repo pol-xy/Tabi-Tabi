@@ -1,5 +1,5 @@
 class_name JeepneyGrid
-extends RefCounted
+extends Node
 
 var row_count: int = 2
 var col_count: int = 5 # Default changed from 8 to 5

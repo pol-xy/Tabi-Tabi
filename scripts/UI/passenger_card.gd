@@ -120,6 +120,12 @@ func _update_active_visual() -> void:
 	modulate = Color.WHITE if is_active else Color(1, 1, 1, 0.7)
 	
 func _get_drag_data(at_position: Vector2) -> Variant:
+	# --- GRAYBOX TESTING ONLY ---
+	if passenger_data == null:
+		passenger_data = Passenger.new()
+		passenger_data.seat_size_passenger = 1 
+	# ---------------------------
+	
 	var preview = self.duplicate()
 	preview.modulate.a = 0.5 # Make the ghost transparent
 	

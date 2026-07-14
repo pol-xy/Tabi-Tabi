@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c3w1nxndp1bfh" path="res://Scenes/seat_1.gd" id="1_tfd51"]
 [ext_resource type="PackedScene" uid="uid://cp47pc4gf3f3c" path="res://Scenes/PassengerCard.tscn" id="2_urg85"]
+[ext_resource type="Script" uid="uid://bpprlwb8yn4t" path="res://scripts/jeepney_grid.gd" id="3_urg85"]
 
 [node name="Main_Jeepney" type="Control" unique_id=1653784688]
 layout_mode = 3
@@ -137,3 +138,6 @@ offset_left = 140.0
 offset_top = 214.0
 offset_right = 216.0
 offset_bottom = 314.0
+
+[node name="JeepneyGridManager" type="Node" parent="." unique_id=1059591609]
+script = ExtResource("3_urg85")
