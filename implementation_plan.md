@@ -20,14 +20,14 @@ No open questions at this stage. We have aligned on using **Option A (Fixed Grid
 ### Core Logic Component
 This component defines the base passenger data structure, the jeepney seating grid, and the validation engine.
 
-#### [NEW] [passenger.gd](file:///c:/Users/HP%20LAPTOP%2015s/Tabi-Tabi/scripts/passenger.gd)
+#### [NEW] [passenger.gd](scripts/passenger.gd)
 Create the custom Resource definition for passengers. Designers can instantiate this Resource in Godot to build passenger types.
 * **Attributes**:
   * `id`: String (unique identifier, e.g. "student_sleepy")
-  * `display_name`: String (e.g. "Juan")
-  * `size`: int = 1 (Standard = 1, Bulky = 2)
+  * `passenger_name`: String (e.g. "Juan")
+  * `seat_size_passenger`: int = 1 (Standard = 1, Bulky = 2)
   * `monologue_text`: String (clues)
-  * `anger_max`: float = 60.0 (seconds before they walk away)
+  * `anger_meter_max`: float = 60.0 (seconds before they walk away)
   * **Flags**:
     * `is_senior`: bool
     * `is_pwd`: bool
@@ -39,7 +39,7 @@ Create the custom Resource definition for passengers. Designers can instantiate 
     * `destination_stop`: int = 1 (1 is early, 5 is late)
     * `companion_id`: String = "" (companion they must sit with or face)
 
-#### [NEW] [jeepney_grid.gd](file:///c:/Users/HP%20LAPTOP%2015s/Tabi-Tabi/scripts/jeepney_grid.gd)
+#### [NEW] [jeepney_grid.gd](scripts/jeepney_grid.gd)
 Create the seating grid representation (2 rows x 8 columns).
 * **Indices representation**:
   * Row `0`: Top Bench
@@ -54,7 +54,7 @@ Create the seating grid representation (2 rows x 8 columns).
   * `get_unique_passengers() -> Array[Passenger]`
   * `get_adjacent_neighbors(passenger: Passenger) -> Array[Passenger]`
 
-#### [NEW] [rule_validator.gd](file:///c:/Users/HP%20LAPTOP%2015s/Tabi-Tabi/scripts/rule_validator.gd)
+#### [NEW] [rule_validator.gd](scripts/rule_validator.gd)
 Create the central validation engine to assess constraints and happiness.
 * **Checks**:
   * **Tagabot (Fare Passer) Rule**: Ensure row indices `7` do not contain sleeping, bulky-baggage, or baby-holding passengers.
@@ -63,7 +63,7 @@ Create the central validation engine to assess constraints and happiness.
   * **Magkasama (Companion) Rule**: Companions must sit adjacent in the same row or directly face each other in the same column across rows.
   * **Uso Umuwi Rule**: Passenger with early exit (`destination_stop = 1`) cannot have any bulky passenger (`size = 2`) seated closer to the entrance (`col < passenger_col`) in their row.
 
-#### [NEW] [test_runner.gd](file:///c:/Users/HP%20LAPTOP%2015s/Tabi-Tabi/scripts/test_runner.gd)
+#### [NEW] [test_runner.gd](scripts/test_runner.gd)
 A standalone test script that sets up passenger configurations, places them on a `JeepneyGrid`, and runs assertions on `RuleValidator` to ensure all mathematical/logic checks are correct.
 
 ---

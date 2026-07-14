@@ -34,8 +34,11 @@ func can_place_passenger(passenger: Passenger, row: int, col: int) -> bool:
 	if col < 0 or col >= col_count:
 		return false
 
-	#this checks if it doesn't exceed the bench 		
+	# Seat size must be at least 1 slot.
 	var size = passenger.seat_size_passenger
+	if size < 1:
+		return false
+	# this checks if it doesn't exceed the bench
 	if col + size - 1 >= col_count:
 		return false
 		
