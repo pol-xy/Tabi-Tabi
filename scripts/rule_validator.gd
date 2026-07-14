@@ -43,8 +43,8 @@ static func validate(grid: JeepneyGrid) -> Dictionary:
 # Seat at index 7 (next to driver) must 
 # not have sleeping, bulky, PWD, senior, or pregnant passengers.
 static func _check_tagabot_rule(grid: JeepneyGrid, report: Dictionary) -> void:
-	for r in range(JeepneyGrid.ROW_COUNT):
-		var p = grid.get_passenger_at(r, JeepneyGrid.COL_COUNT - 1)
+	for r in range(grid.row_count):
+		var p = grid.get_passenger_at(r, grid.col_count - 1)
 		if p != null:
 			var cannot_pass_fare = (
 				p.is_asleep or 
@@ -61,12 +61,12 @@ static func _check_tagabot_rule(grid: JeepneyGrid, report: Dictionary) -> void:
 #(lower index) than regular passengers in the same row.
 
 static func _check_accessibility_rule(grid: JeepneyGrid, report: Dictionary) -> void:
-	for r in range(JeepneyGrid.ROW_COUNT):
+	for r in range(grid.row_count):
 		# Collect all unique passengers in this row and their leftmost columns
 		var passengers_in_row = []
 		var min_cols = {}
 		
-		for c in range(JeepneyGrid.COL_COUNT):
+		for c in range(grid.col_count):
 			var p = grid.get_passenger_at(r, c)
 			if p != null and not passengers_in_row.has(p):
 				passengers_in_row.append(p)

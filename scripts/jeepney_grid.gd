@@ -1,23 +1,24 @@
 class_name JeepneyGrid
 extends RefCounted
 
+var row_count: int = 2
+var col_count: int = 5 # Default changed from 8 to 5
 
-const ROW_COUNT = 2 # left and right bench
-const COL_COUNT = 8 # max n kasya sa bench
-
-# A 2D array representing seats: 2 rows of 8 columns.
+# A 2D array representing seats: row_count rows of col_count columns.
 # Value is null if empty, or a Passenger reference.
 var seats: Array = []
 
-func _init() -> void:
+func _init(p_rows: int = 2, p_cols: int = 5) -> void:
+	row_count = p_rows
+	col_count = p_cols
 	clear_grid()
 
 # Resets the grid to all nulls.
 func clear_grid() -> void:
 	seats = []
-	for r in range(ROW_COUNT):
+	for r in range(row_count):
 		var row_array = []
-		for c in range(COL_COUNT):
+		for c in range(col_count):
 			row_array.append(null)
 		seats.append(row_array)
 
@@ -27,15 +28,15 @@ func can_place_passenger(passenger: Passenger, row: int, col: int) -> bool:
 		return false
 	
 	# this checks if inside bounds
-	if row < 0 or row >= ROW_COUNT:
+	if row < 0 or row >= row_count:
 		return false
 	# this also checks if inside bounds
-	if col < 0 or col >= COL_COUNT:
+	if col < 0 or col >= col_count:
 		return false
 
 	#this checks if it doesn't exceed the bench 		
 	var size = passenger.seat_size_passenger
-	if col + size - 1 >= COL_COUNT:
+	if col + size - 1 >= col_count:
 		return false
 		
 	# this checks if all target cells are empty (or occupied by the passenger themselves)
@@ -65,22 +66,22 @@ func place_passenger(passenger: Passenger, row: int, col: int) -> bool:
 func remove_passenger(passenger: Passenger) -> void:
 	if passenger == null:
 		return
-	for r in range(ROW_COUNT):
-		for c in range(COL_COUNT):
+	for r in range(row_count):
+		for c in range(col_count):
 			if seats[r][c] == passenger:
 				seats[r][c] = null
 
 # Retrieves passenger at specific coordinates.
 func get_passenger_at(row: int, col: int) -> Passenger:
-	if row < 0 or row >= ROW_COUNT or col < 0 or col >= COL_COUNT:
+	if row < 0 or row >= row_count or col < 0 or col >= col_count:
 		return null
 	return seats[row][col]
 
 # Returns a unique list of all passengers currently seated.
 func get_unique_passengers() -> Array[Passenger]:
 	var list: Array[Passenger] = []
-	for r in range(ROW_COUNT):
-		for c in range(COL_COUNT):
+	for r in range(row_count):
+		for c in range(col_count):
 			var passenger = seats[r][c]
 			if passenger != null and not list.has(passenger):
 				list.append(passenger)
@@ -92,8 +93,8 @@ func get_occupied_slots(passenger: Passenger) -> Array[Vector2i]:
 	if passenger == null:
 		return slots
 		
-	for r in range(ROW_COUNT):
-		for c in range(COL_COUNT):
+	for r in range(row_count):
+		for c in range(col_count):
 			if seats[r][c] == passenger:
 				slots.append(Vector2i(r, c))
 	return slots
@@ -116,7 +117,7 @@ func get_adjacent_neighbors(passenger: Passenger) -> Array[Passenger]:
 			neighbors.append(left_pass)
 			
 	# Check right neighbor
-	if max_col + 1 < COL_COUNT:
+	if max_col + 1 < col_count:
 		var right_pass = seats[row][max_col + 1]
 		if right_pass != null and right_pass != passenger and not neighbors.has(right_pass):
 			neighbors.append(right_pass)
@@ -126,16 +127,16 @@ func get_adjacent_neighbors(passenger: Passenger) -> Array[Passenger]:
 # Helper to debug print the grid.
 func print_grid() -> void:
 	print("--- JEEPNEY SEATING GRID ---")
-	for r in range(ROW_COUNT):
+	for r in range(row_count):
 		var row_str = "Row %d: [" % r
-		for c in range(COL_COUNT):
+		for c in range(col_count):
 			var passenger = seats[r][c]
 			if passenger == null:
 				row_str += " . "
 			else:
 				var size_indicator = "=" if passenger.seat_size_passenger > 1 else ""
 				row_str += " %s%s%s " % [size_indicator, passenger.id.substr(0, min(3, passenger.id.length())), size_indicator]
-			if c < COL_COUNT - 1:
+			if c < col_count - 1:
 				row_str += "|"
 		row_str += "]"
 		print(row_str)
