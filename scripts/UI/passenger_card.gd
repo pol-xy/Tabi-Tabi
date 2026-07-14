@@ -109,7 +109,26 @@ func _make_trait_badge(trait_id: String) -> Control:
 
 func _on_pressed() -> void:
 	emit_signal("card_selected", passenger_data)
+	
+	var dialogue_bubble = get_node_or_null("/root/Scenes/UI/DialogueBubble")
+	if dialogue_bubble != null:
+		dialogue_bubble.point_at(global_position)
+		dialogue_bubble.set_from_passenger(passenger_data)
 
 func _update_active_visual() -> void:
 	scale = Vector2(1.1, 1.1) if is_active else Vector2.ONE
 	modulate = Color.WHITE if is_active else Color(1, 1, 1, 0.7)
+	
+func _get_drag_data(at_position: Vector2) -> Variant:
+	var preview = self.duplicate()
+	preview.modulate.a = 0.5 # Make the ghost transparent
+	
+	var preview_container = Control.new()
+	preview_container.add_child(preview)
+	preview.position = -self.size / 2 
+	set_drag_preview(preview_container)
+	
+	return {
+		"ui_node": self,
+		"logic_data": passenger_data 
+	}

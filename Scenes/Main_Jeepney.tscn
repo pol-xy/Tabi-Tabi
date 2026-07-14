@@ -1,14 +1,17 @@
 [gd_scene format=3 uid="uid://cfdcadtgbc4a4"]
 
+[ext_resource type="Script" uid="uid://c3w1nxndp1bfh" path="res://Scenes/seat_1.gd" id="1_tfd51"]
+[ext_resource type="PackedScene" uid="uid://cp47pc4gf3f3c" path="res://Scenes/PassengerCard.tscn" id="2_urg85"]
+
 [node name="Main_Jeepney" type="Control" unique_id=1653784688]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 154.0
-offset_top = 45.0
-offset_right = 154.0
-offset_bottom = 45.0
+offset_left = 12.0
+offset_top = -45.0
+offset_right = 12.0
+offset_bottom = -45.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -19,10 +22,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -190.0
-offset_top = -117.5
-offset_right = 190.0
-offset_bottom = 117.5
+offset_left = -224.5
+offset_top = -141.75
+offset_right = 224.5
+offset_bottom = 141.75
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.14117648, 0.14117648, 0.14117648, 1)
@@ -47,83 +50,77 @@ columns = 4
 [node name="Seat1" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=2018713208]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+script = ExtResource("1_tfd51")
 
 [node name="Seat2" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=1470910757]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+script = ExtResource("1_tfd51")
+grid_col = 1
 
 [node name="Seat3" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=1663976812]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+script = ExtResource("1_tfd51")
+grid_col = 2
 
 [node name="Seat4" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=1715284878]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+script = ExtResource("1_tfd51")
+grid_col = 3
 
 [node name="Seat5" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=1822933662]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+script = ExtResource("1_tfd51")
+grid_row = 1
 
 [node name="Seat6" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=1639735771]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+script = ExtResource("1_tfd51")
+grid_row = 1
+grid_col = 1
 
 [node name="Seat7" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=1166047467]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+script = ExtResource("1_tfd51")
+grid_row = 1
+grid_col = 2
 
 [node name="Seat8" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=1741771391]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+script = ExtResource("1_tfd51")
+grid_row = 1
+grid_col = 3
 
-[node name="Test_Passenger" type="ColorRect" parent="." unique_id=1979854597]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 286.0
-offset_top = -32.0
-offset_right = 350.0
-offset_bottom = 32.0
-grow_vertical = 2
-color = Color(0.9999997, 0.15648174, 0.13937917, 1)
+[node name="PassengerCard" parent="." unique_id=859227506 instance=ExtResource("2_urg85")]
+layout_mode = 0
+offset_left = 238.0
+offset_top = 214.0
+offset_right = 314.0
+offset_bottom = 314.0
 
-[node name="Test_Passenger2" type="ColorRect" parent="." unique_id=1242952535]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 200.0
-offset_top = -32.0
-offset_right = 264.0
-offset_bottom = 32.0
-grow_vertical = 2
-color = Color(0.9999997, 0.15648174, 0.13937917, 1)
+[node name="PassengerCard2" parent="." unique_id=373788977 instance=ExtResource("2_urg85")]
+layout_mode = 0
+offset_left = 237.0
+offset_top = 334.0
+offset_right = 313.0
+offset_bottom = 434.0
 
-[node name="Test_Passenger3" type="ColorRect" parent="." unique_id=223161817]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 114.0
-offset_top = -32.0
-offset_right = 178.0
-offset_bottom = 32.0
-grow_vertical = 2
-color = Color(0.9999997, 0.15648174, 0.13937917, 1)
+[node name="PassengerCard3" parent="." unique_id=1123814603 instance=ExtResource("2_urg85")]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 335.0
+offset_right = 216.0
+offset_bottom = 435.0
 
-[node name="Test_Passenger4" type="ColorRect" parent="." unique_id=1150579268]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 28.0
-offset_top = -31.0
-offset_right = 92.0
-offset_bottom = 33.0
-grow_vertical = 2
-color = Color(0.9999997, 0.15648174, 0.13937917, 1)
+[node name="PassengerCard4" parent="." unique_id=1068204293 instance=ExtResource("2_urg85")]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 214.0
+offset_right = 216.0
+offset_bottom = 314.0
