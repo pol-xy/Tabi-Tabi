@@ -19,9 +19,14 @@ extends Resource
 
 # Behavioral / state flags
 @export var is_wet: bool = false       # Carrying wet fish or wet umbrella
-@export var is_asleep: bool = false    # Sleeping passenger
-@export var is_loud: bool = false      # Listening to loud music or noisy
-@export var is_introvert: bool = false # Dislikes loud neighbors
+@export var is_sleepy: bool = false    # Sleepy passenger
+@export var is_noisy: bool = false     # Loud/noisy passenger
+@export var is_introvert: bool = false # Dislikes noisy neighbors
+@export var is_sweaty: bool = false    # Sweaty passenger
+@export var is_heavy_load: bool = false # Carrying large boxes / heavy load
+@export var is_holdaper: bool = false  # Night holdaper passenger
+@export var is_graveyard_worker: bool = false # Graveyard shift worker
+@export var is_white_lady: bool = false # White lady passenger (fast anger drain)
 
 # Trip info
 @export var destination_stop: int = 1  # Stop number when they alight

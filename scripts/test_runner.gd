@@ -28,7 +28,7 @@ func run_tests() -> bool:
 	overall_pass = test_introvert_conflict() and overall_pass
 	overall_pass = test_magkasama_rule() and overall_pass
 	overall_pass = test_uso_umuwi_rule() and overall_pass
-	overall_pass = test_passenger_status_handles_empty_or_duplicate_ids() and overall_pass
+	overall_pass = test_new_proposed_traits_and_characters() and overall_pass
 	
 	return overall_pass
 
@@ -81,11 +81,11 @@ func test_tagabot_rule() -> bool:
 	var grid = JeepneyGrid.new()
 	var test_ok = true
 	
-	# Active regular passenger should be fine behind driver (index 7)
+	# Active regular passenger should be fine behind driver (index 4)
 	var active_p = Passenger.new()
 	active_p.id = "active_worker"
 	active_p.is_employee = true
-	grid.place_passenger(active_p, 0, 7)
+	grid.place_passenger(active_p, 0, 4)
 	
 	var report = RuleValidator.validate(grid)
 	test_ok = assert_true(report.is_valid, "Active passenger behind driver is valid") and test_ok
@@ -94,8 +94,8 @@ func test_tagabot_rule() -> bool:
 	grid.remove_passenger(active_p)
 	var sleeper = Passenger.new()
 	sleeper.id = "sleepy_student"
-	sleeper.is_asleep = true
-	grid.place_passenger(sleeper, 0, 7)
+	sleeper.is_sleepy = true
+	grid.place_passenger(sleeper, 0, 4)
 	
 	report = RuleValidator.validate(grid)
 	test_ok = assert_true(not report.is_valid, "Sleeping passenger behind driver violates Tagabot rule") and test_ok
@@ -105,7 +105,7 @@ func test_tagabot_rule() -> bool:
 	var pwd_p = Passenger.new()
 	pwd_p.id = "pwd_guy"
 	pwd_p.is_pwd = true
-	grid.place_passenger(pwd_p, 1, 7)
+	grid.place_passenger(pwd_p, 1, 4)
 	
 	report = RuleValidator.validate(grid)
 	test_ok = assert_true(report.passenger_status.has("pwd_guy") and not report.passenger_status["pwd_guy"]["is_happy"], "PWD passenger is unhappy behind driver") and test_ok
@@ -165,7 +165,7 @@ func test_palengke_conflict() -> bool:
 	test_ok = assert_true(report.violated_rules.has("palengke"), "Palengke rule flagged") and test_ok
 	
 	# Separate them
-	grid.place_passenger(employee, 0, 5)
+	grid.place_passenger(employee, 0, 4)
 	report = RuleValidator.validate(grid)
 	test_ok = assert_true(report.is_valid, "Separated wet passenger and employee are valid") and test_ok
 	
@@ -191,7 +191,7 @@ func test_introvert_conflict() -> bool:
 	
 	var loud_p = Passenger.new()
 	loud_p.id = "maingay_kid"
-	loud_p.is_loud = true
+	loud_p.is_noisy = true
 	
 	# Adjacent
 	grid.place_passenger(introvert, 0, 2)
@@ -202,7 +202,7 @@ func test_introvert_conflict() -> bool:
 	test_ok = assert_true(report.violated_rules.has("introvert_conflict"), "Introvert conflict flagged") and test_ok
 	
 	# Separate
-	grid.place_passenger(loud_p, 0, 5)
+	grid.place_passenger(loud_p, 0, 4)
 	report = RuleValidator.validate(grid)
 	test_ok = assert_true(report.is_valid, "Separated introvert and loud passenger are valid") and test_ok
 	
@@ -237,7 +237,7 @@ func test_magkasama_rule() -> bool:
 	test_ok = assert_true(report.is_valid, "Companions seated directly opposite are valid") and test_ok
 	
 	# Test 4: Seated apart (invalid)
-	grid.place_passenger(partner_b, 1, 5)
+	grid.place_passenger(partner_b, 1, 4)
 	report = RuleValidator.validate(grid)
 	test_ok = assert_true(not report.is_valid, "Companions seated apart are invalid") and test_ok
 	test_ok = assert_true(report.violated_rules.has("magkasama"), "Magkasama rule flagged") and test_ok
@@ -257,15 +257,17 @@ func test_uso_umuwi_rule() -> bool:
 	bulky.id = "bulky_guy"
 	bulky.seat_size_passenger = 2
 	
-	# Early exit passenger placed at col 4, bulky passenger at col 5 (bulky is behind early exit, which is fine)
-	grid.place_passenger(early_exit, 0, 4)
-	grid.place_passenger(bulky, 0, 5)
+	# Early exit passenger placed at col 1, bulky passenger at col 2 (bulky is behind early exit, which is fine)
+	grid.place_passenger(early_exit, 0, 1)
+	grid.place_passenger(bulky, 0, 2)
 	
 	var report = RuleValidator.validate(grid)
 	test_ok = assert_true(report.is_valid, "Bulky passenger seated behind early-exit passenger is valid") and test_ok
 	
-	# Swap: bulky passenger at col 2 (between exit at 0 and early exit passenger at col 4)
-	grid.place_passenger(bulky, 0, 2)
+	# Swap: early exit to col 2, bulky to col 0 (bulky is between exit at 0 and early exit passenger at col 2)
+	grid.remove_passenger(early_exit)
+	grid.place_passenger(bulky, 0, 0)
+	grid.place_passenger(early_exit, 0, 2)
 	
 	report = RuleValidator.validate(grid)
 	test_ok = assert_true(not report.is_valid, "Early exit passenger blocked by bulky passenger closer to exit is invalid") and test_ok
@@ -273,33 +275,87 @@ func test_uso_umuwi_rule() -> bool:
 	
 	return test_ok
 
-func test_passenger_status_handles_empty_or_duplicate_ids() -> bool:
-	print("--- Running Test: Passenger Status Keys Handle Empty/Duplicate IDs ---")
+func test_new_proposed_traits_and_characters() -> bool:
+	print("--- Running Test: New Proposed Traits & Characters ---")
 	var grid = JeepneyGrid.new()
 	var test_ok = true
 	
-	var early_exit = Passenger.new()
-	early_exit.destination_stop = 1
+	# Test 1: Sweaty passenger next to employee (should violate Palengke rule)
+	var sweaty = Passenger.new()
+	sweaty.id = "sweaty_guy"
+	sweaty.is_sweaty = true
 	
-	var bulky = Passenger.new()
-	bulky.seat_size_passenger = 2
+	var worker = Passenger.new()
+	worker.id = "office_worker"
+	worker.is_employee = true
 	
-	# Both passengers intentionally keep default empty IDs.
-	grid.place_passenger(early_exit, 0, 4)
-	grid.place_passenger(bulky, 0, 2)
+	grid.place_passenger(sweaty, 0, 1)
+	grid.place_passenger(worker, 0, 2)
 	
 	var report = RuleValidator.validate(grid)
-	test_ok = assert_true(report.passenger_status.size() == 2, "Passengers with empty/duplicate IDs keep separate status entries") and test_ok
+	test_ok = assert_true(not report.is_valid, "Sweaty next to employee violates conflict") and test_ok
+	test_ok = assert_true(report.violated_rules.has("palengke"), "Sweaty conflict flagged under palengke rule") and test_ok
 	
-	var happy_count = 0
-	var unhappy_count = 0
-	for status_key in report.passenger_status:
-		if report.passenger_status[status_key]["is_happy"]:
-			happy_count += 1
-		else:
-			unhappy_count += 1
+	# Test 2: Heavy load blocking exit
+	grid.clear_grid()
+	var early_exit = Passenger.new()
+	early_exit.id = "exit_student"
+	early_exit.destination_stop = 1
 	
-	test_ok = assert_true(unhappy_count == 1, "Exactly one passenger is unhappy for Uso Umuwi violation") and test_ok
-	test_ok = assert_true(happy_count == 1, "Other passenger remains happy and is not overwritten") and test_ok
+	var heavy = Passenger.new()
+	heavy.id = "balikbayan"
+	heavy.is_heavy_load = true
+	
+	grid.place_passenger(heavy, 0, 0) # Blocks column 0 exit
+	grid.place_passenger(early_exit, 0, 2)
+	
+	report = RuleValidator.validate(grid)
+	test_ok = assert_true(not report.is_valid, "Heavy load blocks early exit") and test_ok
+	test_ok = assert_true(report.violated_rules.has("uso_umuwi"), "Heavy load exit block flagged") and test_ok
+	
+	# Test 3: Holdaper positioning
+	grid.clear_grid()
+	var holdaper = Passenger.new()
+	holdaper.id = "holdaper"
+	holdaper.is_holdaper = true
+	
+	# Placing holdaper in middle (col 2)
+	grid.place_passenger(holdaper, 0, 2)
+	grid.place_passenger(worker, 0, 3) # worker sits next to holdaper
+	
+	report = RuleValidator.validate(grid)
+	test_ok = assert_true(not report.is_valid, "Holdaper in middle is invalid") and test_ok
+	test_ok = assert_true(report.violated_rules.has("holdaper_panic"), "Holdaper panic flagged") and test_ok
+	test_ok = assert_true(report.passenger_status.has("office_worker") and not report.passenger_status["office_worker"]["is_happy"], "Worker is unhappy next to misplaced holdaper") and test_ok
+	
+	# Placing holdaper in front (col 4) - should be fine
+	grid.clear_grid()
+	grid.place_passenger(holdaper, 0, 4)
+	report = RuleValidator.validate(grid)
+	test_ok = assert_true(report.is_valid, "Holdaper at front is valid") and test_ok
+	
+	# Test 4: Graveyard shift worker wants quiet corner
+	grid.clear_grid()
+	var graveyard = Passenger.new()
+	graveyard.id = "graveyard_shift"
+	graveyard.is_graveyard_worker = true
+	
+	# Sits in middle (invalid corner)
+	grid.place_passenger(graveyard, 0, 2)
+	report = RuleValidator.validate(grid)
+	test_ok = assert_true(not report.is_valid, "Graveyard worker in middle is invalid") and test_ok
+	
+	# Sits in corner (col 0)
+	grid.place_passenger(graveyard, 0, 0)
+	report = RuleValidator.validate(grid)
+	test_ok = assert_true(report.is_valid, "Graveyard worker in corner is valid") and test_ok
+	
+	# Noisy neighbor next to corner graveyard worker
+	var noisy = Passenger.new()
+	noisy.id = "loud_kid"
+	noisy.is_noisy = true
+	grid.place_passenger(noisy, 0, 1)
+	report = RuleValidator.validate(grid)
+	test_ok = assert_true(not report.is_valid, "Graveyard worker next to noisy neighbor is invalid") and test_ok
 	
 	return test_ok
