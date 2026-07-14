@@ -2,12 +2,14 @@ extends ColorRect
 
 @export var grid_row: int 
 @export var grid_col: int 
+@onready var jeepney_grid = get_tree().root.get_node("Main_Jeepney/JeepneyGridManager")
 
 # Check if the object hovering over this seat is a valid passenger
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 	if typeof(data) == TYPE_DICTIONARY and data.has("ui_node"):
-		# Later, you will call Dev 1's `can_place_passenger` here
-		return true 
+		var passenger = data["logic_data"]
+		if jeepney_grid.can_place_passenger(passenger, grid_row, grid_col):
+			return true 
 	return false
 
 func _drop_data(at_position: Vector2, data: Variant) -> void:
