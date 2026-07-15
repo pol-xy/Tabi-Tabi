@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://djr0npvfp8drl"]
+
+[ext_resource type="Script" uid="uid://y884njleqnqs" path="res://scripts/UI/dialogue_bubble.gd" id="1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bubble"]
+bg_color = Color(0.961, 0.914, 0.784, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.227, 0.153, 0.094, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.25)
+shadow_size = 5
+shadow_offset = Vector2(0, 3)
+
+[node name="DialogueBubble" type="PanelContainer" unique_id=1604388256]
+custom_minimum_size = Vector2(320, 0)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bubble")
+script = ExtResource("1")
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=530102469]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 22
+
+[node name="MonologueLabel" type="RichTextLabel" parent="Margin" unique_id=1412057722]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.227, 0.153, 0.094, 1)
+theme_override_font_sizes/normal_font_size = 17
+bbcode_enabled = true
+text = "Bayad po!"
+fit_content = true
+scroll_active = false

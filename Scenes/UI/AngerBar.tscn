@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/UI/anger_bar.gd" id="1"]
+
+[node name="AngerBar" type="ProgressBar"]
+custom_minimum_size = Vector2(100, 14)
+min_value = 0.0
+max_value = 100.0
+value = 100.0
+show_percentage = false
+script = ExtResource("1")
