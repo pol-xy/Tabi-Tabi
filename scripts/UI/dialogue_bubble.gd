@@ -8,7 +8,7 @@ extends PanelContainer
 ## matches exactly, no changes needed here.
 
 signal shown
-signal hidden
+signal bubble_hidden
 
 @onready var monologue_label: RichTextLabel = $Margin/MonologueLabel
 
@@ -57,6 +57,9 @@ func set_text(bbcode_text: String) -> void:
 	await get_tree().process_frame  # let the container resize to new text height first
 	queue_redraw()
 	show_bubble()
+	
+	await get_tree().create_timer(2.0).timeout
+	hide_bubble()
 
 ## Optional: reposition the bubble above whichever node was clicked.
 ## Call this before set_text() if you want it to "follow" the speaker.
@@ -78,5 +81,5 @@ func hide_bubble() -> void:
 	tween.tween_property(self, "scale", Vector2(0.9, 0.9), POPUP_DURATION)
 	tween.chain().tween_callback(func():
 		visible = false
-		emit_signal("hidden")
+		emit_signal("bubble_hidden")
 	)

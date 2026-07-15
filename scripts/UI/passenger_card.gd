@@ -108,8 +108,34 @@ func _make_trait_badge(trait_id: String) -> Control:
 	return badge
 
 func _on_pressed() -> void:
+	# --- GRAYBOX TESTING FIX ---
+	# Ensure the card has a fake ID before trying to talk!
+	if passenger_data == null:
+		passenger_data = Passenger.new()
+		passenger_data.seat_size_passenger = 1
+		passenger_data.monologue_text = "Hey! I am a graybox placeholder."
+	# ---------------------------
 	emit_signal("card_selected", passenger_data)
+	
+	var dialogue_bubble = get_node_or_null("/root/Main_Jeepney/HUD/DialogueBubble")
+	if dialogue_bubble != null:
+		dialogue_bubble.point_at(global_position, Vector2(0, -150))
+		dialogue_bubble.set_from_passenger(passenger_data)
 
 func _update_active_visual() -> void:
 	scale = Vector2(1.1, 1.1) if is_active else Vector2.ONE
 	modulate = Color.WHITE if is_active else Color(1, 1, 1, 0.7)
+	
+func _get_drag_data(_at_position: Vector2) -> Variant:
+	var preview = self.duplicate()
+	preview.modulate.a = 0.5 # Make the ghost transparent
+	
+	var preview_container = Control.new()
+	preview_container.add_child(preview)
+	preview.position = -self.size / 2 
+	set_drag_preview(preview_container)
+	
+	return {
+		"ui_node": self,
+		"logic_data": passenger_data 
+	}
