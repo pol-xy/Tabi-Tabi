@@ -88,6 +88,7 @@ func apply_validation_report(report: Dictionary) -> void:
 ## Call when a character (seated or in queue) is clicked, per the
 ## click-to-inspect pattern.
 func inspect_passenger(passenger: Passenger, world_or_ui_position: Vector2) -> void:
+	GameManager.play_sfx("dialogue")
 	dialogue_bubble.point_at(world_or_ui_position)
 	dialogue_bubble.set_from_passenger(passenger)
 
@@ -107,3 +108,4 @@ func hide_tooltip() -> void:
 func _on_passenger_focused(passenger: Passenger) -> void:
 	_active_passenger = passenger
 	dialogue_bubble.set_from_passenger(passenger)
+	GameManager.play_sfx("dialogue")

@@ -175,6 +175,7 @@ func _on_pressed() -> void:
 		passenger_data.seat_size_passenger = 1
 		passenger_data.monologue_text = "Hey! I am a graybox placeholder."
 	# ---------------------------
+	GameManager.play_sfx("click_select")
 	emit_signal("card_selected", passenger_data)
 	
 	var dialogue_bubble = get_node_or_null("/root/Main_Jeepney/HUD/DialogueBubble")
@@ -187,6 +188,7 @@ func _update_active_visual() -> void:
 	modulate = Color.WHITE if is_active else Color(1, 1, 1, 0.7)
 	
 func _get_drag_data(_at_position: Vector2) -> Variant:
+	GameManager.play_sfx("drag_passenger")
 	var preview = self.duplicate()
 	preview.modulate.a = 0.5 # Make the ghost transparent
 	

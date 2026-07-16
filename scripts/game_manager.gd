@@ -63,7 +63,69 @@ var _timer_active: bool = false
 # --- Penalty state (anger meter depletions this stage) --------------------
 var _penalty_count: int = 0
 
+# --- Audio state ---------------------------------------------------------
+var _bgm_player: AudioStreamPlayer = null
+
+var sound_paths: Dictionary = {
+	"day_theme": "res://Assets/Sounds/MainSFX/Day Theme.ogg",
+	"game_over": "res://Assets/Sounds/MainSFX/Game Over.ogg",
+	"level_completed": "res://Assets/Sounds/MainSFX/Level Completed.ogg",
+	"levels": "res://Assets/Sounds/MainSFX/Levels.ogg",
+	"main_menu": "res://Assets/Sounds/MainSFX/Main Menu.ogg",
+	"night_theme": "res://Assets/Sounds/MainSFX/Night Theme.ogg",
+	"transition": "res://Assets/Sounds/MainSFX/Transition.ogg",
+	
+	"click_select": "res://Assets/Sounds/UI SFX/Click slect.wav",
+	"correct_seat": "res://Assets/Sounds/UI SFX/Correct seat.wav",
+	"dialogue": "res://Assets/Sounds/UI SFX/Dialogue.wav",
+	"drag_passenger": "res://Assets/Sounds/UI SFX/Drag passenger.wav",
+	"wrong_seat": "res://Assets/Sounds/UI SFX/Wrong seat.wav"
+}
+
+var sounds: Dictionary = {}
+
+func get_sound(stream_name: String) -> AudioStream:
+	if sounds.has(stream_name):
+		return sounds[stream_name]
+	if sound_paths.has(stream_name):
+		var path = sound_paths[stream_name]
+		if ResourceLoader.exists(path):
+			var stream = load(path)
+			sounds[stream_name] = stream
+			return stream
+	return null
+
+func play_bgm(stream_name: String) -> void:
+	var stream = get_sound(stream_name)
+	if stream == null:
+		return
+	if _bgm_player.stream == stream and _bgm_player.playing:
+		return
+	_bgm_player.stop()
+	_bgm_player.stream = stream
+	_bgm_player.play()
+
+func stop_bgm() -> void:
+	if _bgm_player:
+		_bgm_player.stop()
+
+func play_sfx(stream_name: String) -> void:
+	var stream = get_sound(stream_name)
+	if stream == null:
+		return
+	var player = AudioStreamPlayer.new()
+	add_child(player)
+	player.stream = stream
+	player.play()
+	player.finished.connect(func(): player.queue_free())
+
 func _ready() -> void:
+	_bgm_player = AudioStreamPlayer.new()
+	_bgm_player.name = "BGMPlayer"
+	add_child(_bgm_player)
+	
+	play_bgm("main_menu")
+	
 	levels = [
 		{
 			"title": "Level 1 — Ang Unang Byahe",
@@ -213,6 +275,11 @@ func on_passenger_seated(passenger: Passenger) -> void:
 	if hud:
 		hud.apply_validation_report(report)
 
+	if report.is_valid:
+		play_sfx("correct_seat")
+	else:
+		play_sfx("wrong_seat")
+
 	var seated_count: int = current_grid.get_unique_passengers().size()
 	if seated_count >= _current_roster_size and _current_roster_size > 0:
 		_try_finish_stage(report)
@@ -276,6 +343,11 @@ func _start_current_stage() -> void:
 	_time_limit = stage["time_limit_sec"]
 	_time_remaining = _time_limit
 	_timer_active = true
+
+	if stage.get("is_night", false):
+		play_bgm("night_theme")
+	else:
+		play_bgm("day_theme")
 
 	_apply_grid_dimensions(level["rows"], level["cols"])
 	_clear_seat_visuals()
@@ -351,6 +423,7 @@ func _try_finish_stage(report: Dictionary) -> void:
 
 	_notify("Stage cleared! %s" % _star_string(stars), "success")
 	_report_stage_result(stars, true)
+	play_bgm("level_completed")
 
 	await get_tree().create_timer(STAGE_CLEAR_PAUSE_SEC).timeout
 	_advance_stage()
@@ -373,11 +446,13 @@ func _end_stage_by_timeout() -> void:
 
 	_notify("Oras na! %s" % _star_string(stars), "error")
 	_report_stage_result(stars, false)
+	play_bgm("game_over")
 
 	await get_tree().create_timer(STAGE_CLEAR_PAUSE_SEC).timeout
 	_advance_stage()
 
 func _on_stage_failed() -> void:
+	play_bgm("game_over")
 	emit_signal("campaign_failed", current_level_index, current_stage_index)
 
 # --- Star rating helpers -------------------------------------------------
