@@ -251,9 +251,13 @@ func register_seat_nodes(seats: Array) -> void:
 	_seat_nodes = seats
 
 func start_campaign() -> void:
-	current_level_index = -1
-	current_stage_index = -1
-	_advance_stage()
+	if current_level_index == -1:
+		current_level_index = 0
+		
+	current_stage_index = 0
+	
+	emit_signal("level_started", current_level_index)
+	_start_current_stage()
 
 ## Read-only helper for Dev 2/3 -- e.g. to stop accepting drag-drops once
 ## time's up or while the clear animation is playing.

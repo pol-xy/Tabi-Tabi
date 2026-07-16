@@ -26,8 +26,18 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		old_parent.remove_child(passenger_node)
 	add_child(passenger_node)
 
+	# The card only ever dimmed itself during the drag (a disposable preview
+	# handled the on-screen movement) -- restore full opacity now that it's
+	# actually landing somewhere, and mark it seated so it doesn't reset
+	# itself back to standby.
+	passenger_node.is_seated = true
+	passenger_node.modulate.a = 1.0
+	passenger_node.z_index = 10
+
 	# Now that this seat is its parent, a local (not global) offset centers it.
 	passenger_node.position = (self.size - passenger_node.size) / 2.0
+
+	passenger_node.play_seated_animation(grid_row * jeepney_grid.col_count + grid_col)
 
 	# Tell backend to occupy the grid slot
 	jeepney_grid.place_passenger(passenger, grid_row, grid_col)
