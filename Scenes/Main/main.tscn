@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://dnpaxn636sg2m"]
+
+[ext_resource type="PackedScene" uid="uid://ce8ve0rwhbrvv" path="res://Scenes/Jeepneys/jeep_1.tscn" id="1_lixft"]
+[ext_resource type="PackedScene" uid="uid://datk3sfug8g4s" path="res://Scenes/Passengers/student.tscn" id="2_qw60k"]
+[ext_resource type="PackedScene" uid="uid://bwe4ymivm2av2" path="res://Scenes/UI(2)/stars.tscn" id="3_5yls4"]
+[ext_resource type="PackedScene" uid="uid://dvlnoeq4s8v1y" path="res://Scenes/Levels/backgrounds.tscn" id="3_qw60k"]
+[ext_resource type="PackedScene" uid="uid://cbtufljrn3svs" path="res://Scenes/UI(2)/menu_button.tscn" id="4_p6jpk"]
+
+[node name="Main" type="Node2D" unique_id=1705748289]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=85756720]
+position = Vector2(574, 319)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1262548305]
+
+[node name="Jeep1" parent="." unique_id=1601962495 instance=ExtResource("1_lixft")]
+
+[node name="Student" parent="." unique_id=240411338 instance=ExtResource("2_qw60k")]
+position = Vector2(314, 331)
+
+[node name="DialogueBox" parent="." unique_id=632756330 instance=ExtResource("3_5yls4")]
+position = Vector2(196, 564)
+scale = Vector2(3, 3)
+
+[node name="MenuButton" parent="." unique_id=1345815543 instance=ExtResource("4_p6jpk")]
+position = Vector2(497, 49)
+
+[node name="Background" type="Sprite2D" parent="." unique_id=1247894568]
+
+[node name="Backgrounds" parent="Background" unique_id=1005624122 instance=ExtResource("3_qw60k")]
+z_index = -5
+position = Vector2(-4, -6)

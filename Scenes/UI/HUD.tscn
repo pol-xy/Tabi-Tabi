@@ -1,7 +1,7 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/UI/hud.gd" id="1"]
-[ext_resource type="PackedScene" path="res://Scenes/UI/DialogueBubble.tscn" id="2"]
+[ext_resource type="Script" uid="uid://bbhuosirq0rjo" path="res://scripts/UI/hud.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://djr0npvfp8drl" path="res://Scenes/UI/DialogueBubble.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/QueuePanel.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/StrikeCounter.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/QuotaPanel.tscn" id="5"]

@@ -1,5 +1,6 @@
 class_name PassengerCard
 extends Button
+
 # Represents one passenger as a clickable card (queue strip or inspection).
 # Button gives free click detection, no manual Area2D/input_event needed
 # for UI-space cards.
@@ -139,3 +140,4 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 		"ui_node": self,
 		"logic_data": passenger_data 
 	}
+	
