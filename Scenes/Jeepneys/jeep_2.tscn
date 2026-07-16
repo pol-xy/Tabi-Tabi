@@ -32,7 +32,7 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v0s4m"]
 size = Vector2(66, 43.6875)
 
-[node name="Jeep4" type="Node2D" unique_id=1601962495]
+[node name="Jeep2" type="Node2D" unique_id=1601962495]
 position = Vector2(546, 324)
 scale = Vector2(0.25, 0.25)
 
@@ -46,6 +46,7 @@ frame_progress = 0.65835476
 [node name="Seats" type="Node2D" parent="." unique_id=16581149]
 
 [node name="Seat01" type="Area2D" parent="Seats" unique_id=200911469]
+position = Vector2(12, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat01" unique_id=420863425]
 position = Vector2(-355, -49.15625)
@@ -55,6 +56,7 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(-356, -48)
 
 [node name="Seat02" type="Area2D" parent="Seats" unique_id=1140170382]
+position = Vector2(32, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat02" unique_id=1552064743]
 position = Vector2(-254, -49)
@@ -64,6 +66,7 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(-253, -48)
 
 [node name="Seat03" type="Area2D" parent="Seats" unique_id=275932082]
+position = Vector2(52, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat03" unique_id=257623969]
 position = Vector2(-154, -49)
@@ -73,6 +76,7 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(-153, -49)
 
 [node name="Seat04" type="Area2D" parent="Seats" unique_id=306116131]
+position = Vector2(76, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat04" unique_id=2143503801]
 position = Vector2(-54, -49)
@@ -82,6 +86,7 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(-53, -47)
 
 [node name="Seat05" type="Area2D" parent="Seats" unique_id=621821843]
+position = Vector2(-388, 108)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat05" unique_id=1986685934]
 position = Vector2(46, -49)
@@ -91,6 +96,7 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(45, -48)
 
 [node name="Seat06" type="Area2D" parent="Seats" unique_id=379981830]
+position = Vector2(136, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat06" unique_id=100179735]
 position = Vector2(-356, 56)
@@ -100,6 +106,7 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(-357, 56)
 
 [node name="Seat07" type="Area2D" parent="Seats" unique_id=1920108361]
+position = Vector2(152, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat07" unique_id=1462944099]
 position = Vector2(-254, 56)
@@ -109,6 +116,7 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(-250, 56)
 
 [node name="Seat08" type="Area2D" parent="Seats" unique_id=310117905]
+position = Vector2(176, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat08" unique_id=1933111045]
 position = Vector2(-155, 57)
@@ -116,24 +124,6 @@ shape = SubResource("RectangleShape2D_v0s4m")
 
 [node name="Marker2D" type="Marker2D" parent="Seats/Seat08" unique_id=1370876232]
 position = Vector2(-154, 61)
-
-[node name="Seat09" type="Area2D" parent="Seats" unique_id=2044339685]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat09" unique_id=452157984]
-position = Vector2(-54, 57)
-shape = SubResource("RectangleShape2D_v0s4m")
-
-[node name="Marker2D" type="Marker2D" parent="Seats/Seat09" unique_id=1377826013]
-position = Vector2(-55, 61)
-
-[node name="Seat10" type="Area2D" parent="Seats" unique_id=348952776]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat10" unique_id=1089826073]
-position = Vector2(44, 56)
-shape = SubResource("RectangleShape2D_v0s4m")
-
-[node name="Marker2D" type="Marker2D" parent="Seats/Seat10" unique_id=654698664]
-position = Vector2(46, 61)
 
 [node name="PassengerContainer" type="Node2D" parent="." unique_id=215710295]
 position = Vector2(-135, 7)
