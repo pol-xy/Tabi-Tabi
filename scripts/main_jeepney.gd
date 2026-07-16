@@ -10,12 +10,14 @@ extends Control
 @onready var grid_manager := $JeepneyGridManager
 @onready var _grid_container := get_node_or_null("Jeepney_BG/GridContainer")
 @onready var _bg_sprite := get_node_or_null("Jeepney_BG/BG_Sprite")
+@onready var _jeep_exterior := get_node_or_null("Jeepney_BG/JeepExterior")
 
 func _ready() -> void:
 	GameManager.register_hud(hud)
 	GameManager.register_grid(grid_manager)
 	GameManager.register_seat_nodes(_collect_seat_nodes())
 	GameManager.register_background(_bg_sprite)
+	GameManager.register_jeep_exterior(_jeep_exterior)
 
 	# Keep GridContainer.columns in sync with the active level's grid shape
 	# (e.g. 4 for an 8-seater 2x4 level, 5 for a 10-seater 2x5 level).

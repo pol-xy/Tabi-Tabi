@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://yltepmu8n5h8" path="res://scripts/main_jeepney.gd" id="5_gm001"]
 [ext_resource type="PackedScene" uid="uid://mv5wsddprkt3" path="res://Scenes/UI/HUD.tscn" id="5_svhdg"]
 [ext_resource type="Script" uid="uid://cbkihrtiuli5d" path="res://scripts/UI/bg_animator.gd" id="6_bganim"]
+[ext_resource type="Script" uid="uid://cq14ich4hekhe" path="res://scripts/UI/jeep_exterior.gd" id="7_jeepext"]
 
 [node name="Main_Jeepney" type="Control" unique_id=1653784688]
 layout_mode = 3
@@ -38,6 +39,22 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("6_bganim")
 
+[node name="JeepExterior" type="TextureRect" parent="Jeepney_BG" unique_id=1875727646]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -168.0
+offset_right = 350.0
+offset_bottom = 168.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("7_jeepext")
+
 [node name="GridContainer" type="GridContainer" parent="Jeepney_BG" unique_id=1146529060]
 layout_mode = 1
 anchors_preset = 8
@@ -45,14 +62,14 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -207.0
-offset_top = -83.0
-offset_right = 197.0
-offset_bottom = 107.0
+offset_left = -275.0
+offset_top = -95.0
+offset_right = 145.3335
+offset_bottom = 95.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/h_separation = 21
-theme_override_constants/v_separation = 62
+theme_override_constants/v_separation = 32
 columns = 5
 
 [node name="Seat1" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=2018713208]

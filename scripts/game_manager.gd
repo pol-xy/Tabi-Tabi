@@ -48,6 +48,7 @@ var current_stage_index: int = -1
 var current_grid: JeepneyGrid = null
 var hud: Node = null
 var background: Node = null
+var jeep_exterior: Node = null
 
 var levels: Array = []
 var _current_roster_size: int = 0
@@ -73,17 +74,20 @@ func _ready() -> void:
 					"title": "Puzzle 1.1 — Priority & Tagabot",
 					"time_limit_sec": 90.0,
 					"passengers": _build_l1_s1_roster(),
+					"jeep_variant": 4,
 				},
 				{
 					"title": "Puzzle 1.2 — Heavy Loads & Rushers",
 					"time_limit_sec": 110.0,
 					"passengers": _build_l1_s2_roster(),
+					"jeep_variant": 5,
 				},
 				{
 					"title": "Puzzle 1.3 — Night Shift & Personal Space",
 					"time_limit_sec": 110.0,
 					"passengers": _build_l1_s3_roster(),
 					"is_night": true,
+					"jeep_variant": 6,
 				},
 			],
 		},
@@ -96,17 +100,20 @@ func _ready() -> void:
 					"title": "Puzzle 2.1 — Morning Rush 1",
 					"time_limit_sec": 130.0,
 					"passengers": _build_l2_s1_roster(),
+					"jeep_variant": 1,
 				},
 				{
 					"title": "Puzzle 2.2 — Morning Rush 2",
 					"time_limit_sec": 140.0,
 					"passengers": _build_l2_s2_roster(),
+					"jeep_variant": 2,
 				},
 				{
 					"title": "Puzzle 2.3 — Night Shift 2",
 					"time_limit_sec": 140.0,
 					"passengers": _build_l2_s3_roster(),
 					"is_night": true,
+					"jeep_variant": 3,
 				},
 			],
 		},
@@ -119,17 +126,20 @@ func _ready() -> void:
 					"title": "Puzzle 3.1 — Morning Rush 1 (Full Capacity)",
 					"time_limit_sec": 150.0,
 					"passengers": _build_l3_s1_roster(),
+					"jeep_variant": 1,
 				},
 				{
 					"title": "Puzzle 3.2 — Morning Rush 2 (Full Capacity)",
 					"time_limit_sec": 150.0,
 					"passengers": _build_l3_s2_roster(),
+					"jeep_variant": 2,
 				},
 				{
 					"title": "Puzzle 3.3 — Night Shift 3 (Full Capacity)",
 					"time_limit_sec": 160.0,
 					"passengers": _build_l3_s3_roster(),
 					"is_night": true,
+					"jeep_variant": 3,
 				},
 			],
 		},
@@ -165,6 +175,12 @@ func register_grid(grid_node: JeepneyGrid) -> void:
 ## no-ops via has_method(), same defensive pattern as the HUD calls.
 func register_background(background_node: Node) -> void:
 	background = background_node
+
+## Decorative jeep exterior sprite running jeep_exterior.gd. Purely visual
+## (idle-loop animation, one of 6 liveries) -- NOT the gameplay seat system.
+## Optional, same has_method() defensive pattern as register_background.
+func register_jeep_exterior(jeep_node: Node) -> void:
+	jeep_exterior = jeep_node
 
 ## Needed so a fresh stage can wipe leftover passenger cards left sitting
 ## in seats from the previous stage -- clear_grid() only resets the
@@ -264,6 +280,7 @@ func _start_current_stage() -> void:
 	_apply_grid_dimensions(level["rows"], level["cols"])
 	_clear_seat_visuals()
 	_apply_background_state(stage)
+	_apply_jeep_exterior(stage)
 
 	var display_title := "%s — %s" % [level["title"], stage["title"]]
 	if hud:
@@ -293,6 +310,15 @@ func _apply_grid_dimensions(rows: int, cols: int) -> void:
 func _apply_background_state(stage: Dictionary) -> void:
 	if background and background.has_method("set_night"):
 		background.set_night(stage.get("is_night", false))
+
+## Swaps the decorative jeep exterior sprite to match the current stage's
+## jeep_variant (1-6). Runs every stage (not just once per level), so the
+## jeepney can visibly differ between e.g. Puzzle 1.1 and Puzzle 1.2.
+## No-ops if a stage has no jeep_variant set, or if nothing's registered a
+## jeep exterior node.
+func _apply_jeep_exterior(stage: Dictionary) -> void:
+	if jeep_exterior and jeep_exterior.has_method("set_variant") and stage.has("jeep_variant"):
+		jeep_exterior.set_variant(stage["jeep_variant"])
 
 ## Frees any passenger cards still visually parented under a seat from the
 ## previous stage (they were reparented there by seat_1.gd on drop).
