@@ -261,7 +261,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_2oad4")
 }],
 "loop": 1,
-"name": &"blink",
+"name": &"parent_baby_blink",
 "speed": 5.0
 }, {
 "frames": [{
@@ -272,7 +272,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_icnoy")
 }],
 "loop": 0,
-"name": &"drag left",
+"name": &"parent_baby_drag_left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -283,7 +283,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_wi1nx")
 }],
 "loop": 0,
-"name": &"drag right",
+"name": &"parent_baby_drag_right",
 "speed": 5.0
 }, {
 "frames": [{
@@ -306,7 +306,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_h8e0c")
 }],
 "loop": 0,
-"name": &"drag up",
+"name": &"parent_baby_drag_up",
 "speed": 5.0
 }, {
 "frames": [{
@@ -347,7 +347,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_cekin")
 }],
 "loop": 0,
-"name": &"drop back",
+"name": &"parent_baby_drop_back",
 "speed": 5.0
 }, {
 "frames": [{
@@ -382,7 +382,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_f7dn0")
 }],
 "loop": 0,
-"name": &"drop front",
+"name": &"parent_baby_drop_front",
 "speed": 5.0
 }, {
 "frames": [{
@@ -393,7 +393,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_487ia")
 }],
 "loop": 1,
-"name": &"idle",
+"name": &"parent_baby_idle",
 "speed": 5.0
 }, {
 "frames": [{
@@ -404,7 +404,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_xxqlm")
 }],
 "loop": 1,
-"name": &"idle left",
+"name": &"parent_baby_idle_left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -415,7 +415,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_nn1o3")
 }],
 "loop": 1,
-"name": &"idle right",
+"name": &"parent_baby_idle_right",
 "speed": 5.0
 }, {
 "frames": [{
@@ -447,7 +447,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_i6pmw")
 }],
 "loop": 1,
-"name": &"look around",
+"name": &"parent_baby_look_around",
 "speed": 5.0
 }, {
 "frames": [{
@@ -464,7 +464,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_cei6m")
 }],
 "loop": 1,
-"name": &"walk left",
+"name": &"parent_baby_walk_left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -481,7 +481,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_n8ovg")
 }],
 "loop": 1,
-"name": &"walk right",
+"name": &"parent_baby_walk_right",
 "speed": 5.0
 }]
 
@@ -495,8 +495,8 @@ collision_mask = 2
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=918884091]
 position = Vector2(-0.6666667, 0)
 sprite_frames = SubResource("SpriteFrames_ql73s")
-animation = &"walk left"
-autoplay = "idle"
+animation = &"parent_baby_walk_right"
+autoplay = "parent_baby_idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=107387829]
 position = Vector2(-0.6666667, 10.666667)

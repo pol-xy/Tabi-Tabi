@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b0g1b0iqwnmf4"]
-[ext_resource type="Script" uid="uid://duip37prjywsk" path="res://scripts/Passengers/student.gd" id="passengerscript"]
 
 [ext_resource type="Texture2D" uid="uid://b0riaewv8pwhx" path="res://Assets/Sprites/Passengers/SeniorSprite.png" id="1_r02ga"]
+[ext_resource type="Script" uid="uid://duip37prjywsk" path="res://scripts/Passengers/student.gd" id="passengerscript"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vknky"]
 atlas = ExtResource("1_r02ga")
@@ -258,7 +258,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_wgtsj")
 }],
 "loop": 1,
-"name": &"blink",
+"name": &"senior_blink",
 "speed": 5.0
 }, {
 "frames": [{
@@ -269,7 +269,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_wl8co")
 }],
 "loop": 0,
-"name": &"drag left",
+"name": &"senior_drag_left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -280,7 +280,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_1imaw")
 }],
 "loop": 0,
-"name": &"drag right",
+"name": &"senior_drag_right",
 "speed": 5.0
 }, {
 "frames": [{
@@ -303,7 +303,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_yjq4g")
 }],
 "loop": 0,
-"name": &"drag up",
+"name": &"senior_drag_up",
 "speed": 5.0
 }, {
 "frames": [{
@@ -341,7 +341,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_igghm")
 }],
 "loop": 0,
-"name": &"drop back",
+"name": &"senior_drop_back",
 "speed": 5.0
 }, {
 "frames": [{
@@ -376,7 +376,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_xyg3k")
 }],
 "loop": 0,
-"name": &"drop front",
+"name": &"senior_drop_front",
 "speed": 5.0
 }, {
 "frames": [{
@@ -387,7 +387,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_depts")
 }],
 "loop": 1,
-"name": &"idle",
+"name": &"senior_idle",
 "speed": 5.0
 }, {
 "frames": [{
@@ -398,7 +398,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_3rkkp")
 }],
 "loop": 1,
-"name": &"idle left",
+"name": &"senior_idle_left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -409,7 +409,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_tlc3u")
 }],
 "loop": 1,
-"name": &"idle right",
+"name": &"senior_idle_right",
 "speed": 5.0
 }, {
 "frames": [{
@@ -441,7 +441,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_boeff")
 }],
 "loop": 1,
-"name": &"look around",
+"name": &"senior_look_around",
 "speed": 5.0
 }, {
 "frames": [{
@@ -458,7 +458,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_mlbfs")
 }],
 "loop": 1,
-"name": &"walk left",
+"name": &"senior_walk_left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -475,7 +475,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_bdqwi")
 }],
 "loop": 1,
-"name": &"walk right",
+"name": &"senior_walk_right",
 "speed": 5.0
 }]
 
@@ -483,14 +483,14 @@ animations = [{
 radius = 4.0
 
 [node name="Senior" type="Area2D" unique_id=528173886]
-script = ExtResource("passengerscript")
 scale = Vector2(3, 3)
 collision_mask = 2
+script = ExtResource("passengerscript")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=228793540]
 sprite_frames = SubResource("SpriteFrames_ql73s")
-animation = &"blink"
-autoplay = "idle"
+animation = &"senior_walk_right"
+autoplay = "senior_idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=12386092]
 position = Vector2(0, 8)
