@@ -107,7 +107,3 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_jadfe")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_j0jog")
 theme_override_styles/hover = SubResource("StyleBoxTexture_p8il8")
 script = ExtResource("1_ogane")
-
-[connection signal="pressed" from="TextureRect/GridContainer/Level1" to="TextureRect/GridContainer/Level1" method="_on_level_1_button_pressed"]
-[connection signal="pressed" from="TextureRect/GridContainer/Level2" to="TextureRect/GridContainer/Level1" method="_on_level_2_pressed"]
-[connection signal="pressed" from="TextureRect/GridContainer/Level3" to="TextureRect/GridContainer/Level1" method="_on_level_3_pressed"]
