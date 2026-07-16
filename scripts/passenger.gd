@@ -27,6 +27,9 @@ extends Resource
 @export var is_holdaper: bool = false  # Night holdaper passenger
 @export var is_graveyard_worker: bool = false # Graveyard shift worker
 @export var is_white_lady: bool = false # White lady passenger (fast anger drain)
+@export var is_balikbayan: bool = false # OFW returning home, priority seating at rear door
+@export var is_parent_baby: bool = false # Parent holding a baby, can't pass fare forward
+@export var is_drunk_man: bool = false # Noisy with a wider conflict radius (2 seats)
 
 # Trip info
 @export var destination_stop: int = 1  # Stop number when they alight
