@@ -56,11 +56,11 @@ func setup(passenger: Passenger) -> void:
 # can call this same mapping if they ever need trait ids too.
 func _derive_trait_ids(passenger: Passenger) -> Array[String]:
 	var trait_ids: Array[String] = []
-	if passenger.is_asleep:
+	if passenger.is_sleepy:
 		trait_ids.append("sleepy")
 	if passenger.is_introvert:
 		trait_ids.append("introvert")
-	if passenger.is_loud:
+	if passenger.is_noisy:
 		trait_ids.append("noisy")
 	if passenger.is_wet:
 		trait_ids.append("wet")

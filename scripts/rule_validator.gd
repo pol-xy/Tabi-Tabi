@@ -100,8 +100,8 @@ static func _check_palengke_conflict(grid: JeepneyGrid, report: Dictionary) -> v
 				if n.is_employee:
 					var reason_self = "Basa ako" if p.is_wet else "Pawisan ako"
 					var reason_neighbor = "Basa" if p.is_wet else "Pawisan at malagkit"
-					_mark_unhappy(report, p.id, "palengke", "%s, baka madumihan ko ang katabi kong office worker." % reason_self)
-					_mark_unhappy(report, n.id, "palengke", "%s yung katabi ko, madudumihan ang uniporme ko!" % reason_neighbor)
+					_mark_unhappy(report, p, "palengke", "%s, baka madumihan ko ang katabi kong office worker." % reason_self)
+					_mark_unhappy(report, n, "palengke", "%s yung katabi ko, madudumihan ang uniporme ko!" % reason_neighbor)
 
 # 4. Introvert Conflict (is_introvert next to is_loud)
 static func _check_introvert_conflict(grid: JeepneyGrid, report: Dictionary) -> void:
@@ -111,8 +111,8 @@ static func _check_introvert_conflict(grid: JeepneyGrid, report: Dictionary) -> 
 			var neighbors = grid.get_adjacent_neighbors(p)
 			for n in neighbors:
 				if n.is_noisy:
-					_mark_unhappy(report, p.id, "introvert_conflict", "Masyadong maingay ang katabi ko, gusto ko ng katahimikan.")
-					_mark_unhappy(report, n.id, "introvert_conflict", "Maingay ako, mukhang naiirita ang katabi ko.")
+					_mark_unhappy(report, p, "introvert_conflict", "Masyadong maingay ang katabi ko, gusto ko ng katahimikan.")
+					_mark_unhappy(report, n, "introvert_conflict", "Maingay ako, mukhang naiirita ang katabi ko.")
 
 # 5. Magkasama (Companion) Rule
 # Companions must be side-by-side or directly facing.
@@ -182,7 +182,7 @@ static func _check_uso_umuwi_rule(grid: JeepneyGrid, report: Dictionary) -> void
 			for c in range(min_col):
 				var blocker = grid.get_passenger_at(row, c)
 				if blocker != null and (blocker.seat_size_passenger > 1 or blocker.is_heavy_load):
-					_mark_unhappy(report, p.id, "uso_umuwi", "Mahihirapan akong bumaba dahil nakaharang ang bulky passenger sa exit.")
+					_mark_unhappy(report, p, "uso_umuwi", "Mahihirapan akong bumaba dahil nakaharang ang bulky passenger sa exit.")
 					break
 
 # 7. Holdaper and Graveyard Worker custom rules
@@ -195,11 +195,11 @@ static func _check_new_character_rules(grid: JeepneyGrid, report: Dictionary) ->
 			if not slots.is_empty():
 				var col = slots[slots.size() - 1].y
 				if col != grid.col_count - 1:
-					_mark_unhappy(report, p.id, "holdaper_panic", "Gusto ko sa tabi ng driver sasakay!")
+					_mark_unhappy(report, p, "holdaper_panic", "Gusto ko sa tabi ng driver sasakay!")
 					# Nearby passengers take a happiness hit
 					var neighbors = grid.get_adjacent_neighbors(p)
 					for n in neighbors:
-						_mark_unhappy(report, n.id, "holdaper_panic", "Mukhang holdaper itong katabi ko, natatakot ako!")
+						_mark_unhappy(report, n, "holdaper_panic", "Mukhang holdaper itong katabi ko, natatakot ako!")
 		
 		# Graveyard-Shift Worker: Sleepy-heavy, wants a quiet corner
 		if p.is_graveyard_worker:
@@ -209,13 +209,13 @@ static func _check_new_character_rules(grid: JeepneyGrid, report: Dictionary) ->
 				var max_col = slots[slots.size() - 1].y
 				var is_in_corner = (min_col == 0 or max_col == grid.col_count - 1)
 				if not is_in_corner:
-					_mark_unhappy(report, p.id, "graveyard_worker", "Gusto ko sana sa dulo/sulok para makapahinga.")
+					_mark_unhappy(report, p, "graveyard_worker", "Gusto ko sana sa dulo/sulok para makapahinga.")
 				
 				# Cannot be next to a noisy passenger
 				var neighbors = grid.get_adjacent_neighbors(p)
 				for n in neighbors:
 					if n.is_noisy:
-						_mark_unhappy(report, p.id, "graveyard_worker", "Masyadong maingay ang katabi ko, hindi ako makatulog.")
+						_mark_unhappy(report, p, "graveyard_worker", "Masyadong maingay ang katabi ko, hindi ako makatulog.")
 
 # Helper to mark passenger unhappy and record complaint
 static func _mark_unhappy(report: Dictionary, passenger: Passenger, rule_name: String, complaint: String) -> void:

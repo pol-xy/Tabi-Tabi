@@ -61,6 +61,18 @@ func remove_passenger(passenger: Passenger) -> void:
 func is_empty() -> bool:
 	return _cards.is_empty()
 
+## Removes a passenger's card from queue bookkeeping WITHOUT freeing the
+## node -- use this when the card has been reparented elsewhere (e.g. into
+## a seat by seat_1.gd) rather than actually dismissed/removed from play.
+## remove_passenger() above is for the latter case and frees the node.
+func detach_passenger(passenger: Passenger) -> void:
+	for i in _cards.size():
+		if _cards[i].passenger_data == passenger:
+			_cards.remove_at(i)
+			break
+	if _cards.size() > 0:
+		_set_active(0)
+
 func _set_active(index: int) -> void:
 	for i in _cards.size():
 		_cards[i].is_active = (i == index)

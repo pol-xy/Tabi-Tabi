@@ -11,8 +11,13 @@ config_version=5
 [application]
 
 config/name="Tabi-Tabi"
+run/main_scene="uid://cfdcadtgbc4a4"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GameManager="*uid://b1ws630o406kp"
 
 [display]
 
