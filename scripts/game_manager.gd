@@ -2,15 +2,14 @@ extends Node
 ## scripts/game_manager.gd
 ## AUTOLOAD (Singleton) — register as "GameManager" in Project Settings > Autoload.
 ##
-## v2: Time-based stages + star rating, replacing the old Daily Quota system.
-##   - Each stage has a fixed time_limit_sec instead of a quota_target.
-##   - A stage ends when everyone is happily seated (cleared early) OR when
-##     time runs out.
-##   - Star rating (0-3):
-##       Cleared early  -> based on how much time was used (speed).
-##       Time ran out    -> based on the fraction of the roster seated & happy.
-##     Either way, each anger-meter-depletion penalty (trigger_penalty)
-##     subtracts one star from the result, clamped at 0.
+## v3: Level/Stage structure, replacing the old flat stage list.
+##   - The campaign is now 3 Levels x 3 Stages each (levels[i].stages[j]).
+##   - Each Level also carries its own grid size (rows/cols), since the
+##     jeepney design calls for 8-seater levels (2x4) and a 10-seater
+##     level (2x5). JeepneyGrid.set_dimensions() is called whenever a new
+##     level is entered so the grid (and the seat nodes wired to it) match.
+##   - Everything from v2 (timer-based stages, star rating, anger-meter
+##     penalties) is unchanged in behavior -- just nested one level deeper.
 ##
 ## Integration points:
 ##   - main_jeepney.gd calls register_hud(), register_grid(),
@@ -21,6 +20,14 @@ extends Node
 ##     Holdaper boarding-window timer) calls trigger_penalty(passenger) --
 ##     that's the single entry point for the "anger meter hit zero" case.
 ##
+## GRID RESIZING NOTE (Dev 2/3): _apply_grid_dimensions() hides any seat
+## node whose grid_row/grid_col falls outside the active level's size (e.g.
+## column 4 on an 8-seater level's 2x4 grid). It relies on seat_1.gd's
+## exported grid_row/grid_col vars already being readable off the node --
+## no seat_1.gd changes needed. Hidden seats also can't accept drops in
+## practice, since JeepneyGrid.can_place_passenger() bounds-checks against
+## the grid's *current* row_count/col_count anyway.
+##
 ## NOTE ON HUD COMPATIBILITY: hud.gd may have changed since this script was
 ## written (your team's feat/UI branch). Calls to brand-new HUD methods
 ## (update_timer, show_stage_result) are guarded with has_method() so this
@@ -30,16 +37,18 @@ extends Node
 ## are assumed to still exist, since those predate this change.
 
 signal campaign_complete
-signal campaign_failed(stage_index: int)
-signal stage_result(stage_index: int, stars: int, cleared_early: bool)
+signal campaign_failed(level_index: int, stage_index: int)
+signal level_started(level_index: int)
+signal stage_result(level_index: int, stage_index: int, stars: int, cleared_early: bool)
 
 const STAGE_CLEAR_PAUSE_SEC := 1.5
 
+var current_level_index: int = -1
 var current_stage_index: int = -1
 var current_grid: JeepneyGrid = null
 var hud: Node = null
 
-var stages: Array = []
+var levels: Array = []
 var _current_roster_size: int = 0
 var _stage_finishing: bool = false
 var _seat_nodes: Array = []
@@ -53,21 +62,72 @@ var _timer_active: bool = false
 var _penalty_count: int = 0
 
 func _ready() -> void:
-	stages = [
+	levels = [
 		{
-			"title": "Stage 1 — Morning Rush I",
-			"time_limit_sec": 120.0,
-			"passengers": _build_stage_1_roster(),
+			"title": "Level 1 — Ang Unang Byahe",
+			"rows": 2,
+			"cols": 4,
+			"stages": [
+				{
+					"title": "Puzzle 1.1 — Priority & Tagabot",
+					"time_limit_sec": 90.0,
+					"passengers": _build_l1_s1_roster(),
+				},
+				{
+					"title": "Puzzle 1.2 — Heavy Loads & Rushers",
+					"time_limit_sec": 110.0,
+					"passengers": _build_l1_s2_roster(),
+				},
+				{
+					"title": "Puzzle 1.3 — Night Shift & Personal Space",
+					"time_limit_sec": 110.0,
+					"passengers": _build_l1_s3_roster(),
+				},
+			],
 		},
 		{
-			"title": "Stage 2 — Morning Rush II",
-			"time_limit_sec": 150.0,
-			"passengers": _build_stage_2_roster(),
+			"title": "Level 2 — The Scent and Sound",
+			"rows": 2,
+			"cols": 5,
+			"stages": [
+				{
+					"title": "Puzzle 2.1 — Morning Rush 1",
+					"time_limit_sec": 130.0,
+					"passengers": _build_l2_s1_roster(),
+				},
+				{
+					"title": "Puzzle 2.2 — Morning Rush 2",
+					"time_limit_sec": 140.0,
+					"passengers": _build_l2_s2_roster(),
+				},
+				{
+					"title": "Puzzle 2.3 — Night Shift 2",
+					"time_limit_sec": 140.0,
+					"passengers": _build_l2_s3_roster(),
+				},
+			],
 		},
 		{
-			"title": "Stage 3 — Night Shift",
-			"time_limit_sec": 150.0,
-			"passengers": _build_stage_3_roster(),
+			"title": "Level 3 — Full House Logic",
+			"rows": 2,
+			"cols": 4,
+			"stages": [
+				{
+					"title": "Puzzle 3.1 — Morning Rush 1 (Full Capacity)",
+					"time_limit_sec": 150.0,
+					"passengers": _build_l3_s1_roster(),
+				},
+				{
+					"title": "Puzzle 3.2 — Morning Rush 2 (Full Capacity)",
+					"time_limit_sec": 150.0,
+					"passengers": _build_l3_s2_roster(),
+				},
+				{
+					"title": "Puzzle 3.3 — Night Shift 3 (Full Capacity)",
+					"time_limit_sec": 160.0,
+					"passengers": _build_l3_s3_roster(),
+				},
+			],
 		},
 	]
 
@@ -103,6 +163,7 @@ func register_seat_nodes(seats: Array) -> void:
 	_seat_nodes = seats
 
 func start_campaign() -> void:
+	current_level_index = -1
 	current_stage_index = -1
 	_advance_stage()
 
@@ -142,16 +203,47 @@ func trigger_penalty(passenger: Passenger) -> void:
 	if current_grid and passenger != null:
 		current_grid.remove_passenger(passenger)
 
-# --- Stage flow ---------------------------------------------------------
+# --- Stage / Level flow ---------------------------------------------------
 
+## Advances to the next stage within the current level. If the current
+## level has no more stages (or we haven't entered a level yet, i.e. right
+## after start_campaign()), rolls over into the next level instead.
 func _advance_stage() -> void:
 	current_stage_index += 1
-	if current_stage_index >= stages.size():
+
+	var level: Dictionary = _get_level(current_level_index)
+	if level.is_empty() or current_stage_index >= level["stages"].size():
+		_advance_level()
+		return
+
+	_start_current_stage()
+
+## Moves to the next level, resets the stage counter, and ends the
+## campaign once levels run out. Emits level_started so HUD/StageBanner
+## can show a level transition if it wants to (optional -- start_stage()'s
+## title already includes the level name, so wiring this up is not
+## required for the game to function).
+func _advance_level() -> void:
+	current_level_index += 1
+	current_stage_index = 0
+
+	if current_level_index >= levels.size():
 		_timer_active = false
 		emit_signal("campaign_complete")
 		return
 
-	var stage: Dictionary = stages[current_stage_index]
+	emit_signal("level_started", current_level_index)
+	_start_current_stage()
+
+func _get_level(index: int) -> Dictionary:
+	if index < 0 or index >= levels.size():
+		return {}
+	return levels[index]
+
+func _start_current_stage() -> void:
+	var level: Dictionary = levels[current_level_index]
+	var stage: Dictionary = level["stages"][current_stage_index]
+
 	_current_roster_size = stage["passengers"].size()
 	_stage_finishing = false
 	_penalty_count = 0
@@ -159,13 +251,28 @@ func _advance_stage() -> void:
 	_time_remaining = _time_limit
 	_timer_active = true
 
-	if current_grid:
-		current_grid.clear_grid()
+	_apply_grid_dimensions(level["rows"], level["cols"])
 	_clear_seat_visuals()
 
+	var display_title := "%s — %s" % [level["title"], stage["title"]]
 	if hud:
-		hud.start_stage(stage["title"], stage["passengers"], stage["time_limit_sec"])
+		hud.start_stage(display_title, stage["passengers"], stage["time_limit_sec"])
 	_notify_timer_update()
+
+## Resizes the logical grid for the incoming level and shows/hides seat
+## nodes to match (e.g. an 8-seater level hides the 5th column's seats on
+## the 10-seat scene). Seats outside the active dimensions are also
+## implicitly un-droppable, since can_place_passenger() bounds-checks
+## against the grid's current row_count/col_count.
+func _apply_grid_dimensions(rows: int, cols: int) -> void:
+	if current_grid:
+		current_grid.set_dimensions(rows, cols)
+
+	for seat in _seat_nodes:
+		if seat == null:
+			continue
+		var seat_active: bool = seat.grid_row < rows and seat.grid_col < cols
+		seat.visible = seat_active
 
 ## Frees any passenger cards still visually parented under a seat from the
 ## previous stage (they were reparented there by seat_1.gd on drop).
@@ -225,7 +332,7 @@ func _end_stage_by_timeout() -> void:
 	_advance_stage()
 
 func _on_stage_failed() -> void:
-	emit_signal("campaign_failed", current_stage_index)
+	emit_signal("campaign_failed", current_level_index, current_stage_index)
 
 # --- Star rating helpers -------------------------------------------------
 
@@ -257,7 +364,7 @@ func _star_string(stars: int) -> String:
 	return "★".repeat(stars) + "☆".repeat(3 - stars)
 
 func _report_stage_result(stars: int, cleared_early: bool) -> void:
-	emit_signal("stage_result", current_stage_index, stars, cleared_early)
+	emit_signal("stage_result", current_level_index, current_stage_index, stars, cleared_early)
 	if hud and hud.has_method("show_stage_result"):
 		hud.show_stage_result(stars, cleared_early)
 
@@ -271,7 +378,10 @@ func _notify(text: String, type: String = "info") -> void:
 	if hud and "notification_area" in hud and hud.notification_area != null:
 		hud.notification_area.push(text, type)
 
-# --- Roster builders (unchanged from before) ------------------------------
+# --- Roster builders -------------------------------------------------------
+# id scheme: l{level}_s{stage}_{descriptor}. Companions link via
+# companion_id (Lovey Dovey pairs are TWO Passenger resources/sprites, not
+# one bulky seat_size=2 passenger -- confirmed with design).
 
 func _make(id: String, name: String, overrides: Dictionary) -> Passenger:
 	var p := Passenger.new()
@@ -282,44 +392,159 @@ func _make(id: String, name: String, overrides: Dictionary) -> Passenger:
 			p.set(key, overrides[key])
 	return p
 
-func _build_stage_1_roster() -> Array[Passenger]:
+func _make_regular(id: String, monologue: String) -> Passenger:
+	return _make(id, "Regular Commuter", {"monologue_text": monologue})
+
+# --- Level 1: Ang Unang Byahe (8-seater, 2x4) -------------------------------
+
+func _build_l1_s1_roster() -> Array[Passenger]:
 	var list: Array[Passenger] = []
-	list.append(_make("s1_jb_suarez", "JB Suarez", {"is_noisy": true,
-		"monologue_text": "Sigaw nang sigaw kapag may kamote"}))
-	list.append(_make("s1_market_goer", "Market Goer", {"is_heavy_load": true,
-		"monologue_text": "Maraming bitbit galing palengke"}))
-	list.append(_make("s1_student", "Student", {"is_student": true, "is_introvert": true,
+	list.append(_make("l1_s1_senior", "Senior", {"is_senior": true,
+		"monologue_text": "May discount na sa Jollibee"}))
+	list.append(_make("l1_s1_student", "Student", {"is_student": true, "is_introvert": true,
 		"monologue_text": "Shy type"}))
-	list.append(_make("s1_regular_sweaty", "Regular Commuter", {"is_sweaty": true,
-		"monologue_text": "Asim kilig"}))
-	list.append(_make("s1_regular_normal", "Regular Commuter", {"monologue_text": "Papunta sa paroroonan"}))
+	list.append(_make_regular("l1_s1_regular_1", "Papunta sa paroroonan."))
+	list.append(_make_regular("l1_s1_regular_2", "Papunta sa paroroonan."))
+	list.append(_make_regular("l1_s1_regular_3", "Papunta sa paroroonan."))
 	return list
 
-func _build_stage_2_roster() -> Array[Passenger]:
-	var list: Array[Passenger] = _build_stage_1_roster()
-	list.append(_make("s2_balikbayan", "Balikbayan", {"is_heavy_load": true, "seat_size_passenger": 2, "destination_stop": 1,
-		"monologue_text": "Sobrang dami kong dala, kaka-alis ko lang sa airport."}))
-	var lover_a := _make("s2_lover_a", "Lovey Dovey A", {"is_companion": true, "companion_id": "s2_lover_b",
-		"monologue_text": "Sana magkatabi kami ng jowa ko, promise ko tahimik lang."})
-	var lover_b := _make("s2_lover_b", "Lovey Dovey B", {"is_companion": true, "companion_id": "s2_lover_a",
-		"monologue_text": "Kasama ko siya, dapat magkatabi o magkaharap kami."})
+func _build_l1_s2_roster() -> Array[Passenger]:
+	var list: Array[Passenger] = []
+	list.append(_make("l1_s2_pregnant", "Pregnant", {"is_pregnant": true,
+		"monologue_text": "May gender reveal party mamaya."}))
+	list.append(_make("l1_s2_balikbayan", "Balikbayan", {"is_balikbayan": true, "is_heavy_load": true,
+		"monologue_text": "May dalang dalawang maleta."}))
+	list.append(_make("l1_s2_near_stop", "Regular Commuter", {"alights_soon": true,
+		"monologue_text": "Sa malapit lang."}))
+	list.append(_make("l1_s2_jb_suarez", "JB Suarez", {"is_noisy": true,
+		"monologue_text": "Nasigaw kapag may kamote."}))
+	list.append(_make_regular("l1_s2_regular_1", "Papunta sa paroroonan."))
+	list.append(_make_regular("l1_s2_regular_2", "Papunta sa paroroonan."))
+	return list
+
+func _build_l1_s3_roster() -> Array[Passenger]:
+	var list: Array[Passenger] = []
+	list.append(_make("l1_s3_holdaper", "Suspicious Passenger", {"is_holdaper": true,
+		"monologue_text": "Suspicious."}))
+	list.append(_make("l1_s3_employee", "Employee", {"is_employee": true,
+		"monologue_text": "Maayos at plantsado ang uniform."}))
+	list.append(_make("l1_s3_sweaty", "Regular Commuter", {"is_sweaty": true,
+		"monologue_text": "Basang-basa ng pawis."}))
+	list.append(_make_regular("l1_s3_regular_1", "Papunta sa paroroonan."))
+	list.append(_make_regular("l1_s3_regular_2", "Papunta sa paroroonan."))
+	return list
+
+# --- Level 2: The Scent and Sound (10-seater, 2x5) --------------------------
+
+func _build_l2_s1_roster() -> Array[Passenger]:
+	var list: Array[Passenger] = []
+	list.append(_make("l2_s1_graveyard", "Graveyard-Shift Worker", {"is_graveyard_worker": true, "is_sleepy": true,
+		"monologue_text": "Antok na."}))
+	list.append(_make("l2_s1_jb_suarez", "JB Suarez", {"is_noisy": true,
+		"monologue_text": "Nasigaw sa kamote."}))
+	var lover_a := _make("l2_s1_lover_a", "Lovey Dovey A", {"is_companion": true, "companion_id": "l2_s1_lover_b",
+		"monologue_text": "."})
+	var lover_b := _make("l2_s1_lover_b", "Lovey Dovey B", {"is_companion": true, "companion_id": "l2_s1_lover_a",
+		"monologue_text": "."})
 	list.append(lover_a)
 	list.append(lover_b)
+	list.append(_make("l2_s1_student", "Student", {"is_student": true,
+		"monologue_text": "Fresh na fresh, bagong ligo."}))
+	list.append(_make("l2_s1_sweaty", "Regular Commuter", {"is_sweaty": true,
+		"monologue_text": "Kakatakbo lang papuntang sakayan."}))
+	list.append(_make("l2_s1_near_stop", "Regular Commuter", {"alights_soon": true,
+		"monologue_text": "Malapit lang."}))
 	return list
 
-func _build_stage_3_roster() -> Array[Passenger]:
+func _build_l2_s2_roster() -> Array[Passenger]:
 	var list: Array[Passenger] = []
-	# is_white_lady must be true here, not just a low anger_meter_max --
-	# PassengerCard's anger-meter check treats her as innately impatient
-	# via this flag, regardless of is_impatient.
-	list.append(_make("s3_white_lady", "White Lady", {"is_white_lady": true, "anger_meter_max": 25.0,
-		"monologue_text": "...sandali lang sasakay ako."}))
-	# Holdaper's boarding-window pressure reuses the same opt-in anger meter
-	# (is_impatient) rather than a separate timer system -- a short
-	# anger_meter_max IS his "must reach the front seat in time" window.
-	list.append(_make("s3_holdaper", "Suspicious Passenger", {"is_holdaper": true, "is_impatient": true, "anger_meter_max": 20.0,
-		"monologue_text": "Sa harap na lang ako, malapit sa driver."}))
-	list.append(_make("s3_drunk", "Drunk Man", {"is_noisy": true, "is_drunk_man": true,
-		"monologue_text": "Woohoo! Kanta tayo pare!"}))
-	list.append(_make("s3_regular", "Regular Commuter", {}))
+	list.append(_make("l2_s2_senior", "Senior", {"is_senior": true,
+		"monologue_text": "May apo na sa tuhod."}))
+	list.append(_make("l2_s2_balikbayan", "Balikbayan", {"is_balikbayan": true, "is_heavy_load": true,
+		"monologue_text": "Maraming dalang pasalubong."}))
+	list.append(_make("l2_s2_parent_baby", "Parent + Baby", {"is_parent_baby": true,
+		"monologue_text": "Dakilang ina."}))
+	list.append(_make("l2_s2_employee", "Employee", {"is_employee": true,
+		"monologue_text": "Amoy sauvage elixir."}))
+	list.append(_make("l2_s2_wet", "Regular Commuter", {"is_wet": true,
+		"monologue_text": "Nabasa sa ulan kanina."}))
+	list.append(_make("l2_s2_sweaty", "Regular Commuter", {"is_sweaty": true,
+		"monologue_text": "Asim kilig."}))
+	list.append(_make_regular("l2_s2_regular_1", "Papunta sa paroroonan."))
+	list.append(_make_regular("l2_s2_regular_2", "Papunta sa paroroonan."))
+	return list
+
+func _build_l2_s3_roster() -> Array[Passenger]:
+	var list: Array[Passenger] = []
+	list.append(_make("l2_s3_drunk", "Drunk Man", {"is_drunk_man": true, "is_noisy": true,
+		"monologue_text": "Tinamaain ng CLVB."}))
+	list.append(_make("l2_s3_holdaper", "Suspicious Passenger", {"is_holdaper": true,
+		"monologue_text": "Suspicious"}))
+	list.append(_make("l2_s3_student", "Student", {"is_student": true,
+		"monologue_text": "Kaka retouch lang."}))
+	list.append(_make("l2_s3_wet", "Regular Commuter", {"is_wet": true,
+		"monologue_text": "Nabasa ng ulan kanina."}))
+	list.append(_make("l2_s3_parent_baby", "Parent + Baby", {"is_parent_baby": true,
+		"monologue_text": "Dakilang ina."}))
+	list.append(_make_regular("l2_s3_regular_1", "Papunta sa paroroonan."))
+	list.append(_make_regular("l2_s3_regular_2", "Papunta sa paroroonan."))
+	return list
+
+# --- Level 3: Full House Logic (8-seater, 2x4, full capacity) ---------------
+
+func _build_l3_s1_roster() -> Array[Passenger]:
+	var list: Array[Passenger] = []
+	list.append(_make("l3_s1_pwd", "PWD", {"is_pwd": true,
+		"monologue_text": "May saklay."}))
+	list.append(_make("l3_s1_market_goer", "Market Goer", {"is_heavy_load": true, "is_wet": true,
+		"monologue_text": "May dalang timba ng isda."}))
+	var lover_a := _make("l3_s1_lover_a", "Lovey Dovey A", {"is_companion": true, "companion_id": "l3_s1_lover_b",
+		"monologue_text": "HHWW (Holding Hands While Waiting)."})
+	var lover_b := _make("l3_s1_lover_b", "Lovey Dovey B", {"is_companion": true, "companion_id": "l3_s1_lover_a",
+		"monologue_text": "HHWW (Holding Hands While Waiting)."})
+	list.append(lover_a)
+	list.append(lover_b)
+	list.append(_make("l3_s1_employee", "Employee", {"is_employee": true,
+		"monologue_text": "Bagong ligo."}))
+	list.append(_make("l3_s1_sweaty", "Regular Commuter", {"is_sweaty": true,
+		"monologue_text": "Amoy araw."}))
+	list.append(_make_regular("l3_s1_regular_1", "Papunta sa paroroonan."))
+	list.append(_make_regular("l3_s1_regular_2", "Papunta sa paroroonan."))
+	return list
+
+func _build_l3_s2_roster() -> Array[Passenger]:
+	var list: Array[Passenger] = []
+	list.append(_make("l3_s2_pregnant", "Pregnant", {"is_pregnant": true,
+		"monologue_text": "7 months na siya (hindi lang halata)."}))
+	list.append(_make("l3_s2_balikbayan", "Balikbayan", {"is_balikbayan": true, "is_heavy_load": true,
+		"monologue_text": "May malaking bagahe."}))
+	list.append(_make("l3_s2_student", "Student", {"is_student": true,
+		"monologue_text": "Amoy bench atlantis."}))
+	list.append(_make("l3_s2_jb_suarez", "JB Suarez", {"is_noisy": true,
+		"monologue_text": "MAIIPIT KA NGA NI!"}))
+	list.append(_make("l3_s2_graveyard", "Graveyard-Shift Worker", {"is_graveyard_worker": true, "is_sleepy": true,
+		"monologue_text": "Wala pang tulog."}))
+	list.append(_make("l3_s2_wet", "Regular Commuter", {"is_wet": true,
+		"monologue_text": "Nabasa sa ulan kanina."}))
+	list.append(_make_regular("l3_s2_regular_1", "Papunta sa paroroonan."))
+	list.append(_make_regular("l3_s2_regular_2", "Papunta sa paroroonan."))
+	return list
+
+func _build_l3_s3_roster() -> Array[Passenger]:
+	var list: Array[Passenger] = []
+	list.append(_make("l3_s3_senior", "Senior", {"is_senior": true,
+		"monologue_text": "Buhay na siya noong martial law."}))
+	list.append(_make("l3_s3_drunk", "Drunk Man", {"is_drunk_man": true, "is_noisy": true,
+		"monologue_text": "Magmamaoy ata."}))
+	list.append(_make("l3_s3_parent_baby", "Parent + Baby", {"is_parent_baby": true,
+		"monologue_text": "Karga ang baby."}))
+	list.append(_make("l3_s3_employee", "Employee", {"is_employee": true,
+		"monologue_text": "Umiiwas sa dugyot."}))
+	list.append(_make("l3_s3_introvert", "Regular Commuter", {"is_introvert": true,
+		"monologue_text": "Yes, ang sagot sa dine-in or takeout?"}))
+	list.append(_make("l3_s3_sweaty", "Regular Commuter", {"is_sweaty": true,
+		"monologue_text": "Pawis na pawis"}))
+	list.append(_make_regular("l3_s3_regular_1", "Papunta sa paroroonan "))
+	list.append(_make("l3_s3_holdaper", "Suspicious Passenger", {"is_holdaper": true,
+		"monologue_text": "Masama ang tingin sa mga kwintas."}))
 	return list
