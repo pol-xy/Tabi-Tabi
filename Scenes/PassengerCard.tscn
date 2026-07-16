@@ -3805,6 +3805,7 @@ animations = [{
 }]
 
 [node name="PassengerCard" type="Button" unique_id=859227506]
+show_behind_parent = true
 light_mask = 524289
 custom_minimum_size = Vector2(76, 100)
 script = ExtResource("1")
