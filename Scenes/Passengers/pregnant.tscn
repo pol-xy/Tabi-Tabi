@@ -496,14 +496,14 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_ql73s"]
 radius = 5.0
 
-[node name="Muslim" type="Area2D" unique_id=61228998]
+[node name="Pregnant" type="Area2D" unique_id=61228998]
 scale = Vector2(3, 3)
 collision_mask = 2
 script = ExtResource("passengerscript")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=331371323]
 sprite_frames = SubResource("SpriteFrames_ql73s")
-animation = &"pregnant_walk_right"
+animation = &"pregnant_drag_left"
 autoplay = "pregnant_idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=806797056]
