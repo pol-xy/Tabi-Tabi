@@ -10,9 +10,6 @@
 [ext_resource type="Texture2D" uid="uid://b0riaewv8pwhx" path="res://Assets/Sprites/Passengers/SeniorSprite.png" id="8_6r64r"]
 [ext_resource type="Texture2D" uid="uid://drjoym45eav5a" path="res://Assets/Sprites/Passengers/StudentSpriteSheet.png" id="9_wndjf"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_253nu"]
-bg_color = Color(0.718158, 0.13406807, 0.16895801, 1)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_h5tmw"]
 atlas = ExtResource("2_0v50u")
 region = Rect2(0, 68, 18, 34)
@@ -3808,12 +3805,12 @@ animations = [{
 }]
 
 [node name="PassengerCard" type="Button" unique_id=859227506]
-visible = false
 light_mask = 524289
 custom_minimum_size = Vector2(76, 100)
-theme_override_styles/normal = SubResource("StyleBoxFlat_253nu")
 script = ExtResource("1")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=460197023]
+scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_bpcfa")
 animation = &"senior_idle"
+offset = Vector2(7.605, 0)

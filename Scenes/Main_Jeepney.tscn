@@ -56,6 +56,7 @@ mouse_filter = 2
 script = ExtResource("7_jeepext")
 
 [node name="GridContainer" type="GridContainer" parent="Jeepney_BG" unique_id=1146529060]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5

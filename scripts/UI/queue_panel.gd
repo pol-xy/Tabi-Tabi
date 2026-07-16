@@ -24,10 +24,19 @@ func populate(passengers: Array[Passenger]) -> void:
 	clear()
 	for passenger in passengers:
 		var card = passenger_card_scene.instantiate()
-		card_row.add_child(card)
-		card.setup(passenger)
+		
+		# 1. Inject the data FIRST
+		card.passenger_data = passenger
+		
+		# 2. Connect your signals
 		card.card_selected.connect(_on_card_selected)
+		
+		# 3. Add it to the tree LAST. 
+		# This safely triggers _ready() in passenger_card.gd AFTER the data is injected.
+		card_row.add_child(card)
+		
 		_cards.append(card)
+		
 	if _cards.size() > 0:
 		_set_active(0)
 
