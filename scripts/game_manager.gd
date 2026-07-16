@@ -47,6 +47,7 @@ var current_level_index: int = -1
 var current_stage_index: int = -1
 var current_grid: JeepneyGrid = null
 var hud: Node = null
+var background: Node = null
 
 var levels: Array = []
 var _current_roster_size: int = 0
@@ -82,6 +83,7 @@ func _ready() -> void:
 					"title": "Puzzle 1.3 — Night Shift & Personal Space",
 					"time_limit_sec": 110.0,
 					"passengers": _build_l1_s3_roster(),
+					"is_night": true,
 				},
 			],
 		},
@@ -104,6 +106,7 @@ func _ready() -> void:
 					"title": "Puzzle 2.3 — Night Shift 2",
 					"time_limit_sec": 140.0,
 					"passengers": _build_l2_s3_roster(),
+					"is_night": true,
 				},
 			],
 		},
@@ -126,6 +129,7 @@ func _ready() -> void:
 					"title": "Puzzle 3.3 — Night Shift 3 (Full Capacity)",
 					"time_limit_sec": 160.0,
 					"passengers": _build_l3_s3_roster(),
+					"is_night": true,
 				},
 			],
 		},
@@ -155,6 +159,12 @@ func register_hud(hud_node: Node) -> void:
 
 func register_grid(grid_node: JeepneyGrid) -> void:
 	current_grid = grid_node
+
+## Background node running bg_animator.gd (BGAnimator). Optional -- if a
+## scene doesn't have one wired up, _apply_background_state() below just
+## no-ops via has_method(), same defensive pattern as the HUD calls.
+func register_background(background_node: Node) -> void:
+	background = background_node
 
 ## Needed so a fresh stage can wipe leftover passenger cards left sitting
 ## in seats from the previous stage -- clear_grid() only resets the
@@ -253,6 +263,7 @@ func _start_current_stage() -> void:
 
 	_apply_grid_dimensions(level["rows"], level["cols"])
 	_clear_seat_visuals()
+	_apply_background_state(stage)
 
 	var display_title := "%s — %s" % [level["title"], stage["title"]]
 	if hud:
@@ -273,6 +284,15 @@ func _apply_grid_dimensions(rows: int, cols: int) -> void:
 			continue
 		var seat_active: bool = seat.grid_row < rows and seat.grid_col < cols
 		seat.visible = seat_active
+
+## Tells the registered background (if any) whether the incoming stage is a
+## "Night Shift" stage. BGAnimator.set_night(true) plays the one-shot day->
+## night transition and settles into the night loop; set_night(false) snaps
+## straight back to the day loop. Calling it repeatedly with the same value
+## is a safe no-op (see BGAnimator.set_night), so this can run every stage.
+func _apply_background_state(stage: Dictionary) -> void:
+	if background and background.has_method("set_night"):
+		background.set_night(stage.get("is_night", false))
 
 ## Frees any passenger cards still visually parented under a seat from the
 ## previous stage (they were reparented there by seat_1.gd on drop).

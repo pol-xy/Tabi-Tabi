@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://bpprlwb8yn4t" path="res://scripts/jeepney_grid.gd" id="3_urg85"]
 [ext_resource type="Script" uid="uid://yltepmu8n5h8" path="res://scripts/main_jeepney.gd" id="5_gm001"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/HUD.tscn" id="5_svhdg"]
+[ext_resource type="Script" path="res://scripts/UI/bg_animator.gd" id="6_bganim"]
 
 [node name="Main_Jeepney" type="Control" unique_id=1653784688]
 layout_mode = 3
@@ -21,18 +22,26 @@ script = ExtResource("5_gm001")
 
 [node name="Jeepney_BG" type="ColorRect" parent="." unique_id=1747000609]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -224.5
-offset_top = -141.75
-offset_right = 288.0
-offset_bottom = 142.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.14117648, 0.14117648, 0.14117648, 1)
+
+[node name="BG_Sprite" type="TextureRect" parent="Jeepney_BG" unique_id=3891004417]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("6_bganim")
 
 [node name="GridContainer" type="GridContainer" parent="Jeepney_BG" unique_id=1146529060]
 layout_mode = 1
