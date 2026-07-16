@@ -136,8 +136,6 @@ animations = [{
 "speed": 2.0
 }]
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_v0s4m"]
-
 [node name="Backgrounds" type="Node2D" unique_id=1005624122]
 position = Vector2(-2, -2)
 
@@ -149,7 +147,4 @@ scale = Vector2(5.4, 5.4)
 sprite_frames = SubResource("SpriteFrames_ql73s")
 animation = &"Day-Noon-Evening"
 autoplay = "Day-Noon-Evening"
-frame_progress = 0.5131084
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1788296570]
-sprite_frames = SubResource("SpriteFrames_v0s4m")
+frame_progress = 0.3364584
