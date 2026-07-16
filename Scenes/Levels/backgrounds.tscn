@@ -1,0 +1,155 @@
+[gd_scene format=3 uid="uid://dvlnoeq4s8v1y"]
+
+[ext_resource type="Texture2D" uid="uid://b58ulr00x5bkq" path="res://Assets/Sprites/Backgrounds/BG_.png" id="1_04k4u"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xiobx"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(0, 0, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4sv34"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(213, 0, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bxhpb"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(426, 0, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n8fda"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(639, 0, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xrwue"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(852, 0, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gyx50"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(1065, 0, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0p6f6"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(0, 120, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vfvi1"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(213, 120, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j0rq2"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(426, 120, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ne84p"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(639, 120, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_attae"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(852, 120, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3kbnu"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(1065, 120, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6assh"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(0, 240, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mphxi"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(213, 240, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6xv1v"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(426, 240, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_53l71"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(639, 240, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b84f3"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(852, 240, 213, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iapdc"]
+atlas = ExtResource("1_04k4u")
+region = Rect2(1065, 240, 213, 120)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ql73s"]
+animations = [{
+"frames": [{
+"duration": 5.0,
+"texture": SubResource("AtlasTexture_xiobx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4sv34")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bxhpb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n8fda")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xrwue")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gyx50")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0p6f6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vfvi1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j0rq2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ne84p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_attae")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3kbnu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6assh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mphxi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6xv1v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_53l71")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b84f3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iapdc")
+}],
+"loop": 2,
+"name": &"Day-Noon-Evening",
+"speed": 2.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_v0s4m"]
+
+[node name="Backgrounds" type="Node2D" unique_id=1005624122]
+position = Vector2(-2, -2)
+
+[node name="Bg" type="AnimatedSprite2D" parent="." unique_id=127350527]
+light_mask = 4
+visibility_layer = 6
+position = Vector2(579, 323.00003)
+scale = Vector2(5.4, 5.4)
+sprite_frames = SubResource("SpriteFrames_ql73s")
+animation = &"Day-Noon-Evening"
+autoplay = "Day-Noon-Evening"
+frame_progress = 0.5131084
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1788296570]
+sprite_frames = SubResource("SpriteFrames_v0s4m")

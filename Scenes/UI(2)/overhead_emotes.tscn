@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://dio8oaiaylstx"]
+
+[ext_resource type="Texture2D" uid="uid://c83l16a70j7wc" path="res://Assets/Sprites/UI/Overhead Emotes.png" id="1_a7rwh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g4une"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(0, 0, 45, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mauhn"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(45, 0, 45, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sboti"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(90, 0, 45, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6frsf"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(135, 0, 45, 12)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ql73s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g4une")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mauhn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sboti")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6frsf")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="OverheadEmotes" type="Node2D" unique_id=1375323772]
+position = Vector2(0, -1)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1080459171]
+sprite_frames = SubResource("SpriteFrames_ql73s")
+frame_progress = 0.062532544

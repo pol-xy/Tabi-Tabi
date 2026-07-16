@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://c3e67ep8ny7r4"]
+
+[ext_resource type="Texture2D" uid="uid://cuc48wme4ctdf" path="res://Assets/Sprites/UI/Pause Button.png" id="1_2ct4k"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rasgv"]
+atlas = ExtResource("1_2ct4k")
+region = Rect2(0, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4127l"]
+atlas = ExtResource("1_2ct4k")
+region = Rect2(18, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1hva3"]
+atlas = ExtResource("1_2ct4k")
+region = Rect2(36, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8cxq7"]
+atlas = ExtResource("1_2ct4k")
+region = Rect2(54, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5f26q"]
+atlas = ExtResource("1_2ct4k")
+region = Rect2(72, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2e7q6"]
+atlas = ExtResource("1_2ct4k")
+region = Rect2(90, 0, 18, 22)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ql73s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rasgv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4127l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1hva3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8cxq7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5f26q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2e7q6")
+}],
+"loop": 0,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Pause-PlayButton" type="Node2D" unique_id=1226029112]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=395841806]
+sprite_frames = SubResource("SpriteFrames_ql73s")
