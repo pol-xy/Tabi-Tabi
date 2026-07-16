@@ -4,15 +4,6 @@ extends ColorRect
 @export var grid_col: int 
 @onready var jeepney_grid = get_tree().root.get_node("Main_Jeepney/JeepneyGridManager")
 
-func _ready():
-	# Hides the flat placeholder rectangle without touching Clip Children --
-	# clipping uses this node's own render (including alpha) as a stencil
-	# mask for any reparented children (like a seated passenger), which is
-	# what was fading them out. A fully transparent fill keeps this node
-	# clickable/droppable while drawing nothing itself, and doesn't affect
-	# children's opacity at all.
-	color = Color(1, 1, 1, 0)
-
 # Check if the object hovering over this seat is a valid passenger
 func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
 	if typeof(data) == TYPE_DICTIONARY and data.has("logic_data"):
@@ -46,7 +37,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	# Now that this seat is its parent, a local (not global) offset centers it.
 	passenger_node.position = (self.size - passenger_node.size) / 2.0
 
-	passenger_node.play_seated_animation(grid_row)
+	passenger_node.play_seated_animation(grid_row * jeepney_grid.col_count + grid_col)
 
 	# Tell backend to occupy the grid slot
 	jeepney_grid.place_passenger(passenger, grid_row, grid_col)
