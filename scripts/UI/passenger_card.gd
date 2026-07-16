@@ -14,31 +14,74 @@ var is_seated: bool = false
 var current_seat_index: int = -1
 
 var last_mouse_pos: Vector2
-var drag_offset: Vector2 = Vector2.ZERO # Keeps the mouse from snapping to the top-left corner
+var _drag_preview: AnimatedSprite2D = null
 
 func _ready():
 	_determine_anim_prefix()
 	set_standby()
 
 func _process(_delta):
-	if is_dragging:
-		# 1. Actually move the card to follow the mouse
-		global_position = get_global_mouse_position() + drag_offset
-		# 2. Play the directional animations
+	if is_dragging and _drag_preview:
+		# Play directional animations on the PREVIEW (the thing actually
+		# following the cursor) rather than the real card, which stays put.
 		handle_drag_animations()
 
 # -- INPUT HANDLING --
 func _gui_input(event):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
+			# Just the "inspect on click" signal now -- dragging itself is
+			# handled by _get_drag_data() below, which Godot only calls once
+			# an actual drag gesture (movement past a threshold) starts. A
+			# plain click no longer force-breaks the card out of the queue.
 			card_selected.emit(passenger_data)
-			start_drag()
-		else:
-			is_dragging = false
-			
-			if not is_seated:
-				set_as_top_level(false)
-				set_standby()
+
+# Godot's built-in Control drag-and-drop entry point. This is what seat_1.gd's
+# _can_drop_data()/_drop_data() have been waiting for -- without this, seats
+# never receive a drop no matter how "correctly" you drag onto them.
+#
+# IMPORTANT: this does NOT move the real card via top_level/global_position
+# anymore. The card lives inside QueuePanel's ScrollContainer, which always
+# clips anything outside its own small rect -- moving the real node out of
+# that rect (even as top_level) meant it (and possibly its siblings' layout)
+# fought with that clipping. Instead we hand Godot a disposable preview via
+# set_drag_preview(); Godot moves THAT independently of the scene tree, and
+# the real card just sits still (dimmed) until the drop resolves.
+func _get_drag_data(_at_position: Vector2) -> Variant:
+	if passenger_data == null:
+		return null
+
+	is_dragging = true
+	is_seated = false
+	last_mouse_pos = get_global_mouse_position()
+
+	# set_drag_preview() requires a Control specifically -- AnimatedSprite2D
+	# is a Node2D, so it has to be wrapped. The wrapper is what we hand to
+	# Godot; _drag_preview keeps pointing at the actual sprite inside it so
+	# handle_drag_animations() can still swap its animation each frame.
+	var preview_wrapper := Control.new()
+	_drag_preview = AnimatedSprite2D.new()
+	_drag_preview.sprite_frames = anim_sprite.sprite_frames
+	_drag_preview.animation = anim_sprite.animation
+	_drag_preview.frame = anim_sprite.frame
+	_drag_preview.scale = anim_sprite.scale
+	preview_wrapper.add_child(_drag_preview)
+	set_drag_preview(preview_wrapper)
+
+	modulate.a = 0.4  # original card dims in place while its preview is dragged
+
+	return {"ui_node": self, "logic_data": passenger_data}
+
+# Fires on EVERY Control when any drag operation ends, success or cancel --
+# this is fine here since we only ever touch OUR OWN modulate/state, so it's
+# harmless no-op work for cards that weren't the one being dragged.
+func _notification(what):
+	if what == NOTIFICATION_DRAG_END:
+		is_dragging = false
+		_drag_preview = null
+		if not is_seated:
+			modulate.a = 1.0
+			set_standby()
 
 # -- DATA PARSING --
 func _determine_anim_prefix():
@@ -74,56 +117,36 @@ func set_standby():
 	is_seated = false
 	anim_sprite.play(anim_prefix + "_idle")
 
-func start_drag():
-	is_dragging = true
-	is_seated = false
-	last_mouse_pos = get_global_mouse_position()
-	drag_offset = global_position - last_mouse_pos
-	
-	# Break free from the HBoxContainer so we can move around the screen
-	set_as_top_level(true)
-	z_index = 100 # Bring to the front
-
-func seat_passenger(seat_number: int):
-	is_dragging = false
-	is_seated = true
+# Called by seat_1.gd's _drop_data() after a successful reparent, so the
+# blink/drop animation still plays on the real card once it's actually
+# sitting in the seat (the preview is gone by this point -- Godot frees it
+# automatically once the drag concludes).
+func play_seated_animation(seat_number: int):
 	current_seat_index = seat_number
-	
-	print("SUCCESS: passenger card registered drop on seat ", seat_number)
-	
-	# 1. Delay the coordinate reset until seat_1.gd finishes reparenting
-	call_deferred("_snap_to_seat")
-	
 	anim_sprite.play(anim_prefix + "_blink")
 	await anim_sprite.animation_finished
-	
+
 	if seat_number >= 5 and seat_number <= 10:
 		anim_sprite.play(anim_prefix + "_drop_back")
 	else:
 		anim_sprite.play(anim_prefix + "_drop_front")
 
-# Create this new helper function right beneath seat_passenger:
-func _snap_to_seat():
-	set_as_top_level(false)
-	position = Vector2.ZERO
-	# 2. Force the sprite to draw in front of the Jeepney body
-	z_index = 10
-
 func handle_drag_animations():
 	var current_pos = get_global_mouse_position()
 	var velocity = current_pos - last_mouse_pos
 	last_mouse_pos = current_pos
-	
+
 	if velocity.length() < 1.0:
-		return 
-		
+		return
+
+	# Target the PREVIEW's animation, not the real (dimmed, stationary) card.
 	if abs(velocity.x) > abs(velocity.y):
 		if velocity.x > 0:
-			anim_sprite.play(anim_prefix + "_drag_right")
+			_drag_preview.animation = anim_prefix + "_drag_right"
 		else:
-			anim_sprite.play(anim_prefix + "_drag_left")
+			_drag_preview.animation = anim_prefix + "_drag_left"
 	else:
 		if velocity.y > 0:
-			anim_sprite.play(anim_prefix + "_drag_down")
+			_drag_preview.animation = anim_prefix + "_drag_down"
 		else:
-			anim_sprite.play(anim_prefix + "_drag_up")
+			_drag_preview.animation = anim_prefix + "_drag_up"
