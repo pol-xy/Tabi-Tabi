@@ -270,7 +270,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_42n2y")
 }],
 "loop": 1,
-"name": &"blink",
+"name": &"student_blink",
 "speed": 5.0
 }, {
 "frames": [{
@@ -281,7 +281,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_y7u0j")
 }],
 "loop": 0,
-"name": &"drag left",
+"name": &"student_drag_left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -292,7 +292,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_r8j83")
 }],
 "loop": 0,
-"name": &"drag right",
+"name": &"student_drag_right",
 "speed": 5.0
 }, {
 "frames": [{
@@ -315,7 +315,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_swj1k")
 }],
 "loop": 0,
-"name": &"drag up",
+"name": &"student_drag_up",
 "speed": 5.0
 }, {
 "frames": [{
@@ -353,7 +353,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_3wsw7")
 }],
 "loop": 0,
-"name": &"drop back",
+"name": &"student_drop_back",
 "speed": 5.0
 }, {
 "frames": [{
@@ -391,7 +391,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_6wl7p")
 }],
 "loop": 0,
-"name": &"drop front",
+"name": &"student_drop_front",
 "speed": 5.0
 }, {
 "frames": [{
@@ -402,7 +402,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_8sl4h")
 }],
 "loop": 1,
-"name": &"idle",
+"name": &"student_idle",
 "speed": 5.0
 }, {
 "frames": [{
@@ -413,7 +413,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_oyyfj")
 }],
 "loop": 1,
-"name": &"idle left",
+"name": &"student_idle_left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -424,7 +424,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_gedhc")
 }],
 "loop": 1,
-"name": &"idle right",
+"name": &"student_idle_right",
 "speed": 5.0
 }, {
 "frames": [{
@@ -462,7 +462,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_tqit8")
 }],
 "loop": 0,
-"name": &"look around",
+"name": &"student_look_around",
 "speed": 5.0
 }, {
 "frames": [{
@@ -479,7 +479,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_iuvog")
 }],
 "loop": 1,
-"name": &"walk left",
+"name": &"student_walk_left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -496,7 +496,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_a56n1")
 }],
 "loop": 1,
-"name": &"walk right",
+"name": &"student_walk_right",
 "speed": 5.0
 }]
 
@@ -511,8 +511,8 @@ script = ExtResource("1_2jokn")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1652577182]
 sprite_frames = SubResource("SpriteFrames_6fgmq")
-animation = &"idle"
-autoplay = "idle"
+animation = &"student_walk_right"
+autoplay = "student_idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2028188860]
 position = Vector2(0, 10.666667)

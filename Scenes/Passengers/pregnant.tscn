@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://ct7n86q76x5od"]
-[ext_resource type="Script" uid="uid://duip37prjywsk" path="res://scripts/Passengers/student.gd" id="passengerscript"]
 
 [ext_resource type="Texture2D" uid="uid://cqqmsxweip6sj" path="res://Assets/Sprites/Passengers/MuslimSpriteSheet.png" id="1_b0i5v"]
+[ext_resource type="Script" uid="uid://duip37prjywsk" path="res://scripts/Passengers/student.gd" id="passengerscript"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pcr0a"]
 atlas = ExtResource("1_b0i5v")
@@ -266,7 +266,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_5k5dg")
 }],
 "loop": 1,
-"name": &"blink",
+"name": &"pregnant_blink",
 "speed": 5.0
 }, {
 "frames": [{
@@ -277,7 +277,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_6gjm1")
 }],
 "loop": 0,
-"name": &"drag left",
+"name": &"pregnant_drag_left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -288,7 +288,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_0iamv")
 }],
 "loop": 0,
-"name": &"drag right",
+"name": &"pregnant_drag_right",
 "speed": 5.0
 }, {
 "frames": [{
@@ -311,7 +311,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_yiiae")
 }],
 "loop": 0,
-"name": &"drag up",
+"name": &"pregnant_drag_up",
 "speed": 5.0
 }, {
 "frames": [{
@@ -352,7 +352,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_djiue")
 }],
 "loop": 0,
-"name": &"drop back",
+"name": &"pregnant_drop_back",
 "speed": 5.0
 }, {
 "frames": [{
@@ -390,7 +390,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_7v1nf")
 }],
 "loop": 0,
-"name": &"drop front",
+"name": &"pregnant_drop_front",
 "speed": 5.0
 }, {
 "frames": [{
@@ -401,7 +401,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_l5ub8")
 }],
 "loop": 1,
-"name": &"idle",
+"name": &"pregnant_idle",
 "speed": 5.0
 }, {
 "frames": [{
@@ -412,7 +412,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_ygq7v")
 }],
 "loop": 1,
-"name": &"idle left",
+"name": &"pregnant_idle_left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -423,7 +423,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_milf7")
 }],
 "loop": 1,
-"name": &"idle right",
+"name": &"pregnant_idle_right",
 "speed": 5.0
 }, {
 "frames": [{
@@ -455,7 +455,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_d1gud")
 }],
 "loop": 1,
-"name": &"look around",
+"name": &"pregnant_look_around",
 "speed": 5.0
 }, {
 "frames": [{
@@ -472,7 +472,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_y50st")
 }],
 "loop": 1,
-"name": &"walk left",
+"name": &"pregnant_walk_left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -489,7 +489,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_khsf5")
 }],
 "loop": 1,
-"name": &"walk right",
+"name": &"pregnant_walk_right",
 "speed": 5.0
 }]
 
@@ -497,14 +497,14 @@ animations = [{
 radius = 5.0
 
 [node name="Muslim" type="Area2D" unique_id=61228998]
-script = ExtResource("passengerscript")
 scale = Vector2(3, 3)
 collision_mask = 2
+script = ExtResource("passengerscript")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=331371323]
 sprite_frames = SubResource("SpriteFrames_ql73s")
-animation = &"idle"
-autoplay = "idle"
+animation = &"pregnant_walk_right"
+autoplay = "pregnant_idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=806797056]
 position = Vector2(0, 10)

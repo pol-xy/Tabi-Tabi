@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cxot413slahca"]
-[ext_resource type="Script" uid="uid://duip37prjywsk" path="res://scripts/Passengers/student.gd" id="passengerscript"]
 
 [ext_resource type="Texture2D" uid="uid://c81bsxfah17jv" path="res://Assets/Sprites/Passengers/MarketGoerSpriteSheet.png" id="1_nf2ln"]
+[ext_resource type="Script" uid="uid://duip37prjywsk" path="res://scripts/Passengers/student.gd" id="passengerscript"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nf2ln"]
 atlas = ExtResource("1_nf2ln")
@@ -226,7 +226,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_x70tl")
 }],
 "loop": 1,
-"name": &"blink",
+"name": &"market_goer_blink",
 "speed": 5.0
 }, {
 "frames": [{
@@ -237,7 +237,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_1cc4g")
 }],
 "loop": 0,
-"name": &"drag left",
+"name": &"market_goer_drag left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -248,7 +248,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_im8cl")
 }],
 "loop": 0,
-"name": &"drag right",
+"name": &"market_goer_drag_right",
 "speed": 5.0
 }, {
 "frames": [{
@@ -274,7 +274,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_0cf07")
 }],
 "loop": 0,
-"name": &"drag up",
+"name": &"market_goer_drag_up",
 "speed": 5.0
 }, {
 "frames": [{
@@ -297,7 +297,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_0tdjs")
 }],
 "loop": 0,
-"name": &"drop back",
+"name": &"market_goer_drop_back",
 "speed": 5.0
 }, {
 "frames": [{
@@ -320,7 +320,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_5tplk")
 }],
 "loop": 0,
-"name": &"drop front",
+"name": &"market_goer_drop_front",
 "speed": 5.0
 }, {
 "frames": [{
@@ -331,7 +331,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_lyjp5")
 }],
 "loop": 1,
-"name": &"idle",
+"name": &"market_goer_idle",
 "speed": 5.0
 }, {
 "frames": [{
@@ -342,7 +342,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_3oxt0")
 }],
 "loop": 1,
-"name": &"idle left",
+"name": &"market_goer_idle_left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -353,7 +353,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_ytjaf")
 }],
 "loop": 1,
-"name": &"idle right",
+"name": &"market_goer_idle_right",
 "speed": 5.0
 }, {
 "frames": [{
@@ -385,7 +385,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_2rtu7")
 }],
 "loop": 1,
-"name": &"look around",
+"name": &"market_goer_look_around",
 "speed": 5.0
 }, {
 "frames": [{
@@ -402,7 +402,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_y5ll6")
 }],
 "loop": 1,
-"name": &"walk left",
+"name": &"market_goer_walk_left",
 "speed": 5.0
 }, {
 "frames": [{
@@ -419,7 +419,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_xrkiy")
 }],
 "loop": 1,
-"name": &"walk right",
+"name": &"market_goer_walk_right",
 "speed": 5.0
 }]
 
@@ -427,14 +427,14 @@ animations = [{
 radius = 4.0
 
 [node name="MarketGoer" type="Area2D" unique_id=1872128415]
-script = ExtResource("passengerscript")
 scale = Vector2(3, 3)
 collision_mask = 2
+script = ExtResource("passengerscript")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=571097415]
 sprite_frames = SubResource("SpriteFrames_ql73s")
-animation = &"idle right"
-autoplay = "idle"
+animation = &"market_goer_walk_right"
+autoplay = "market_goer_idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=723613058]
 position = Vector2(0, 8)
