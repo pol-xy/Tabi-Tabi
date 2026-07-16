@@ -46,10 +46,10 @@ const TRAIT_BADGES := {
 }
 const MAX_VISIBLE_TRAIT_ICONS := 3
 
-@onready var portrait: Control = $VBox/Portrait
-@onready var name_label: Label = $VBox/NameLabel
-@onready var trait_row: HBoxContainer = $VBox/TraitRow
-@onready var vbox: VBoxContainer = $VBox
+var portrait: Control = null
+var name_label: Label = null
+var trait_row: HBoxContainer = null
+var vbox: VBoxContainer = null
 
 var passenger_data: Passenger = null
 var anger_bar: ProgressBar = null
@@ -60,6 +60,35 @@ var is_active: bool = false:
 
 func _ready() -> void:
 	pressed.connect(_on_pressed)
+	
+	vbox = get_node_or_null("VBox")
+	if vbox == null:
+		vbox = VBoxContainer.new()
+		vbox.name = "VBox"
+		vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		add_child(vbox)
+		
+	portrait = get_node_or_null("VBox/Portrait")
+	if portrait == null:
+		portrait = Control.new()
+		portrait.name = "Portrait"
+		portrait.custom_minimum_size = Vector2(0, 40)
+		vbox.add_child(portrait)
+		
+	name_label = get_node_or_null("VBox/NameLabel")
+	if name_label == null:
+		name_label = Label.new()
+		name_label.name = "NameLabel"
+		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		name_label.add_theme_font_size_override("font_size", 10)
+		vbox.add_child(name_label)
+		
+	trait_row = get_node_or_null("VBox/TraitRow")
+	if trait_row == null:
+		trait_row = HBoxContainer.new()
+		trait_row.name = "TraitRow"
+		trait_row.alignment = BoxContainer.ALIGNMENT_CENTER
+		vbox.add_child(trait_row)
 
 # Populates the card from a real Passenger resource.
 func setup(passenger: Passenger) -> void:

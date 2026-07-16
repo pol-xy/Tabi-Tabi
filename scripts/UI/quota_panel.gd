@@ -38,7 +38,7 @@ func update_time(seconds_remaining: float) -> void:
 		emit_signal("time_up")
 
 func _refresh() -> void:
-	var minutes := int(_time_remaining) / 60
+	var minutes := int(_time_remaining / 60.0)
 	var seconds := int(_time_remaining) % 60
 	amount_label.text = "%d:%02d" % [minutes, seconds]
 	progress_bar.max_value = _time_limit

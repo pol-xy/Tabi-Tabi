@@ -64,12 +64,12 @@ func resume() -> void:
 	_is_active = true
 
 func _update_color() -> void:
-	var ratio := value / max_value if max_value > 0 else 0.0
+	var val_ratio := value / max_value if max_value > 0 else 0.0
 	var bar_color: Color
-	if ratio <= CRITICAL_THRESHOLD:
+	if val_ratio <= CRITICAL_THRESHOLD:
 		bar_color = COLOR_CRITICAL
 		_start_flash()
-	elif ratio <= WARNING_THRESHOLD:
+	elif val_ratio <= WARNING_THRESHOLD:
 		bar_color = COLOR_WARNING
 		_stop_flash()
 	else:

@@ -504,10 +504,10 @@ func _notify(text: String, type: String = "info") -> void:
 # companion_id (Lovey Dovey pairs are TWO Passenger resources/sprites, not
 # one bulky seat_size=2 passenger -- confirmed with design).
 
-func _make(id: String, name: String, overrides: Dictionary) -> Passenger:
+func _make(id: String, p_name: String, overrides: Dictionary) -> Passenger:
 	var p := Passenger.new()
 	p.id = id
-	p.passenger_name = name
+	p.passenger_name = p_name
 	for key in overrides:
 		if key in p:
 			p.set(key, overrides[key])
