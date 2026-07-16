@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://6rks3hgehuwd"]
+
+[ext_resource type="Texture2D" uid="uid://ctnifgyce2xvo" path="res://Assets/Main Screen.png" id="1_db2sy"]
+[ext_resource type="Script" uid="uid://5kmlp1urrmxs" path="res://Scenes/Main/main_menu.gd" id="1_lq24o"]
+[ext_resource type="FontFile" uid="uid://dtxeaqt2nqy4q" path="res://Assets/Fonts/easvhs.ttf" id="2_y5k35"]
+[ext_resource type="Texture2D" uid="uid://d1x25d32txpl8" path="res://Assets/Menu Button.png" id="4_l53to"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kyqrf"]
+texture = ExtResource("4_l53to")
+region_rect = Rect2(0, 0, 64, 14)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_l53to"]
+texture = ExtResource("4_l53to")
+region_rect = Rect2(64, 0, 64, 14)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cu5nb"]
+
+[node name="MainMenu" type="Control" unique_id=1198057047]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lq24o")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1950480994]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_db2sy")
+stretch_mode = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=808876946]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 121.0
+offset_top = -50.0
+offset_right = 521.0
+offset_bottom = 50.0
+grow_vertical = 2
+
+[node name="PlayButton" type="Button" parent="VBoxContainer" unique_id=1078389934]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxTexture_kyqrf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_kyqrf")
+theme_override_styles/hover = SubResource("StyleBoxTexture_l53to")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cu5nb")
+text = "Byahe Na!"
+
+[node name="QuitButton" type="Button" parent="VBoxContainer" unique_id=586925597]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxTexture_kyqrf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_kyqrf")
+theme_override_styles/hover = SubResource("StyleBoxTexture_l53to")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cu5nb")
+text = "Exit"
+
+[connection signal="pressed" from="VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
