@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://djr0npvfp8drl"]
 
 [ext_resource type="Script" uid="uid://y884njleqnqs" path="res://scripts/UI/dialogue_bubble.gd" id="1"]
+[ext_resource type="FontFile" uid="uid://cro8sjvyigjtf" path="res://Assets/Fonts/MonsterFriendFore.otf" id="2_v3cii"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bubble"]
 bg_color = Color(0.961, 0.914, 0.784, 1)
@@ -34,7 +35,8 @@ theme_override_constants/margin_bottom = 22
 layout_mode = 2
 mouse_filter = 2
 theme_override_colors/default_color = Color(0.227, 0.153, 0.094, 1)
-theme_override_font_sizes/normal_font_size = 17
+theme_override_fonts/normal_font = ExtResource("2_v3cii")
+theme_override_font_sizes/normal_font_size = 16
 bbcode_enabled = true
 text = "Bayad po!"
 fit_content = true
