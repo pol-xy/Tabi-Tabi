@@ -38,7 +38,6 @@ func _gui_input(event):
 			
 			if not is_seated:
 				set_as_top_level(false)
-				z_index = 0
 				set_standby()
 
 # -- DATA PARSING --
@@ -99,9 +98,9 @@ func seat_passenger(seat_number: int):
 	await anim_sprite.animation_finished
 	
 	if seat_number >= 5 and seat_number <= 10:
-		anim_sprite.play(anim_prefix + "_seated_back")
+		anim_sprite.play(anim_prefix + "_drop_back")
 	else:
-		anim_sprite.play(anim_prefix + "_seated_front")
+		anim_sprite.play(anim_prefix + "_drop_front")
 
 # Create this new helper function right beneath seat_passenger:
 func _snap_to_seat():
