@@ -33,7 +33,7 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v0s4m"]
 size = Vector2(66, 43.6875)
 
-[node name="Jeep2" type="Node2D" unique_id=1601962495]
+[node name="Jeep4" type="Node2D" unique_id=1601962495]
 position = Vector2(546, 324)
 scale = Vector2(0.25, 0.25)
 

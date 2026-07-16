@@ -36,4 +36,4 @@ animations = [{
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1272981405]
 sprite_frames = SubResource("SpriteFrames_ql73s")
 animation = &"StarsAnimation"
-frame_progress = 0.71570677
+frame_progress = 0.31450778
