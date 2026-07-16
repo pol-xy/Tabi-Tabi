@@ -30,6 +30,7 @@ extends Resource
 @export var is_holdaper: bool = false  # Night holdaper passenger
 @export var is_graveyard_worker: bool = false # Graveyard shift worker
 @export var is_white_lady: bool = false # White lady passenger (fast anger drain)
+@export var alights_soon: bool = false    # Passenger alighting soon (wants to be close to door)
 
 # Trip info
 @export var destination_stop: int = 1  # Stop number when they alight
