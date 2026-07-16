@@ -16,6 +16,9 @@ extends Resource
 @export var is_employee: bool = false
 @export var is_badjao: bool = false   # Non-passenger (e.g. envelope distributor)
 @export var is_companion: bool = false # Person who must sit with another
+@export var is_parent_baby: bool = false # Parent holding a baby
+@export var is_balikbayan: bool = false   # OFW passenger (carries large boxes/heavy load)
+@export var is_drunk_man: bool = false    # Drunk man (noisy with a wide radius)
 
 # Behavioral / state flags
 @export var is_wet: bool = false       # Carrying wet fish or wet umbrella
