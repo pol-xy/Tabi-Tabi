@@ -67,11 +67,7 @@ func start_drag():
 
 	if current_seat != null:
 
-		var seats_manager = current_seat.get_parent()
-
-		if seats_manager.has_method("remove_passenger"):
-
-			seats_manager.remove_passenger(current_seat)
+		current_seat.remove_passenger()
 
 		current_seat = null
 
@@ -86,23 +82,17 @@ func stop_drag():
 
 	dragging = false
 
-	if hover_seat != null:
+	if hover_seat != null and hover_seat.can_accept_passenger():
 
-		var seats_manager = hover_seat.get_parent()
+		hover_seat.assign_passenger(self)
 
-		if seats_manager.has_method("can_accept_passenger"):
+		current_seat = hover_seat
 
-			if seats_manager.can_accept_passenger(hover_seat):
+		global_position = hover_seat.get_snap_position()
 
-				seats_manager.assign_passenger(hover_seat, self)
+		play_drop_animation()
 
-				current_seat = hover_seat
-
-				global_position = seats_manager.get_snap_position(hover_seat)
-
-				play_drop_animation()
-
-				return
+		return
 
 	global_position = drag_start_position
 

@@ -27,6 +27,8 @@ enum SeatState {
 
 @export var seat_id: int = 1
 
+@export var priority: bool = false  # true for Accessibility-rule seats (senior/PWD/pregnant/balikbayan)
+
 # left / right side of jeep
 @export_enum("left", "right")
 var seat_direction: String = "left"

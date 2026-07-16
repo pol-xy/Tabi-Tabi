@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://d1iixc7pvwab8" path="res://Assets/Sprites/Jeepneys/Jeep2/frame_2_delay-0.1s.png" id="3_3mh8l"]
 [ext_resource type="Texture2D" uid="uid://df0ulgpj731xl" path="res://Assets/Sprites/Jeepneys/Jeep2/frame_3_delay-0.1s.png" id="4_jebgq"]
 [ext_resource type="Texture2D" uid="uid://b2xwhxfm4ogdg" path="res://Assets/Sprites/Jeepneys/Jeep2/frame_4_delay-0.1s.png" id="5_yqq08"]
+[ext_resource type="Script" uid="uid://bakgmu2oo2ogm" path="res://scripts/Jeepneys/seat_01.gd" id="seatscript_3"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_v0s4m"]
 animations = [{
@@ -46,7 +47,15 @@ frame_progress = 0.057733174
 [node name="Seats" type="Node2D" parent="." unique_id=16581149]
 
 [node name="Seat01" type="Area2D" parent="Seats" unique_id=200911469]
+script = ExtResource("seatscript_3")
+seat_id = 1
 
+[node name="ColorRect" type="ColorRect" parent="Seats/Seat01"]
+z_index = 5
+offset_left = -387.0
+offset_top = -69.0
+offset_right = -322.0
+offset_bottom = -4.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat01" unique_id=420863425]
 position = Vector2(-355, -49.15625)
 shape = SubResource("RectangleShape2D_v0s4m")
@@ -55,7 +64,15 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(-356, -48)
 
 [node name="Seat02" type="Area2D" parent="Seats" unique_id=1140170382]
+script = ExtResource("seatscript_3")
+seat_id = 2
 
+[node name="ColorRect" type="ColorRect" parent="Seats/Seat02"]
+z_index = 5
+offset_left = -286.0
+offset_top = -69.0
+offset_right = -221.0
+offset_bottom = -4.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat02" unique_id=1552064743]
 position = Vector2(-254, -49)
 shape = SubResource("RectangleShape2D_v0s4m")
@@ -64,7 +81,15 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(-253, -48)
 
 [node name="Seat03" type="Area2D" parent="Seats" unique_id=275932082]
+script = ExtResource("seatscript_3")
+seat_id = 3
 
+[node name="ColorRect" type="ColorRect" parent="Seats/Seat03"]
+z_index = 5
+offset_left = -186.0
+offset_top = -69.0
+offset_right = -121.0
+offset_bottom = -4.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat03" unique_id=257623969]
 position = Vector2(-154, -49)
 shape = SubResource("RectangleShape2D_v0s4m")
@@ -73,7 +98,15 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(-153, -49)
 
 [node name="Seat04" type="Area2D" parent="Seats" unique_id=306116131]
+script = ExtResource("seatscript_3")
+seat_id = 4
 
+[node name="ColorRect" type="ColorRect" parent="Seats/Seat04"]
+z_index = 5
+offset_left = -86.0
+offset_top = -69.0
+offset_right = -21.0
+offset_bottom = -4.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat04" unique_id=2143503801]
 position = Vector2(-54, -49)
 shape = SubResource("RectangleShape2D_v0s4m")
@@ -82,7 +115,15 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(-53, -47)
 
 [node name="Seat05" type="Area2D" parent="Seats" unique_id=621821843]
+script = ExtResource("seatscript_3")
+seat_id = 5
 
+[node name="ColorRect" type="ColorRect" parent="Seats/Seat05"]
+z_index = 5
+offset_left = 14.0
+offset_top = -69.0
+offset_right = 79.0
+offset_bottom = -4.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat05" unique_id=1986685934]
 position = Vector2(46, -49)
 shape = SubResource("RectangleShape2D_v0s4m")
@@ -91,7 +132,15 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(45, -48)
 
 [node name="Seat06" type="Area2D" parent="Seats" unique_id=379981830]
+script = ExtResource("seatscript_3")
+seat_id = 6
 
+[node name="ColorRect" type="ColorRect" parent="Seats/Seat06"]
+z_index = 5
+offset_left = -388.0
+offset_top = 36.0
+offset_right = -323.0
+offset_bottom = 101.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat06" unique_id=100179735]
 position = Vector2(-356, 56)
 shape = SubResource("RectangleShape2D_v0s4m")
@@ -100,7 +149,15 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(-357, 56)
 
 [node name="Seat07" type="Area2D" parent="Seats" unique_id=1920108361]
+script = ExtResource("seatscript_3")
+seat_id = 7
 
+[node name="ColorRect" type="ColorRect" parent="Seats/Seat07"]
+z_index = 5
+offset_left = -286.0
+offset_top = 36.0
+offset_right = -221.0
+offset_bottom = 101.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat07" unique_id=1462944099]
 position = Vector2(-254, 56)
 shape = SubResource("RectangleShape2D_v0s4m")
@@ -109,7 +166,15 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(-250, 56)
 
 [node name="Seat08" type="Area2D" parent="Seats" unique_id=310117905]
+script = ExtResource("seatscript_3")
+seat_id = 8
 
+[node name="ColorRect" type="ColorRect" parent="Seats/Seat08"]
+z_index = 5
+offset_left = -187.0
+offset_top = 37.0
+offset_right = -122.0
+offset_bottom = 102.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat08" unique_id=1933111045]
 position = Vector2(-155, 57)
 shape = SubResource("RectangleShape2D_v0s4m")
@@ -118,7 +183,15 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(-154, 61)
 
 [node name="Seat09" type="Area2D" parent="Seats" unique_id=2044339685]
+script = ExtResource("seatscript_3")
+seat_id = 9
 
+[node name="ColorRect" type="ColorRect" parent="Seats/Seat09"]
+z_index = 5
+offset_left = -86.0
+offset_top = 37.0
+offset_right = -21.0
+offset_bottom = 102.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat09" unique_id=452157984]
 position = Vector2(-54, 57)
 shape = SubResource("RectangleShape2D_v0s4m")
@@ -127,7 +200,15 @@ shape = SubResource("RectangleShape2D_v0s4m")
 position = Vector2(-55, 61)
 
 [node name="Seat10" type="Area2D" parent="Seats" unique_id=348952776]
+script = ExtResource("seatscript_3")
+seat_id = 10
 
+[node name="ColorRect" type="ColorRect" parent="Seats/Seat10"]
+z_index = 5
+offset_left = 12.0
+offset_top = 36.0
+offset_right = 77.0
+offset_bottom = 101.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat10" unique_id=1089826073]
 position = Vector2(44, 56)
 shape = SubResource("RectangleShape2D_v0s4m")

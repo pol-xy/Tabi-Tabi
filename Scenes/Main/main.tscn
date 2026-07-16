@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://ce8ve0rwhbrvv" path="res://Scenes/Jeepneys/jeep_1.tscn" id="1_lixft"]
 [ext_resource type="PackedScene" uid="uid://datk3sfug8g4s" path="res://Scenes/Passengers/student.tscn" id="2_qw60k"]
+[ext_resource type="PackedScene" uid="uid://b0g1b0iqwnmf4" path="res://Scenes/Passengers/senior.tscn" id="3_2a143"]
 [ext_resource type="PackedScene" uid="uid://bwe4ymivm2av2" path="res://Scenes/UI(2)/stars.tscn" id="3_5yls4"]
 [ext_resource type="PackedScene" uid="uid://dvlnoeq4s8v1y" path="res://Scenes/Levels/backgrounds.tscn" id="3_qw60k"]
 [ext_resource type="PackedScene" uid="uid://cbtufljrn3svs" path="res://Scenes/UI(2)/menu_button.tscn" id="4_p6jpk"]
@@ -17,6 +18,9 @@ position = Vector2(574, 319)
 
 [node name="Student" parent="." unique_id=240411338 instance=ExtResource("2_qw60k")]
 position = Vector2(314, 331)
+
+[node name="Senior" parent="." unique_id=528173886 instance=ExtResource("3_2a143")]
+position = Vector2(306.031, 192.89496)
 
 [node name="DialogueBox" parent="." unique_id=632756330 instance=ExtResource("3_5yls4")]
 position = Vector2(196, 564)
