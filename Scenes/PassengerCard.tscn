@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://drjoym45eav5a" path="res://Assets/Sprites/Passengers/StudentSpriteSheet.png" id="9_wndjf"]
 [ext_resource type="Texture2D" uid="uid://donqufi7uoc4m" path="res://Assets/Sprites/Passengers/Whitelady.png" id="12_m4os0"]
 
+<<<<<<< HEAD
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_253nu"]
 bg_color = Color(0.718158, 0.13406807, 0.16895801, 1)
 
@@ -485,6 +486,8 @@ region = Rect2(36, 340, 18, 34)
 atlas = ExtResource("3_m4os0")
 region = Rect2(54, 340, 18, 34)
 
+=======
+>>>>>>> a47a0a74082f9df2c962622b7fb61831dde71bbf
 [sub_resource type="AtlasTexture" id="AtlasTexture_h5tmw"]
 atlas = ExtResource("2_0v50u")
 region = Rect2(0, 68, 18, 34)
@@ -5889,13 +5892,23 @@ animations = [{
 }]
 
 [node name="PassengerCard" type="Button" unique_id=859227506]
+<<<<<<< HEAD
+=======
+show_behind_parent = true
+>>>>>>> a47a0a74082f9df2c962622b7fb61831dde71bbf
 light_mask = 524289
 custom_minimum_size = Vector2(76, 100)
-theme_override_styles/normal = SubResource("StyleBoxFlat_253nu")
 script = ExtResource("1")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=460197023]
+<<<<<<< HEAD
 position = Vector2(38, 25)
 scale = Vector2(3, 3)
 sprite_frames = SubResource("SpriteFrames_bpcfa")
 animation = &"couple_1_idle"
+=======
+scale = Vector2(5, 5)
+sprite_frames = SubResource("SpriteFrames_bpcfa")
+animation = &"senior_idle"
+offset = Vector2(7.605, 0)
+>>>>>>> a47a0a74082f9df2c962622b7fb61831dde71bbf

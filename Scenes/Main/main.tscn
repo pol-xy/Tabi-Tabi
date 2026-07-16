@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://dnpaxn636sg2m"]
+[gd_scene format=3 uid="uid://dub4jrffdna8i"]
 
 [ext_resource type="PackedScene" uid="uid://ce8ve0rwhbrvv" path="res://Scenes/Jeepneys/jeep_1.tscn" id="1_lixft"]
 [ext_resource type="PackedScene" uid="uid://datk3sfug8g4s" path="res://Scenes/Passengers/student.tscn" id="2_qw60k"]
