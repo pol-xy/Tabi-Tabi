@@ -36,6 +36,17 @@ func _gui_input(event):
 			# plain click no longer force-breaks the card out of the queue.
 			card_selected.emit(passenger_data)
 
+# Godot's built-in Control drag-and-drop entry point. This is what seat_1.gd's
+# _can_drop_data()/_drop_data() have been waiting for -- without this, seats
+# never receive a drop no matter how "correctly" you drag onto them.
+#
+# IMPORTANT: this does NOT move the real card via top_level/global_position
+# anymore. The card lives inside QueuePanel's ScrollContainer, which always
+# clips anything outside its own small rect -- moving the real node out of
+# that rect (even as top_level) meant it (and possibly its siblings' layout)
+# fought with that clipping. Instead we hand Godot a disposable preview via
+# set_drag_preview(); Godot moves THAT independently of the scene tree, and
+# the real card just sits still (dimmed) until the drop resolves.
 func _get_drag_data(_at_position: Vector2) -> Variant:
 	if passenger_data == null:
 		return null
@@ -61,6 +72,9 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 
 	return {"ui_node": self, "logic_data": passenger_data}
 
+# Fires on EVERY Control when any drag operation ends, success or cancel --
+# this is fine here since we only ever touch OUR OWN modulate/state, so it's
+# harmless no-op work for cards that weren't the one being dragged.
 func _notification(what):
 	if what == NOTIFICATION_DRAG_END:
 		is_dragging = false
@@ -103,14 +117,33 @@ func set_standby():
 	is_seated = false
 	anim_sprite.play(anim_prefix + "_idle")
 
+# Called by seat_1.gd's _drop_data() after a successful reparent, so the
+# blink/drop animation still plays on the real card once it's actually
+# sitting in the seat (the preview is gone by this point -- Godot frees it
+# automatically once the drag concludes).
 func play_seated_animation(seat_number: int):
-	current_seat_index = seat_number
-	if seat_number == 4 or seat_number == 10:
-		anim_sprite.play(anim_prefix + "_drop_front")
-	else:
+	_strip_card_chrome()
+
+	if seat_number == 1:
 		anim_sprite.play(anim_prefix + "_drop_back")
-	anim_sprite.play(anim_prefix + "_blink")
-	await anim_sprite.animation_finished
+	else:
+		anim_sprite.play(anim_prefix + "_drop_front")
+		await anim_sprite.animation_finished
+		anim_sprite.play(anim_prefix + "_blink")
+		
+
+# PassengerCard is a Button, which draws its own background panel by
+# default -- that's the intended "card" look while waiting in the queue.
+# Once seated though, we just want the sprite standing in the seat, not a
+# button-shaped card floating on top of it. Overriding every state with an
+# empty stylebox removes that background without touching the sprite.
+func _strip_card_chrome():
+	var empty := StyleBoxEmpty.new()
+	add_theme_stylebox_override("normal", empty)
+	add_theme_stylebox_override("hover", empty)
+	add_theme_stylebox_override("pressed", empty)
+	add_theme_stylebox_override("focus", empty)
+	add_theme_stylebox_override("disabled", empty)
 
 func handle_drag_animations():
 	var current_pos = get_global_mouse_position()
