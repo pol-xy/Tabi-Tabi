@@ -81,11 +81,11 @@ func test_tagabot_rule() -> bool:
 	var grid = JeepneyGrid.new()
 	var test_ok = true
 	
-	# Active regular passenger should be fine behind driver (index 0)
+	# Active regular passenger should be fine behind driver (index 4)
 	var active_p = Passenger.new()
 	active_p.id = "active_worker"
 	active_p.is_employee = true
-	grid.place_passenger(active_p, 0, 0)
+	grid.place_passenger(active_p, 0, 4)
 	
 	var report = RuleValidator.validate(grid)
 	test_ok = assert_true(report.is_valid, "Active passenger behind driver is valid") and test_ok
@@ -95,7 +95,7 @@ func test_tagabot_rule() -> bool:
 	var sleeper = Passenger.new()
 	sleeper.id = "sleepy_student"
 	sleeper.is_sleepy = true
-	grid.place_passenger(sleeper, 0, 0)
+	grid.place_passenger(sleeper, 0, 4)
 	
 	report = RuleValidator.validate(grid)
 	test_ok = assert_true(not report.is_valid, "Sleeping passenger behind driver violates Tagabot rule") and test_ok
@@ -105,7 +105,7 @@ func test_tagabot_rule() -> bool:
 	var pwd_p = Passenger.new()
 	pwd_p.id = "pwd_guy"
 	pwd_p.is_pwd = true
-	grid.place_passenger(pwd_p, 1, 0)
+	grid.place_passenger(pwd_p, 1, 4)
 	
 	report = RuleValidator.validate(grid)
 	test_ok = assert_true(report.passenger_status.has("pwd_guy") and not report.passenger_status["pwd_guy"]["is_happy"], "PWD passenger is unhappy behind driver") and test_ok
@@ -117,12 +117,12 @@ func test_accessibility_rule() -> bool:
 	var grid = JeepneyGrid.new()
 	var test_ok = true
 	
-	# Priority (Senior) must sit at Tapat ng Pinto (index col_count - 1 = 4)
+	# Priority (Senior) must sit at Tapat ng Pinto (index 0)
 	var senior = Passenger.new()
 	senior.id = "lola"
 	senior.is_senior = true
 	
-	grid.place_passenger(senior, 0, 4)
+	grid.place_passenger(senior, 0, 0)
 	
 	var report = RuleValidator.validate(grid)
 	test_ok = assert_true(report.is_valid, "Priority at Tapat ng Pinto is valid") and test_ok
@@ -305,11 +305,11 @@ func test_new_proposed_traits_and_characters() -> bool:
 	test_ok = assert_true(report.violated_rules.has("holdaper_panic"), "Holdaper panic flagged") and test_ok
 	test_ok = assert_true(report.passenger_status.has("office_worker") and not report.passenger_status["office_worker"]["is_happy"], "Worker is unhappy next to misplaced holdaper") and test_ok
 	
-	# Placing holdaper behind driver (col 0) - should be fine
+	# Placing holdaper behind driver (col 4) - should be fine
 	grid.clear_grid()
-	grid.place_passenger(holdaper, 0, 0)
+	grid.place_passenger(holdaper, 0, 4)
 	report = RuleValidator.validate(grid)
-	test_ok = assert_true(report.is_valid, "Holdaper next to driver (index 0) is valid") and test_ok
+	test_ok = assert_true(report.is_valid, "Holdaper next to driver (index 4) is valid") and test_ok
 	
 	# Test 3: Graveyard shift worker wants quiet corner
 	grid.clear_grid()

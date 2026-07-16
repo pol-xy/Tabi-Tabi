@@ -45,11 +45,11 @@ static func validate(grid: JeepneyGrid) -> Dictionary:
 	return report
 
 # 1. The Tagabot (Fare Passer) Rule
-# Seat at index 0 (next to driver) must 
+# Seat next to driver (highest index) must 
 # not have sleeping, bulky, PWD, senior, or pregnant passengers.
 static func _check_tagabot_rule(grid: JeepneyGrid, report: Dictionary) -> void:
 	for r in range(grid.row_count):
-		var p = grid.get_passenger_at(r, 0)
+		var p = grid.get_passenger_at(r, grid.col_count - 1)
 		if p != null:
 			var cannot_pass_fare = (
 				p.is_sleepy or 
@@ -64,7 +64,7 @@ static func _check_tagabot_rule(grid: JeepneyGrid, report: Dictionary) -> void:
 				_mark_unhappy(report, p, "tagabot", "Hindi ako makakapag-abot ng bayad dito (may condition/tulog/bulky).")
 
 # 2. The Accessibility Rule
-# Seniors, PWDs, Pregnant, and Balikbayan must sit at the rear door (highest index).
+# Seniors, PWDs, Pregnant, and Balikbayan must sit at the rear door (index 0).
 static func _check_accessibility_rule(grid: JeepneyGrid, report: Dictionary) -> void:
 	var passengers = grid.get_unique_passengers()
 	for p in passengers:
@@ -73,7 +73,7 @@ static func _check_accessibility_rule(grid: JeepneyGrid, report: Dictionary) -> 
 			var slots = grid.get_occupied_slots(p)
 			var at_door = false
 			for slot in slots:
-				if slot.y == grid.col_count - 1:
+				if slot.y == 0:
 					at_door = true
 					break
 			if not at_door:
@@ -196,12 +196,12 @@ static func _check_uso_umuwi_rule(grid: JeepneyGrid, report: Dictionary) -> void
 static func _check_new_character_rules(grid: JeepneyGrid, report: Dictionary) -> void:
 	var passengers = grid.get_unique_passengers()
 	for p in passengers:
-		# Holdaper: must be seated at the front (index 0)
+		# Holdaper: must be seated at the front (index grid.col_count - 1)
 		if p.is_holdaper:
 			var slots = grid.get_occupied_slots(p)
 			if not slots.is_empty():
-				var col = slots[0].y
-				if col != 0:
+				var col = slots[slots.size() - 1].y
+				if col != grid.col_count - 1:
 					_mark_unhappy(report, p, "holdaper_panic", "Gusto ko sa tabi ng driver sasakay!")
 					# Nearby passengers take a happiness hit
 					var neighbors = grid.get_adjacent_neighbors(p)
