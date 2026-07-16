@@ -309,11 +309,17 @@ func _build_stage_2_roster() -> Array[Passenger]:
 
 func _build_stage_3_roster() -> Array[Passenger]:
 	var list: Array[Passenger] = []
-	list.append(_make("s3_white_lady", "White Lady", {"anger_meter_max": 25.0,
+	# is_white_lady must be true here, not just a low anger_meter_max --
+	# PassengerCard's anger-meter check treats her as innately impatient
+	# via this flag, regardless of is_impatient.
+	list.append(_make("s3_white_lady", "White Lady", {"is_white_lady": true, "anger_meter_max": 25.0,
 		"monologue_text": "...sandali lang sasakay ako."}))
-	list.append(_make("s3_holdaper", "Suspicious Passenger", {"is_holdaper": true, "anger_meter_max": 20.0,
+	# Holdaper's boarding-window pressure reuses the same opt-in anger meter
+	# (is_impatient) rather than a separate timer system -- a short
+	# anger_meter_max IS his "must reach the front seat in time" window.
+	list.append(_make("s3_holdaper", "Suspicious Passenger", {"is_holdaper": true, "is_impatient": true, "anger_meter_max": 20.0,
 		"monologue_text": "Sa harap na lang ako, malapit sa driver."}))
-	list.append(_make("s3_drunk", "Drunk Man", {"is_noisy": true,
+	list.append(_make("s3_drunk", "Drunk Man", {"is_noisy": true, "is_drunk_man": true,
 		"monologue_text": "Woohoo! Kanta tayo pare!"}))
 	list.append(_make("s3_regular", "Regular Commuter", {}))
 	return list

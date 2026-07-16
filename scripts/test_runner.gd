@@ -27,7 +27,6 @@ func run_tests() -> bool:
 	overall_pass = test_palengke_conflict() and overall_pass
 	overall_pass = test_introvert_conflict() and overall_pass
 	overall_pass = test_magkasama_rule() and overall_pass
-	overall_pass = test_uso_umuwi_rule() and overall_pass
 	overall_pass = test_new_proposed_traits_and_characters() and overall_pass
 	
 	return overall_pass
@@ -110,6 +109,16 @@ func test_tagabot_rule() -> bool:
 	report = RuleValidator.validate(grid)
 	test_ok = assert_true(report.passenger_status.has("pwd_guy") and not report.passenger_status["pwd_guy"]["is_happy"], "PWD passenger is unhappy behind driver") and test_ok
 	
+	# Near-stop passenger behind driver should violate rule
+	grid.clear_grid()
+	var early_off = Passenger.new()
+	early_off.id = "atat_bumaba"
+	early_off.alights_soon = true
+	grid.place_passenger(early_off, 0, 4)
+	
+	report = RuleValidator.validate(grid)
+	test_ok = assert_true(not report.is_valid, "Near-stop passenger behind driver violates Tagabot rule") and test_ok
+	
 	return test_ok
 
 func test_accessibility_rule() -> bool:
@@ -117,60 +126,88 @@ func test_accessibility_rule() -> bool:
 	var grid = JeepneyGrid.new()
 	var test_ok = true
 	
-	# Priority (Senior) must sit at Tapat ng Pinto (index 0)
+	# Tier 1 (Senior) must sit exactly at index 0 (Tapat ng Pinto)
 	var senior = Passenger.new()
 	senior.id = "lola"
 	senior.is_senior = true
 	
 	grid.place_passenger(senior, 0, 0)
-	
 	var report = RuleValidator.validate(grid)
-	test_ok = assert_true(report.is_valid, "Priority at Tapat ng Pinto is valid") and test_ok
+	test_ok = assert_true(report.is_valid, "Senior at Tapat ng Pinto is valid") and test_ok
 	
-	# Place priority passenger at non-exit column (index 2) - should violate
+	# Place Senior at index 1 - should violate Accessibility Tier 1
 	grid.clear_grid()
-	grid.place_passenger(senior, 0, 2)
-	
+	grid.place_passenger(senior, 0, 1)
 	report = RuleValidator.validate(grid)
-	test_ok = assert_true(not report.is_valid, "Priority not at Tapat ng Pinto violates Accessibility rule") and test_ok
-	test_ok = assert_true(report.violated_rules.has("accessibility"), "Accessibility rule flagged") and test_ok
+	test_ok = assert_true(not report.is_valid, "Senior at index 1 violates Accessibility Tier 1") and test_ok
+	
+	# Tier 2 (Heavy Load / Balikbayan) can sit at index 1
+	grid.clear_grid()
+	var heavy = Passenger.new()
+	heavy.id = "balikbayan"
+	heavy.is_heavy_load = true
+	
+	grid.place_passenger(heavy, 0, 1)
+	report = RuleValidator.validate(grid)
+	test_ok = assert_true(report.is_valid, "Heavy load at index 1 is valid (Tier 2)") and test_ok
+	
+	# Place heavy load at index 2 - should violate
+	grid.clear_grid()
+	grid.place_passenger(heavy, 0, 2)
+	report = RuleValidator.validate(grid)
+	test_ok = assert_true(not report.is_valid, "Heavy load at index 2 violates Accessibility Tier 2") and test_ok
+	test_ok = assert_true(report.violated_rules.has("accessibility"), "Accessibility rule flagged for heavy load") and test_ok
 	
 	return test_ok
 
 func test_palengke_conflict() -> bool:
-	print("--- Running Test: Palengke Conflict ---")
+	print("--- Running Test: Hygiene (Maarte) Conflict ---")
 	var grid = JeepneyGrid.new()
 	var test_ok = true
 	
 	var wet_p = Passenger.new()
-	wet_p.id = "palengke_vendor"
+	wet_p.id = "wet_guy"
 	wet_p.is_wet = true
+	
+	var student = Passenger.new()
+	student.id = "student_uniform"
+	student.is_student = true
+	
+	# Wet and student side-by-side
+	grid.place_passenger(wet_p, 0, 2)
+	grid.place_passenger(student, 0, 3)
+	
+	var report = RuleValidator.validate(grid)
+	test_ok = assert_true(not report.is_valid, "Wet passenger next to student violates Hygiene Conflict") and test_ok
+	test_ok = assert_true(report.violated_rules.has("palengke"), "Hygiene (palengke) rule flagged") and test_ok
+	
+	# Sweaty and employee side-by-side
+	grid.clear_grid()
+	var sweaty = Passenger.new()
+	sweaty.id = "sweaty_guy"
+	sweaty.is_sweaty = true
 	
 	var employee = Passenger.new()
 	employee.id = "office_worker"
 	employee.is_employee = true
 	
-	# Wet and employee side-by-side
-	grid.place_passenger(wet_p, 0, 2)
+	grid.place_passenger(sweaty, 0, 2)
 	grid.place_passenger(employee, 0, 3)
 	
-	var report = RuleValidator.validate(grid)
-	test_ok = assert_true(not report.is_valid, "Wet passenger next to employee violates Palengke Conflict") and test_ok
-	test_ok = assert_true(report.violated_rules.has("palengke"), "Palengke rule flagged") and test_ok
-	
-	# Separate them
-	grid.place_passenger(employee, 0, 4)
 	report = RuleValidator.validate(grid)
-	test_ok = assert_true(report.is_valid, "Separated wet passenger and employee are valid") and test_ok
+	test_ok = assert_true(not report.is_valid, "Sweaty passenger next to employee violates Hygiene Conflict") and test_ok
 	
-	# Bulky passenger adjacency should still be detected correctly (wet occupies 2 slots)
+	# PDA / Lovey Dovey (size 2) next to employee - should be fine now!
 	grid.clear_grid()
-	wet_p.seat_size_passenger = 2
-	grid.place_passenger(wet_p, 0, 2) # occupies col 2-3
-	grid.place_passenger(employee, 0, 4) # adjacent to wet passenger's right edge
+	var pair = Passenger.new()
+	pair.id = "lovey_dovey"
+	pair.seat_size_passenger = 2
+	
+	grid.place_passenger(pair, 0, 1) # occupies 1-2
+	grid.place_passenger(employee, 0, 3) # sits next to them
+	
 	report = RuleValidator.validate(grid)
-	test_ok = assert_true(not report.is_valid, "Bulky wet passenger next to employee violates Palengke Conflict") and test_ok
-	test_ok = assert_true(report.violated_rules.has("palengke"), "Palengke rule flagged for bulky adjacency") and test_ok
+	test_ok = assert_true(report.is_valid, "PDA/Lovey Dovey next to employee is fine now") and test_ok
 	
 	return test_ok
 
@@ -238,36 +275,6 @@ func test_magkasama_rule() -> bool:
 	
 	return test_ok
 
-func test_uso_umuwi_rule() -> bool:
-	print("--- Running Test: Uso Umuwi Rule ---")
-	var grid = JeepneyGrid.new()
-	var test_ok = true
-	
-	var early_exit = Passenger.new()
-	early_exit.id = "early_off_student"
-	early_exit.destination_stop = 1
-	
-	var heavy = Passenger.new()
-	heavy.id = "balikbayan_heavy"
-	heavy.is_heavy_load = true
-	
-	# Early exit passenger placed at col 1, heavy passenger at col 2 (heavy is closer to exit/col 4 than early exit, which is fine)
-	grid.place_passenger(early_exit, 0, 1)
-	grid.place_passenger(heavy, 0, 2)
-	
-	var report = RuleValidator.validate(grid)
-	test_ok = assert_true(report.is_valid, "Heavy passenger seated behind early-exit passenger is valid") and test_ok
-	
-	# Swap: early exit to col 2, heavy to col 0 (heavy blocks the exit pathway to col 4)
-	grid.remove_passenger(early_exit)
-	grid.place_passenger(heavy, 0, 0)
-	grid.place_passenger(early_exit, 0, 2)
-	
-	report = RuleValidator.validate(grid)
-	test_ok = assert_true(not report.is_valid, "Early exit passenger blocked by heavy passenger closer to exit is invalid") and test_ok
-	test_ok = assert_true(report.violated_rules.has("uso_umuwi"), "Uso Umuwi rule flagged") and test_ok
-	
-	return test_ok
 
 func test_new_proposed_traits_and_characters() -> bool:
 	print("--- Running Test: New Proposed Traits & Characters ---")
