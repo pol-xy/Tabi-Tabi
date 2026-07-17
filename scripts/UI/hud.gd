@@ -130,7 +130,7 @@ func _on_pause_button_pressed() -> void:
 	pause_menu.toggle_pause()
 
 func set_pause_button_state(is_paused: bool) -> void:
-	var sprite_node = get_node_or_null("TopBar/PauseButton/PausePlayButton/AnimatedSprite2D")
+	var sprite_node = get_node_or_null("TopBar/PauseButton/PauseSprite")
 	if is_instance_valid(sprite_node) and sprite_node is AnimatedSprite2D:
 		sprite_node.frame = 3 if is_paused else 0
 

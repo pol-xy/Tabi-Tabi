@@ -13,7 +13,57 @@
 [ext_resource type="PackedScene" path="res://Scenes/UI/PauseMenu.tscn" id="11_psmn"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/GameOverPopup.tscn" id="12_govp"]
 [ext_resource type="FontFile" path="res://Assets/Fonts/easvhs.ttf" id="13_font"]
-[ext_resource type="PackedScene" path="res://Scenes/UI(2)/pause_play_button.tscn" id="14_psbtn"]
+[ext_resource type="Texture2D" uid="uid://cuc48wme4ctdf" path="res://Assets/Sprites/UI/Pause Button.png" id="14_pbtex"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pb0"]
+atlas = ExtResource("14_pbtex")
+region = Rect2(0, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pb1"]
+atlas = ExtResource("14_pbtex")
+region = Rect2(18, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pb2"]
+atlas = ExtResource("14_pbtex")
+region = Rect2(36, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pb3"]
+atlas = ExtResource("14_pbtex")
+region = Rect2(54, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pb4"]
+atlas = ExtResource("14_pbtex")
+region = Rect2(72, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pb5"]
+atlas = ExtResource("14_pbtex")
+region = Rect2(90, 0, 18, 22)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_pb"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pb0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pb1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pb2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pb3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pb4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pb5")
+}],
+"loop": 0,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="HUD" type="CanvasLayer" unique_id=1665897047]
 script = ExtResource("1")
@@ -49,13 +99,10 @@ focus_mode = 0
 mouse_default_cursor_shape = 2
 flat = true
 
-[node name="PausePlayButton" parent="PauseButton" unique_id=2021113211 instance=ExtResource("14_psbtn")]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="PauseSprite" type="AnimatedSprite2D" parent="PauseButton" unique_id=2021113211]
+position = Vector2(30, 30)
+scale = Vector2(2.0, 2.0)
+sprite_frames = SubResource("SpriteFrames_pb")
 
 
 [node name="DialogueBubble" parent="." unique_id=478563709 instance=ExtResource("2")]
