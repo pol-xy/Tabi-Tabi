@@ -90,12 +90,18 @@ func _on_card_selected(passenger) -> void:
 	emit_signal("passenger_focused", passenger)
 
 func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
+	if GameManager._stage_finishing:
+		return false
 	if typeof(data) == TYPE_DICTIONARY and data.has("logic_data") and data.has("ui_node"):
 		return true
 	return false
 
 func _drop_data(_at_position: Vector2, data: Variant) -> void:
+	if GameManager._stage_finishing:
+		return
 	var passenger_node = data["ui_node"]
+	if not is_instance_valid(passenger_node):
+		return
 	var passenger = data["logic_data"]
 	
 	# NOTE: is_seated is already false by the time drop fires (cleared in _get_drag_data).

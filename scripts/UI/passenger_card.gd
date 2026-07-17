@@ -129,7 +129,7 @@ func _notification(what):
 func _determine_anim_prefix():
 	if passenger_data == null:
 		return
-		
+	
 	if passenger_data.get("is_jb_suarez") or passenger_data.get("passenger_name") == "JB Suarez":
 		anim_prefix = "jb_suarez"
 	elif passenger_data.get("is_white_lady") or passenger_data.get("passenger_name") == "White Lady":
@@ -144,12 +144,22 @@ func _determine_anim_prefix():
 		anim_prefix = "pregnant"
 	elif passenger_data.get("is_pwd"):
 		anim_prefix = "pwd"
-	elif passenger_data.get("is_heavy_load"): 
+	elif passenger_data.get("is_companion"):
+		# Lovey Dovey couples: lover_a → couple_1 sprite, lover_b → couple_2 sprite.
+		var pid_val = passenger_data.get("id")
+		var pid: String = pid_val if pid_val != null else ""
+		if pid.ends_with("_b") or pid.ends_with("lover_b"):
+			anim_prefix = "couple_2"
+		else:
+			anim_prefix = "couple_1"
+	elif passenger_data.get("is_balikbayan"):
+		# Balikbayan uses market_goer sprite (closest available) until a
+		# dedicated balikbayan scene is delivered by the UI/UX team.
+		anim_prefix = "market_goer"
+	elif passenger_data.get("is_heavy_load"):
 		anim_prefix = "market_goer"
 	elif passenger_data.get("is_parent_baby"):
 		anim_prefix = "parent_baby"
-	elif passenger_data.get("is_lovey_dovey"): 
-		anim_prefix = "lovey_dovey"
 	else:
 		anim_prefix = "regular"
 
@@ -184,8 +194,12 @@ func play_seated_animation(grid_row: int):
 			if _seat_anim_id != my_id:
 				return  # A newer seating call superseded us — abort
 
-		_play_anim(anim_sprite, anim_prefix + "_blink")
-		if anim_sprite.sprite_frames.has_animation(anim_prefix + "_blink"):
+		var blink_anim := anim_prefix + "_blink"
+		if anim_prefix == "white_lady":
+			blink_anim = "white_lady_lady_blink"
+
+		_play_anim(anim_sprite, blink_anim)
+		if anim_sprite.sprite_frames.has_animation(blink_anim):
 			await anim_sprite.animation_finished
 			if _seat_anim_id != my_id:
 				return  # A newer seating call superseded us — abort

@@ -15,6 +15,8 @@ func _ready():
 
 # Check if the object hovering over this seat is a valid passenger
 func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
+	if GameManager._stage_finishing:
+		return false
 	if typeof(data) == TYPE_DICTIONARY and data.has("logic_data") and data.has("ui_node"):
 		var passenger = data["logic_data"]
 		# Empty seat is dropable if dimensions match
@@ -27,7 +29,11 @@ func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
 	return false
 
 func _drop_data(_at_position: Vector2, data: Variant) -> void:
+	if GameManager._stage_finishing:
+		return
 	var passenger_node = data["ui_node"]
+	if not is_instance_valid(passenger_node):
+		return
 	var passenger = data["logic_data"]
 
 	var target_occupant = jeepney_grid.seats[grid_row][grid_col]

@@ -660,9 +660,12 @@ func _build_l3_s2_roster() -> Array[Passenger]:
 		"monologue_text": "Wala pang tulog."}))
 	list.append(_make("l3_s2_wet", "Regular Commuter", {"is_wet": true,
 		"monologue_text": "Nabasa sa ulan kanina."}))
+	list.append(_make("l3_s2_white_lady", "White Lady", {"is_white_lady": true,
+		"monologue_text": "..."}))
 	list.append(_make_regular("l3_s2_regular_1", "Papunta sa paroroonan."))
 	list.append(_make_regular("l3_s2_regular_2", "Papunta sa paroroonan."))
 	return list
+
 
 func _build_l3_s3_roster() -> Array[Passenger]:
 	var list: Array[Passenger] = []
