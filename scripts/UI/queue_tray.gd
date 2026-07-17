@@ -4,7 +4,12 @@ extends PanelContainer
 ## Detects drops on empty background spaces in the queue area and forwards them
 ## to the QueuePanel sibling node so they are returned to the queue.
 
-@onready var queue_panel = get_node_or_null("../QueuePanel")
+var queue_panel: ScrollContainer = null
+
+func _ready() -> void:
+	# QueuePanel is a sibling of this node inside the CanvasLayer.
+	# get_parent() navigates to HUD (CanvasLayer), then we search for QueuePanel.
+	queue_panel = get_parent().get_node_or_null("QueuePanel")
 
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 	if queue_panel and queue_panel.has_method("_can_drop_data"):

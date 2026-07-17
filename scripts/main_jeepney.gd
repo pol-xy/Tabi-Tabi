@@ -43,14 +43,14 @@ func _on_grid_dimensions_changed(_rows: int, cols: int) -> void:
 	var row_y_offsets = [0.0, 96.0]
 	
 	if cols == 4:
-		# 8-seater layout (columns = 4)
-		start_x = 100.0
-		step_x = 88.0
+		# 8-seater layout (4 cols). Container offset_left = -320, so local 0 = leftmost.
+		# Cushions start around local x = 60
+		start_x = 60.0
+		step_x = 86.0
 	else:
-		# 10-seater layout (columns = 5, tighter spacing to fit cabin)
-		# Changing start_x to 90.0 shifts the seats right by one column, aligning perfectly with the blue cushions
-		start_x = 90.0
-		step_x = 76.0
+		# 10-seater layout (5 cols). Tighter step to fit 5 seats within cabin width.
+		start_x = 30.0
+		step_x = 74.0
 
 	for seat in seats:
 		if seat == null:

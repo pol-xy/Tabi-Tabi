@@ -33,7 +33,11 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	var target_occupant = jeepney_grid.seats[grid_row][grid_col]
 	
 	if target_occupant == passenger:
-		return # Dropped on self, do nothing
+		# Dropped back on the SAME seat — restore the correct seated visual
+		passenger_node.is_seated = true
+		passenger_node.modulate.a = 1.0
+		passenger_node.play_seated_animation(grid_row)
+		return
 
 	if target_occupant == null:
 		# Standard drop logic
@@ -75,7 +79,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		if ui_node_b == null:
 			return # Fallback safety check
 			
-		if passenger_node.is_seated:
+		if passenger_node.was_seated:
 			# --- Case A: Seated-to-Seated Swap ---
 			var seat_a = passenger_node.get_parent()
 			if seat_a and seat_a.has_method("_drop_data"):
@@ -94,6 +98,14 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 				passenger_node.position = (self.size - passenger_node.size) / 2.0
 				ui_node_b.position = (seat_a.size - ui_node_b.size) / 2.0
 				
+				# IMPORTANT: Mark both as seated BEFORE NOTIFICATION_DRAG_END fires,
+				# otherwise _notification sees is_seated=false and calls set_standby()
+				# which would overwrite the seated animation with _idle.
+				passenger_node.is_seated = true
+				ui_node_b.is_seated = true
+				passenger_node.modulate.a = 1.0
+				ui_node_b.modulate.a = 1.0
+				
 				# Clear logical slots first to avoid validation conflicts during placement
 				jeepney_grid.seats[row_a][col_a] = null
 				jeepney_grid.seats[grid_row][grid_col] = null
@@ -102,14 +114,14 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 				jeepney_grid.place_passenger(passenger, grid_row, grid_col)
 				jeepney_grid.place_passenger(target_occupant, row_a, col_a)
 				
-				# Animate
+				# Animate both passengers into their new seats
 				passenger_node.play_seated_animation(grid_row)
 				ui_node_b.play_seated_animation(row_a)
 				
 				# Notify GameManager (updates status and checks rules)
 				GameManager.on_passenger_seated(passenger)
 				GameManager.on_passenger_seated(target_occupant)
-				print("Swapped seats between (", row_a, ", ", col_a, ") and (", grid_row, ", ", grid_col, ")")
+				print("[seat_1] Swapped seats: (", row_a, ",", col_a, ") <-> (", grid_row, ",", grid_col, ")")
 		else:
 			# --- Case B: Queue-to-Occupied Swap (Kicking occupant to queue) ---
 			var hud = GameManager.hud

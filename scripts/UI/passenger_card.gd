@@ -11,6 +11,7 @@ var is_active: bool = false
 
 var is_dragging: bool = false
 var is_seated: bool = false
+var was_seated: bool = false  ## Preserved across _get_drag_data so seat_1.gd can detect swaps
 var current_seat_index: int = -1
 
 var last_mouse_pos: Vector2
@@ -51,8 +52,15 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 	if passenger_data == null:
 		return null
 
+	was_seated = is_seated  # Preserve before clearing so seat_1.gd swap detection works
+
 	if is_seated:
-		var lift_anim := anim_prefix + "_drop_back" if current_seat_index == 1 else anim_prefix + "_drop_front"
+		# Play the drop animation BACKWARDS so the passenger visually rises off the seat
+		var lift_anim: String
+		if current_seat_index == 0:
+			lift_anim = anim_prefix + "_drop_front"
+		else:
+			lift_anim = anim_prefix + "_drop_back"
 		if anim_sprite.sprite_frames.has_animation(lift_anim):
 			anim_sprite.play_backwards(lift_anim)
 
@@ -77,6 +85,28 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 
 	return {"ui_node": self, "logic_data": passenger_data}
 
+# --- Drop forwarding for seated cards -------------------------------------------
+# PassengerCard is a Button (mouse_filter=STOP), so when a card is seated inside a
+# seat_1.gd ColorRect, it sits on TOP and Godot's DND hit-test stops here.
+# The parent seat never gets to run its own _can_drop_data/_drop_data which means
+# dragging onto an occupied seat (for swapping) silently fails.
+# Forwarding the calls to the parent seat fixes this transparently.
+
+func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
+	if not is_seated:
+		return false  # Card is in queue — queue_panel handles its own drops
+	var parent_seat = get_parent()
+	if parent_seat and parent_seat.has_method("_can_drop_data"):
+		return parent_seat._can_drop_data(_at_position, data)
+	return false
+
+func _drop_data(_at_position: Vector2, data: Variant) -> void:
+	if not is_seated:
+		return
+	var parent_seat = get_parent()
+	if parent_seat and parent_seat.has_method("_drop_data"):
+		parent_seat._drop_data(_at_position, data)
+
 # Fires on EVERY Control when any drag operation ends, success or cancel --
 # this is fine here since we only ever touch OUR OWN modulate/state, so it's
 # harmless no-op work for cards that weren't the one being dragged.
@@ -86,7 +116,13 @@ func _notification(what):
 		_drag_preview = null
 		if not is_seated:
 			modulate.a = 1.0
-			set_standby()
+			# If drag was cancelled OR drop handlers didn't re-mark us as seated,
+			# but we originally came FROM a seat → restore proper seated pose.
+			if was_seated and current_seat_index >= 0:
+				is_seated = true
+				play_seated_animation(current_seat_index)
+			else:
+				set_standby()
 
 # -- DATA PARSING --
 func _determine_anim_prefix():
@@ -120,25 +156,37 @@ func _determine_anim_prefix():
 func set_standby():
 	is_dragging = false
 	is_seated = false
+	was_seated = false  ## Always clear: a standby card is a queue card, never "was seated"
 	_play_anim(anim_sprite, anim_prefix + "_idle")
 
 # Called by seat_1.gd's _drop_data() after a successful reparent, so the
 # blink/drop animation still plays on the real card once it's actually
 # sitting in the seat (the preview is gone by this point -- Godot frees it
 # automatically once the drag concludes).
-func play_seated_animation(seat_number: int):
+func play_seated_animation(grid_row: int):
 	_strip_card_chrome()
+	current_seat_index = grid_row  # Store for lift animation reference later
 
-	var drop_anim := anim_prefix + "_drop_back" if seat_number == 1 else anim_prefix + "_drop_front"
-	if anim_sprite.sprite_frames.has_animation(drop_anim):
-		anim_sprite.play(drop_anim)
-		await anim_sprite.animation_finished
-	
-	_play_anim(anim_sprite, anim_prefix + "_blink")
-	if anim_sprite.sprite_frames.has_animation(anim_prefix + "_blink"):
-		await anim_sprite.animation_finished
+	if grid_row == 0:
+		# Upper/front bench → nakaharap sa driver → play _drop_front then settle in _idle
+		var drop_anim := anim_prefix + "_drop_front"
+		if anim_sprite.sprite_frames.has_animation(drop_anim):
+			anim_sprite.play(drop_anim)
+			await anim_sprite.animation_finished
 		
-	_play_anim(anim_sprite, anim_prefix + "_idle")
+		_play_anim(anim_sprite, anim_prefix + "_blink")
+		if anim_sprite.sprite_frames.has_animation(anim_prefix + "_blink"):
+			await anim_sprite.animation_finished
+		
+		_play_anim(anim_sprite, anim_prefix + "_idle")
+	else:
+		# Lower/back bench → nakatalikod → play _drop_back then STOP on last frame
+		# (Do NOT call _idle after this or they'll turn to face forward again)
+		var drop_anim := anim_prefix + "_drop_back"
+		if anim_sprite.sprite_frames.has_animation(drop_anim):
+			anim_sprite.play(drop_anim)
+			await anim_sprite.animation_finished
+		# Stay on last frame of _drop_back = nakatalikod ✅
 
 # PassengerCard is a Button, which draws its own background panel by
 # default -- that's the intended "card" look while waiting in the queue.

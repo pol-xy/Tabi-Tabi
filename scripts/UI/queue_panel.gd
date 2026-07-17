@@ -98,7 +98,9 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	var passenger_node = data["ui_node"]
 	var passenger = data["logic_data"]
 	
-	if passenger_node.is_seated:
+	# NOTE: is_seated is already false by the time drop fires (cleared in _get_drag_data).
+	# was_seated is preserved so we can tell if the card came from a seat vs. queue.
+	if passenger_node.was_seated:
 		GameManager.unseat_passenger(passenger)
 		
 		var old_parent = passenger_node.get_parent()
@@ -108,6 +110,9 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		
 		passenger_node.set_standby()
 		passenger_node.restore_card_chrome()
+		# Clear was_seated so NOTIFICATION_DRAG_END doesn't restore the seated animation
+		# on a card that is now properly in the queue (nakaharap = idle).
+		passenger_node.was_seated = false
 		
 		_cards.append(passenger_node)
 		_set_active(0)
