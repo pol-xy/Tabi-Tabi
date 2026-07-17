@@ -115,7 +115,7 @@ func _determine_anim_prefix():
 func set_standby():
 	is_dragging = false
 	is_seated = false
-	anim_sprite.play(anim_prefix + "_idle")
+	_play_anim(anim_sprite, anim_prefix + "_idle")
 
 # Called by seat_1.gd's _drop_data() after a successful reparent, so the
 # blink/drop animation still plays on the real card once it's actually
@@ -124,13 +124,16 @@ func set_standby():
 func play_seated_animation(seat_number: int):
 	_strip_card_chrome()
 
-	if seat_number == 1:
-		anim_sprite.play(anim_prefix + "_drop_back")
-	else:
-		anim_sprite.play(anim_prefix + "_drop_front")
+	var drop_anim := anim_prefix + "_drop_back" if seat_number == 1 else anim_prefix + "_drop_front"
+	if anim_sprite.sprite_frames.has_animation(drop_anim):
+		anim_sprite.play(drop_anim)
 		await anim_sprite.animation_finished
-		anim_sprite.play(anim_prefix + "_blink")
+	
+	_play_anim(anim_sprite, anim_prefix + "_blink")
+	if anim_sprite.sprite_frames.has_animation(anim_prefix + "_blink"):
+		await anim_sprite.animation_finished
 		
+	_play_anim(anim_sprite, anim_prefix + "_idle")
 
 # PassengerCard is a Button, which draws its own background panel by
 # default -- that's the intended "card" look while waiting in the queue.
@@ -154,20 +157,20 @@ func restore_card_chrome():
 
 func handle_drag_animations():
 	var current_pos = get_global_mouse_position()
-	var velocity = current_pos - last_mouse_pos
 	last_mouse_pos = current_pos
+	
+	var anim_name = anim_prefix + "_idle"
+	if _drag_preview:
+		_play_anim(_drag_preview, anim_name)
 
-	if velocity.length() < 1.0:
+func _play_anim(sprite: AnimatedSprite2D, anim_name: String) -> void:
+	if sprite == null or sprite.sprite_frames == null:
 		return
-
-	# Target the PREVIEW's animation, not the real (dimmed, stationary) card.
-	if abs(velocity.x) > abs(velocity.y):
-		if velocity.x > 0:
-			_drag_preview.animation = anim_prefix + "_drag_right"
-		else:
-			_drag_preview.animation = anim_prefix + "_drag_left"
+	if sprite.sprite_frames.has_animation(anim_name):
+		sprite.play(anim_name)
 	else:
-		if velocity.y > 0:
-			_drag_preview.animation = anim_prefix + "_drag_down"
-		else:
-			_drag_preview.animation = anim_prefix + "_drag_up"
+		var fallback := anim_prefix + "_idle"
+		if sprite.sprite_frames.has_animation(fallback):
+			sprite.play(fallback)
+		elif sprite.sprite_frames.has_animation("regular_idle"):
+			sprite.play("regular_idle")

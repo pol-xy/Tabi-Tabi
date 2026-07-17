@@ -36,8 +36,30 @@ func _on_campaign_complete() -> void:
 	get_tree().change_scene_to_file("res://Scenes/Main/MainMenu.tscn")
 
 func _on_grid_dimensions_changed(_rows: int, cols: int) -> void:
-	if _grid_container:
-		_grid_container.columns = cols
+	var seats = _collect_seat_nodes()
+	
+	var start_x: float = 0.0
+	var step_x: float = 0.0
+	var row_y_offsets = [0.0, 96.0]
+	
+	if cols == 4:
+		# 8-seater layout (columns = 4)
+		start_x = 46.0
+		step_x = 88.0
+	else:
+		# 10-seater layout (columns = 5, tighter spacing to fit cabin)
+		start_x = 26.0
+		step_x = 76.0
+
+	for seat in seats:
+		if seat == null:
+			continue
+		var r = seat.grid_row
+		var c = seat.grid_col
+		
+		var local_x = start_x + (c * step_x)
+		var local_y = row_y_offsets[r]
+		seat.position = Vector2(local_x, local_y)
 
 ## Seats are the ColorRect nodes running seat_1.gd, found under
 ## Jeepney_BG/GridContainer. Collected generically (by script, not by name)
