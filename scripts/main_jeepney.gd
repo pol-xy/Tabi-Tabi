@@ -44,11 +44,12 @@ func _on_grid_dimensions_changed(_rows: int, cols: int) -> void:
 	
 	if cols == 4:
 		# 8-seater layout (columns = 4)
-		start_x = 46.0
+		start_x = 100.0
 		step_x = 88.0
 	else:
 		# 10-seater layout (columns = 5, tighter spacing to fit cabin)
-		start_x = 26.0
+		# Changing start_x to 90.0 shifts the seats right by one column, aligning perfectly with the blue cushions
+		start_x = 90.0
 		step_x = 76.0
 
 	for seat in seats:
@@ -66,8 +67,7 @@ func _on_grid_dimensions_changed(_rows: int, cols: int) -> void:
 ## so this keeps working if seats are renamed/added later.
 func _collect_seat_nodes() -> Array:
 	var seats: Array = []
-	var grid_container := get_node_or_null("Jeepney_BG/GridContainer")
-	if grid_container:
-		for child in grid_container.get_children():
+	if _grid_container:
+		for child in _grid_container.get_children():
 			seats.append(child)
 	return seats

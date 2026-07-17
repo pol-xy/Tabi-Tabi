@@ -17,7 +17,7 @@ extends CanvasLayer
 ##   QueuePanel.passenger_focused      -> DialogueBubble.set_from_passenger
 ##   StrikeCounter.max_strikes_reached -> (forwarded) HUD.stage_failed
 
-signal passenger_time_up(passenger)
+# signal passenger_time_up(passenger)
 signal stage_failed
 
 @onready var dialogue_bubble = $DialogueBubble

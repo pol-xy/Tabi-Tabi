@@ -51,6 +51,11 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 	if passenger_data == null:
 		return null
 
+	if is_seated:
+		var lift_anim := anim_prefix + "_drop_back" if current_seat_index == 1 else anim_prefix + "_drop_front"
+		if anim_sprite.sprite_frames.has_animation(lift_anim):
+			anim_sprite.play_backwards(lift_anim)
+
 	is_dragging = true
 	is_seated = false
 	last_mouse_pos = get_global_mouse_position()
