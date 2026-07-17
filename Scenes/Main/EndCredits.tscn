@@ -1,0 +1,109 @@
+[gd_scene format=3 uid="uid://bpe1c7y3l2wpu"]
+
+[ext_resource type="Script" path="res://scripts/UI/end_credits.gd" id="1_endcr"]
+[ext_resource type="FontFile" uid="uid://dtxeaqt2nqy4q" path="res://Assets/Fonts/easvhs.ttf" id="2_y5k35"]
+[ext_resource type="Texture2D" uid="uid://d1x25d32txpl8" path="res://Assets/Menu Button.png" id="4_l53to"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kyqrf"]
+texture = ExtResource("4_l53to")
+region_rect = Rect2(0, 0, 64, 14)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_l53to"]
+texture = ExtResource("4_l53to")
+region_rect = Rect2(64, 0, 64, 14)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cu5nb"]
+
+[node name="EndCredits" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_endcr")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12549, 0.07843, 0.05882, 1)
+
+[node name="CreditsContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -250.0
+offset_right = 400.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Title" type="Label" parent="CreditsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94902, 0.74902, 0.20392, 1)
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 64
+text = "TABI-TABI"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="CreditsContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 32
+text = "Maraming salamat sa pagbyahe!"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="CreditsContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="CreditsHeader" type="Label" parent="CreditsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85098, 0.20392, 0.20392, 1)
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 28
+text = "--- MGA LUMIKHA ---"
+horizontal_alignment = 1
+
+[node name="CreditsContent" type="Label" parent="CreditsContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 24
+text = "Rani & Team
+Game Programming, UI/UX, and Art"
+horizontal_alignment = 1
+
+[node name="BackButton" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 70)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -120.0
+offset_right = 150.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxTexture_kyqrf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_kyqrf")
+theme_override_styles/hover = SubResource("StyleBoxTexture_l53to")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cu5nb")
+text = "Bumalik sa Menu"
+
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

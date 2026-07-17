@@ -221,13 +221,14 @@ func _process(delta: float) -> void:
 
 func register_hud(hud_node: Node) -> void:
 	hud = hud_node
-	if hud.stage_failed.is_connected(_on_stage_failed):
-		return
-	hud.stage_failed.connect(_on_stage_failed)
-	# NOTE: stage_failed/campaign_failed is currently dormant -- nothing
-	# calls hud.on_rule_violated() to build strikes anymore under the new
-	# time/star design. Left wired in case the team wants a hard-fail
-	# condition back later.
+	if not hud.stage_failed.is_connected(_on_stage_failed):
+		hud.stage_failed.connect(_on_stage_failed)
+	if hud.has_signal("level_completed_continued") and not hud.level_completed_continued.is_connected(_on_level_completed_continued):
+		hud.level_completed_continued.connect(_on_level_completed_continued)
+
+func _on_level_completed_continued() -> void:
+	_advance_level()
+
 
 func register_grid(grid_node: JeepneyGrid) -> void:
 	current_grid = grid_node
@@ -319,7 +320,10 @@ func _advance_stage() -> void:
 
 	var level: Dictionary = _get_level(current_level_index)
 	if level.is_empty() or current_stage_index >= level["stages"].size():
-		_advance_level()
+		if hud and hud.has_method("show_level_complete_popup"):
+			hud.show_level_complete_popup(level.get("title", "Level"))
+		else:
+			_advance_level()
 		return
 
 	_start_current_stage()

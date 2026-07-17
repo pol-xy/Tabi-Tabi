@@ -1,0 +1,110 @@
+[gd_scene format=3 uid="uid://bpe1c7y3l3wpu"]
+
+[ext_resource type="Script" uid="uid://6v5pg7c5s3un" path="res://scripts/UI/level_completion_popup.gd" id="1_lvlcp"]
+[ext_resource type="FontFile" uid="uid://dtxeaqt2nqy4q" path="res://Assets/Fonts/easvhs.ttf" id="2_y5k35"]
+[ext_resource type="Texture2D" uid="uid://d1x25d32txpl8" path="res://Assets/Menu Button.png" id="4_l53to"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kyqrf"]
+texture = ExtResource("4_l53to")
+region_rect = Rect2(0, 0, 64, 14)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_l53to"]
+texture = ExtResource("4_l53to")
+region_rect = Rect2(64, 0, 64, 14)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cu5nb"]
+
+[node name="LevelCompletionPopup" type="Control" unique_id=399193976]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lvlcp")
+
+[node name="DimOverlay" type="ColorRect" parent="." unique_id=1838447881]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12549, 0.07843, 0.05882, 0.705882)
+
+[node name="ModalWindow" type="ColorRect" parent="." unique_id=2128733400]
+custom_minimum_size = Vector2(500, 300)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -150.0
+offset_right = 250.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.22745, 0.15294, 0.09412, 1)
+
+[node name="Border" type="ReferenceRect" parent="ModalWindow" unique_id=1988970833]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+border_color = Color(0.94902, 0.74902, 0.20392, 1)
+border_width = 4.0
+editor_only = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ModalWindow" unique_id=352112061]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="HeaderLabel" type="Label" parent="ModalWindow/VBoxContainer" unique_id=2097494669]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94902, 0.74902, 0.20392, 1)
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 40
+text = "LEVEL CLEAR!"
+horizontal_alignment = 1
+
+[node name="LevelTitleLabel" type="Label" parent="ModalWindow/VBoxContainer" unique_id=724192103]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 24
+text = "Level 1: Manila Jeepney cleared!"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Spacer" type="Control" parent="ModalWindow/VBoxContainer" unique_id=108209968]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="ContinueButton" type="Button" parent="ModalWindow/VBoxContainer" unique_id=567627979]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxTexture_kyqrf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_kyqrf")
+theme_override_styles/hover = SubResource("StyleBoxTexture_l53to")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cu5nb")
+text = "Tuloy ang Byahe"
+
+[connection signal="pressed" from="ModalWindow/VBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]

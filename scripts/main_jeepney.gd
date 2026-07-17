@@ -33,7 +33,7 @@ func _ready() -> void:
 	GameManager.start_campaign()
 
 func _on_campaign_complete() -> void:
-	get_tree().change_scene_to_file("res://Scenes/Main/MainMenu.tscn")
+	get_tree().change_scene_to_file("res://Scenes/Main/EndCredits.tscn")
 
 func _on_grid_dimensions_changed(_rows: int, cols: int) -> void:
 	var seats = _collect_seat_nodes()

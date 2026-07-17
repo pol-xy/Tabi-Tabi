@@ -19,6 +19,7 @@ extends CanvasLayer
 
 # signal passenger_time_up(passenger)
 signal stage_failed
+signal level_completed_continued
 
 @onready var dialogue_bubble = $DialogueBubble
 @onready var queue_panel = $QueuePanel
@@ -27,12 +28,14 @@ signal stage_failed
 @onready var stage_banner = $StageBanner
 @onready var notification_area = $NotificationArea
 @onready var tooltip = $Tooltip
+@onready var level_completion_popup = $LevelCompletionPopup
 
 var _active_passenger: Passenger = null
 
 func _ready() -> void:
 	queue_panel.passenger_focused.connect(_on_passenger_focused)
 	strike_counter.max_strikes_reached.connect(func(): emit_signal("stage_failed"))
+	level_completion_popup.continue_pressed.connect(func(): level_completed_continued.emit())
 
 # --- Stage lifecycle (Dev 4 calls these) -----------------------------------
 
@@ -109,3 +112,6 @@ func _on_passenger_focused(passenger: Passenger) -> void:
 	_active_passenger = passenger
 	dialogue_bubble.set_from_passenger(passenger)
 	GameManager.play_sfx("dialogue")
+
+func show_level_complete_popup(level_title: String) -> void:
+	level_completion_popup.show_popup(level_title)
