@@ -99,7 +99,7 @@ focus_mode = 0
 mouse_default_cursor_shape = 2
 flat = true
 
-[node name="PauseSprite" type="AnimatedSprite2D" parent="PauseButton" unique_id=2021113211]
+[node name="PauseSprite" type="AnimatedSprite2D" parent="TopBar/PauseButton" unique_id=2021113211]
 position = Vector2(30, 30)
 scale = Vector2(2.0, 2.0)
 sprite_frames = SubResource("SpriteFrames_pb")
