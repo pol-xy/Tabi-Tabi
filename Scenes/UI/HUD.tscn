@@ -10,6 +10,10 @@
 [ext_resource type="PackedScene" path="res://Scenes/UI/Tooltip.tscn" id="8"]
 [ext_resource type="Script" path="res://scripts/UI/queue_tray.gd" id="9"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/LevelCompletionPopup.tscn" id="10_lvlcp"]
+[ext_resource type="PackedScene" path="res://Scenes/UI/PauseMenu.tscn" id="11_psmn"]
+[ext_resource type="PackedScene" path="res://Scenes/UI/GameOverPopup.tscn" id="12_govp"]
+[ext_resource type="FontFile" path="res://Assets/Fonts/easvhs.ttf" id="13_font"]
+[ext_resource type="PackedScene" path="res://Scenes/UI(2)/pause_play_button.tscn" id="14_psbtn"]
 
 [node name="HUD" type="CanvasLayer" unique_id=1665897047]
 script = ExtResource("1")
@@ -35,6 +39,24 @@ mouse_filter = 2
 [node name="StrikeCounter" parent="TopBar" unique_id=542256293 instance=ExtResource("4")]
 layout_mode = 2
 size_flags_vertical = 4
+
+[node name="PauseButton" type="Button" parent="TopBar" unique_id=1029491823]
+process_mode = 3
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="PausePlayButton" parent="PauseButton" unique_id=2021113211 instance=ExtResource("14_psbtn")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 
 [node name="DialogueBubble" parent="." unique_id=478563709 instance=ExtResource("2")]
 anchors_preset = 5
@@ -91,6 +113,18 @@ offset_right = 87.0
 offset_bottom = 27.0
 
 [node name="LevelCompletionPopup" parent="." unique_id=2021113208 instance=ExtResource("10_lvlcp")]
+layout_mode = 3
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PauseMenu" parent="." unique_id=2021113209 instance=ExtResource("11_psmn")]
+layout_mode = 3
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameOverPopup" parent="." unique_id=2021113210 instance=ExtResource("12_govp")]
 layout_mode = 3
 anchors_preset = 15
 grow_horizontal = 2

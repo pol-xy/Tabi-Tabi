@@ -20,6 +20,7 @@ extends CanvasLayer
 # signal passenger_time_up(passenger)
 signal stage_failed
 signal level_completed_continued
+signal stage_retry_requested
 
 @onready var dialogue_bubble = $DialogueBubble
 @onready var queue_panel = $QueuePanel
@@ -29,6 +30,9 @@ signal level_completed_continued
 @onready var notification_area = $NotificationArea
 @onready var tooltip = $Tooltip
 @onready var level_completion_popup = $LevelCompletionPopup
+@onready var pause_menu = $PauseMenu
+@onready var game_over_popup = $GameOverPopup
+@onready var pause_button = $TopBar/PauseButton
 
 var _active_passenger: Passenger = null
 
@@ -36,6 +40,9 @@ func _ready() -> void:
 	queue_panel.passenger_focused.connect(_on_passenger_focused)
 	strike_counter.max_strikes_reached.connect(func(): emit_signal("stage_failed"))
 	level_completion_popup.continue_pressed.connect(func(): level_completed_continued.emit())
+	pause_button.pressed.connect(_on_pause_button_pressed)
+	game_over_popup.retry_pressed.connect(func(): stage_retry_requested.emit())
+	pause_menu.pause_toggled.connect(set_pause_button_state)
 
 # --- Stage lifecycle (Dev 4 calls these) -----------------------------------
 
@@ -115,3 +122,20 @@ func _on_passenger_focused(passenger: Passenger) -> void:
 
 func show_level_complete_popup(level_title: String) -> void:
 	level_completion_popup.show_popup(level_title)
+
+func show_game_over_popup() -> void:
+	game_over_popup.show_popup()
+
+func _on_pause_button_pressed() -> void:
+	pause_menu.toggle_pause()
+
+func set_pause_button_state(is_paused: bool) -> void:
+	var sprite_node = get_node_or_null("TopBar/PauseButton/PausePlayButton/AnimatedSprite2D")
+	if is_instance_valid(sprite_node) and sprite_node is AnimatedSprite2D:
+		sprite_node.frame = 3 if is_paused else 0
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		if not game_over_popup.visible and not level_completion_popup.visible:
+			_on_pause_button_pressed()
+			get_viewport().set_input_as_handled()

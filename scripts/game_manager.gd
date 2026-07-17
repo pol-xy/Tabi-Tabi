@@ -121,6 +121,7 @@ func play_sfx(stream_name: String) -> void:
 	var player = AudioStreamPlayer.new()
 	add_child(player)
 	player.stream = stream
+	player.bus = "SFX"
 	
 	# Tune specific SFX volumes so they don't overpower the background music
 	match stream_name:
@@ -139,6 +140,7 @@ func play_sfx(stream_name: String) -> void:
 func _ready() -> void:
 	_bgm_player = AudioStreamPlayer.new()
 	_bgm_player.name = "BGMPlayer"
+	_bgm_player.bus = "BGM"
 	add_child(_bgm_player)
 	
 	play_bgm("main_menu")
@@ -242,6 +244,8 @@ func register_hud(hud_node: Node) -> void:
 		hud.stage_failed.connect(_on_stage_failed)
 	if hud.has_signal("level_completed_continued") and not hud.level_completed_continued.is_connected(_on_level_completed_continued):
 		hud.level_completed_continued.connect(_on_level_completed_continued)
+	if hud.has_signal("stage_retry_requested") and not hud.stage_retry_requested.is_connected(retry_current_stage):
+		hud.stage_retry_requested.connect(retry_current_stage)
 
 
 
@@ -488,11 +492,41 @@ func _end_stage_by_timeout() -> void:
 	play_bgm("game_over")
 
 	await get_tree().create_timer(STAGE_CLEAR_PAUSE_SEC).timeout
-	_advance_stage()
+	if hud and hud.has_method("show_game_over_popup"):
+		hud.show_game_over_popup()
+	else:
+		_advance_stage()
 
 func _on_stage_failed() -> void:
 	play_bgm("game_over")
 	emit_signal("campaign_failed", current_level_index, current_stage_index)
+
+func retry_current_stage() -> void:
+	_stage_finishing = false
+	_penalty_count = 0
+	_time_remaining = _time_limit
+	
+	if current_grid:
+		current_grid.clear_grid()
+	_clear_seat_visuals()
+	
+	if current_level_index >= 0 and current_level_index < levels.size():
+		var level = levels[current_level_index]
+		var stage = level["stages"][current_stage_index]
+		_apply_background_state(stage)
+		_apply_jeep_exterior(stage)
+		
+		if stage.get("is_night", false):
+			play_bgm("night_theme")
+		else:
+			play_bgm("day_theme")
+			
+		var display_title := "%s — %s" % [level["title"], stage["title"]]
+		if hud:
+			hud.start_stage(display_title, stage["passengers"], stage["time_limit_sec"])
+			
+	_timer_active = true
+	_notify_timer_update()
 
 # --- Star rating helpers -------------------------------------------------
 

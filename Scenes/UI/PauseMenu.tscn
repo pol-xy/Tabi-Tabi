@@ -1,0 +1,189 @@
+[gd_scene format=3 uid="uid://bpe1c7y3l4wpy"]
+
+[ext_resource type="Script" path="res://scripts/UI/pause_menu.gd" id="1_psmn"]
+[ext_resource type="FontFile" uid="uid://dtxeaqt2nqy4q" path="res://Assets/Fonts/easvhs.ttf" id="2_y5k35"]
+[ext_resource type="Texture2D" uid="uid://d1x25d32txpl8" path="res://Assets/Menu Button.png" id="4_l53to"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kyqrf"]
+texture = ExtResource("4_l53to")
+region_rect = Rect2(0, 0, 64, 14)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_l53to"]
+texture = ExtResource("4_l53to")
+region_rect = Rect2(64, 0, 64, 14)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cu5nb"]
+
+[node name="PauseMenu" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_psmn")
+
+[node name="DimOverlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12549, 0.07843, 0.05882, 0.705882)
+
+[node name="ModalWindow" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(500, 360)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -180.0
+offset_right = 250.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.22745, 0.15294, 0.09412, 1)
+
+[node name="Border" type="ReferenceRect" parent="ModalWindow"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+border_color = Color(0.94902, 0.74902, 0.20392, 1)
+border_width = 4.0
+editor_only = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ModalWindow"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = 20.0
+offset_right = -30.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="ModalWindow/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94902, 0.74902, 0.20392, 1)
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 36
+text = "NAKA-PAUSE"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="ModalWindow/VBoxContainer"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="VolumeControls" type="VBoxContainer" parent="ModalWindow/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MasterBox" type="HBoxContainer" parent="ModalWindow/VBoxContainer/VolumeControls"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="ModalWindow/VBoxContainer/VolumeControls/MasterBox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 20
+text = "Master Vol"
+
+[node name="MasterSlider" type="HSlider" parent="ModalWindow/VBoxContainer/VolumeControls/MasterBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="BGMBox" type="HBoxContainer" parent="ModalWindow/VBoxContainer/VolumeControls"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="ModalWindow/VBoxContainer/VolumeControls/BGMBox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 20
+text = "Music Vol"
+
+[node name="BGMSlider" type="HSlider" parent="ModalWindow/VBoxContainer/VolumeControls/BGMBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="SFXBox" type="HBoxContainer" parent="ModalWindow/VBoxContainer/VolumeControls"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="ModalWindow/VBoxContainer/VolumeControls/SFXBox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 20
+text = "Sound SFX"
+
+[node name="SFXSlider" type="HSlider" parent="ModalWindow/VBoxContainer/VolumeControls/SFXBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="Spacer2" type="Control" parent="ModalWindow/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Buttons" type="VBoxContainer" parent="ModalWindow/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="ResumeButton" type="Button" parent="ModalWindow/VBoxContainer/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_kyqrf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_kyqrf")
+theme_override_styles/hover = SubResource("StyleBoxTexture_l53to")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cu5nb")
+text = "Ipagpatuloy"
+
+[node name="QuitButton" type="Button" parent="ModalWindow/VBoxContainer/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_kyqrf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_kyqrf")
+theme_override_styles/hover = SubResource("StyleBoxTexture_l53to")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cu5nb")
+text = "Bumalik sa Menu"
+
+[connection signal="pressed" from="ModalWindow/VBoxContainer/Buttons/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="ModalWindow/VBoxContainer/Buttons/QuitButton" to="." method="_on_quit_button_pressed"]
