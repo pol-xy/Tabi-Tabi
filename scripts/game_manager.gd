@@ -556,7 +556,8 @@ func _build_l1_s2_roster() -> Array[Passenger]:
 		"monologue_text": "Sa malapit lang."}))
 	list.append(_make("l1_s2_jb_suarez", "JB Suarez", {"is_noisy": true,
 		"monologue_text": "Nasigaw kapag may kamote."}))
-	list.append(_make_regular("l1_s2_regular_1", "Papunta sa paroroonan."))
+	list.append(_make("l1_s2_market_goer", "Market Goer", {"is_heavy_load": true, "is_wet": true,
+		"monologue_text": "Galing palengke."}))
 	list.append(_make_regular("l1_s2_regular_2", "Papunta sa paroroonan."))
 	return list
 
@@ -608,7 +609,8 @@ func _build_l2_s2_roster() -> Array[Passenger]:
 		"monologue_text": "Nabasa sa ulan kanina."}))
 	list.append(_make("l2_s2_sweaty", "Regular Commuter", {"is_sweaty": true,
 		"monologue_text": "Asim kilig."}))
-	list.append(_make_regular("l2_s2_regular_1", "Papunta sa paroroonan."))
+	list.append(_make("l2_s2_pwd", "PWD", {"is_pwd": true,
+		"monologue_text": "Pauwi na galing trabaho."}))
 	list.append(_make_regular("l2_s2_regular_2", "Papunta sa paroroonan."))
 	return list
 
@@ -624,7 +626,8 @@ func _build_l2_s3_roster() -> Array[Passenger]:
 		"monologue_text": "Nabasa ng ulan kanina."}))
 	list.append(_make("l2_s3_parent_baby", "Parent + Baby", {"is_parent_baby": true,
 		"monologue_text": "Dakilang ina."}))
-	list.append(_make_regular("l2_s3_regular_1", "Papunta sa paroroonan."))
+	list.append(_make("l2_s3_white_lady", "White Lady", {"is_white_lady": true,
+		"monologue_text": "..."}))
 	list.append(_make_regular("l2_s3_regular_2", "Papunta sa paroroonan."))
 	return list
 
@@ -664,8 +667,6 @@ func _build_l3_s2_roster() -> Array[Passenger]:
 		"monologue_text": "Wala pang tulog."}))
 	list.append(_make("l3_s2_wet", "Regular Commuter", {"is_wet": true,
 		"monologue_text": "Nabasa sa ulan kanina."}))
-	list.append(_make("l3_s2_white_lady", "White Lady", {"is_white_lady": true,
-		"monologue_text": "..."}))
 	list.append(_make_regular("l3_s2_regular_1", "Papunta sa paroroonan."))
 	list.append(_make_regular("l3_s2_regular_2", "Papunta sa paroroonan."))
 	return list
@@ -685,7 +686,8 @@ func _build_l3_s3_roster() -> Array[Passenger]:
 		"monologue_text": "Yes, ang sagot sa dine-in or takeout?"}))
 	list.append(_make("l3_s3_sweaty", "Regular Commuter", {"is_sweaty": true,
 		"monologue_text": "Pawis na pawis"}))
-	list.append(_make_regular("l3_s3_regular_1", "Papunta sa paroroonan "))
+	list.append(_make("l3_s3_white_lady", "White Lady", {"is_white_lady": true,
+		"monologue_text": "..."}))
 	list.append(_make("l3_s3_holdaper", "Suspicious Passenger", {"is_holdaper": true,
 		"monologue_text": "Masama ang tingin sa mga kwintas."}))
 	return list
