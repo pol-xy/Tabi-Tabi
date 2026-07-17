@@ -27,7 +27,13 @@ func _ready() -> void:
 	if not grid_manager.dimensions_changed.is_connected(_on_grid_dimensions_changed):
 		grid_manager.dimensions_changed.connect(_on_grid_dimensions_changed)
 
+	if not GameManager.campaign_complete.is_connected(_on_campaign_complete):
+		GameManager.campaign_complete.connect(_on_campaign_complete)
+
 	GameManager.start_campaign()
+
+func _on_campaign_complete() -> void:
+	get_tree().change_scene_to_file("res://Scenes/Main/MainMenu.tscn")
 
 func _on_grid_dimensions_changed(_rows: int, cols: int) -> void:
 	if _grid_container:

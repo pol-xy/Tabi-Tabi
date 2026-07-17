@@ -145,6 +145,13 @@ func _strip_card_chrome():
 	add_theme_stylebox_override("focus", empty)
 	add_theme_stylebox_override("disabled", empty)
 
+func restore_card_chrome():
+	remove_theme_stylebox_override("normal")
+	remove_theme_stylebox_override("hover")
+	remove_theme_stylebox_override("pressed")
+	remove_theme_stylebox_override("focus")
+	remove_theme_stylebox_override("disabled")
+
 func handle_drag_animations():
 	var current_pos = get_global_mouse_position()
 	var velocity = current_pos - last_mouse_pos

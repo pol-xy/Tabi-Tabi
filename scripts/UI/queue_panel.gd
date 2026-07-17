@@ -88,3 +88,26 @@ func _set_active(index: int) -> void:
 
 func _on_card_selected(passenger) -> void:
 	emit_signal("passenger_focused", passenger)
+
+func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
+	if typeof(data) == TYPE_DICTIONARY and data.has("logic_data") and data.has("ui_node"):
+		return true
+	return false
+
+func _drop_data(_at_position: Vector2, data: Variant) -> void:
+	var passenger_node = data["ui_node"]
+	var passenger = data["logic_data"]
+	
+	if passenger_node.is_seated:
+		GameManager.unseat_passenger(passenger)
+		
+		var old_parent = passenger_node.get_parent()
+		if old_parent:
+			old_parent.remove_child(passenger_node)
+		card_row.add_child(passenger_node)
+		
+		passenger_node.set_standby()
+		passenger_node.restore_card_chrome()
+		
+		_cards.append(passenger_node)
+		_set_active(0)

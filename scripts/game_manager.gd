@@ -182,7 +182,7 @@ func _ready() -> void:
 		{
 			"title": "Level 3 — Full House Logic",
 			"rows": 2,
-			"cols": 4,
+			"cols": 5,
 			"stages": [
 				{
 					"title": "Puzzle 3.1 — Morning Rush 1 (Full Capacity)",
@@ -287,6 +287,15 @@ func on_passenger_seated(passenger: Passenger) -> void:
 	var seated_count: int = current_grid.get_unique_passengers().size()
 	if seated_count >= _current_roster_size and _current_roster_size > 0:
 		_try_finish_stage(report)
+
+
+func unseat_passenger(passenger: Passenger) -> void:
+	if current_grid == null or passenger == null:
+		return
+	current_grid.remove_passenger(passenger)
+	var report: Dictionary = RuleValidator.validate(current_grid)
+	if hud:
+		hud.apply_validation_report(report)
 
 # --- The anger-meter penalty trigger ----------------------------------------
 ## Single entry point for "a passenger's anger meter hit zero" (queue-side
