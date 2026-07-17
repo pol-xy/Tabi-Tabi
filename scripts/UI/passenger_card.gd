@@ -53,6 +53,7 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 	if passenger_data == null:
 		return null
 
+	GameManager.play_sfx("drag_passenger")
 	was_seated = is_seated  # Preserve before clearing so seat_1.gd swap detection works
 
 	if is_seated:

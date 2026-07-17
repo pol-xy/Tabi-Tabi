@@ -19,5 +19,6 @@ func hide_popup() -> void:
 	visible = false
 
 func _on_continue_button_pressed() -> void:
+	GameManager.play_sfx("click_select")
 	hide_popup()
 	emit_signal("continue_pressed")

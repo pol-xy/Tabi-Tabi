@@ -99,6 +99,11 @@ func play_bgm(stream_name: String) -> void:
 	var stream = get_sound(stream_name)
 	if stream == null:
 		return
+	
+	# Ensure BGM loops forever so it doesn't stop during long level sessions
+	if "loop" in stream:
+		stream.loop = true
+		
 	if _bgm_player.stream == stream and _bgm_player.playing:
 		return
 	_bgm_player.stop()
@@ -116,6 +121,18 @@ func play_sfx(stream_name: String) -> void:
 	var player = AudioStreamPlayer.new()
 	add_child(player)
 	player.stream = stream
+	
+	# Tune specific SFX volumes so they don't overpower the background music
+	match stream_name:
+		"transition":
+			player.volume_db = -10.0
+		"drag_passenger":
+			player.volume_db = -12.0
+		"click_select":
+			player.volume_db = -8.0
+		"correct_seat", "wrong_seat", "dialogue":
+			player.volume_db = -4.0
+			
 	player.play()
 	player.finished.connect(func(): player.queue_free())
 
@@ -226,8 +243,6 @@ func register_hud(hud_node: Node) -> void:
 	if hud.has_signal("level_completed_continued") and not hud.level_completed_continued.is_connected(_on_level_completed_continued):
 		hud.level_completed_continued.connect(_on_level_completed_continued)
 
-func _on_level_completed_continued() -> void:
-	_advance_level()
 
 
 func register_grid(grid_node: JeepneyGrid) -> void:
@@ -321,11 +336,13 @@ func _advance_stage() -> void:
 	var level: Dictionary = _get_level(current_level_index)
 	if level.is_empty() or current_stage_index >= level["stages"].size():
 		if hud and hud.has_method("show_level_complete_popup"):
+			play_bgm("level_completed") # Level completed BGM on popup!
 			hud.show_level_complete_popup(level.get("title", "Level"))
 		else:
 			_advance_level()
 		return
 
+	play_sfx("transition") # Transition SFX between stages!
 	_start_current_stage()
 
 ## Moves to the next level, resets the stage counter, and ends the
@@ -339,11 +356,16 @@ func _advance_level() -> void:
 
 	if current_level_index >= levels.size():
 		_timer_active = false
+		play_bgm("level_completed") # Play Level Completed BGM at the end credits!
 		emit_signal("campaign_complete")
 		return
 
 	emit_signal("level_started", current_level_index)
 	_start_current_stage()
+
+func _on_level_completed_continued() -> void:
+	play_sfx("transition") # Transition SFX when continuing to next level!
+	_advance_level()
 
 func _get_level(index: int) -> Dictionary:
 	if index < 0 or index >= levels.size():
@@ -440,7 +462,7 @@ func _try_finish_stage(report: Dictionary) -> void:
 
 	_notify("Stage cleared! %s" % _star_string(stars), "success")
 	_report_stage_result(stars, true)
-	play_bgm("level_completed")
+	play_sfx("transition")
 
 	await get_tree().create_timer(STAGE_CLEAR_PAUSE_SEC).timeout
 	_advance_stage()

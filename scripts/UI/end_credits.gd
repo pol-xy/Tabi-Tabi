@@ -5,4 +5,5 @@ func _ready() -> void:
 	%BackButton.grab_focus()
 
 func _on_back_button_pressed() -> void:
+	GameManager.play_sfx("click_select")
 	get_tree().change_scene_to_file("res://Scenes/Main/MainMenu.tscn")
