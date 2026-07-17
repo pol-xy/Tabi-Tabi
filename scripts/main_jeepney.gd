@@ -38,19 +38,27 @@ func _on_campaign_complete() -> void:
 func _on_grid_dimensions_changed(_rows: int, cols: int) -> void:
 	var seats = _collect_seat_nodes()
 	
-	var start_x: float = 0.0
+	# Cabin midpoint in the GridContainer's local coordinate space.
+	# Derived from the confirmed-working 5-col layout (start_x=30, step_x=74):
+	#   leftmost seat edge  = 30
+	#   rightmost seat edge = 30 + 4*74 + 64 = 390
+	#   center              = (30 + 390) / 2  = 210
+	# Using a constant here means both layouts are centred at the same
+	# physical midpoint of the jeepney cabin background, regardless of
+	# how many columns are active.  Self-check: 210 - 360/2 = 30 ✅
+	const CABIN_CENTER_X := 210.0
+	const SEAT_W         := 64.0   # custom_minimum_size.x of every seat node
+
 	var step_x: float = 0.0
 	var row_y_offsets = [0.0, 96.0]
-	
+
 	if cols == 4:
-		# 8-seater layout (4 cols). Container offset_left = -320, so local 0 = leftmost.
-		# Cushions start around local x = 60
-		start_x = 60.0
 		step_x = 86.0
 	else:
-		# 10-seater layout (5 cols). Tighter step to fit 5 seats within cabin width.
-		start_x = 30.0
 		step_x = 74.0
+
+	var total_row_w := (cols - 1) * step_x + SEAT_W
+	var start_x     := CABIN_CENTER_X - total_row_w / 2.0
 
 	for seat in seats:
 		if seat == null:
@@ -61,6 +69,7 @@ func _on_grid_dimensions_changed(_rows: int, cols: int) -> void:
 		var local_x = start_x + (c * step_x)
 		var local_y = row_y_offsets[r]
 		seat.position = Vector2(local_x, local_y)
+
 
 ## Seats are the ColorRect nodes running seat_1.gd, found under
 ## Jeepney_BG/GridContainer. Collected generically (by script, not by name)
