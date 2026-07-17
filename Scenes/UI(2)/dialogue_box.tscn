@@ -41,5 +41,6 @@ animations = [{
 [node name="DialogueBox" type="Node2D" unique_id=632756330]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1272981405]
+scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_ql73s")
 autoplay = "default"

@@ -1,8 +1,180 @@
 [gd_scene format=3 uid="uid://bpe1c7y3l2wpu"]
 
-[ext_resource type="Script" path="res://scripts/UI/end_credits.gd" id="1_endcr"]
+[ext_resource type="Script" uid="uid://cnw61bg6a2o5g" path="res://scripts/UI/end_credits.gd" id="1_endcr"]
+[ext_resource type="Texture2D" uid="uid://cwr12h8dpxa35" path="res://Assets/Sprites/Backgrounds/End Screen.png" id="2_dcyia"]
 [ext_resource type="FontFile" uid="uid://dtxeaqt2nqy4q" path="res://Assets/Fonts/easvhs.ttf" id="2_y5k35"]
+[ext_resource type="Texture2D" uid="uid://8w3j31cwpbcy" path="res://Assets/Sprites/logo/Game logo.png" id="4_beuhg"]
 [ext_resource type="Texture2D" uid="uid://d1x25d32txpl8" path="res://Assets/Menu Button.png" id="4_l53to"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gvi8w"]
+atlas = ExtResource("2_dcyia")
+region = Rect2(0, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ct2uc"]
+atlas = ExtResource("2_dcyia")
+region = Rect2(161, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5gp34"]
+atlas = ExtResource("2_dcyia")
+region = Rect2(322, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rse3u"]
+atlas = ExtResource("2_dcyia")
+region = Rect2(483, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uhhvj"]
+atlas = ExtResource("2_dcyia")
+region = Rect2(644, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6wjx7"]
+atlas = ExtResource("2_dcyia")
+region = Rect2(805, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m4mq8"]
+atlas = ExtResource("2_dcyia")
+region = Rect2(966, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uodpa"]
+atlas = ExtResource("2_dcyia")
+region = Rect2(1127, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2d5ll"]
+atlas = ExtResource("2_dcyia")
+region = Rect2(1288, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7mgin"]
+atlas = ExtResource("2_dcyia")
+region = Rect2(1449, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a4nxq"]
+atlas = ExtResource("2_dcyia")
+region = Rect2(1610, 0, 160, 90)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ql73s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gvi8w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ct2uc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5gp34")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rse3u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uhhvj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6wjx7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m4mq8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uodpa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2d5ll")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7mgin")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a4nxq")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aalht"]
+atlas = ExtResource("4_beuhg")
+region = Rect2(0, 0, 80, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xh5af"]
+atlas = ExtResource("4_beuhg")
+region = Rect2(80, 0, 80, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lhqs4"]
+atlas = ExtResource("4_beuhg")
+region = Rect2(160, 0, 80, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2upyj"]
+atlas = ExtResource("4_beuhg")
+region = Rect2(240, 0, 80, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qaag0"]
+atlas = ExtResource("4_beuhg")
+region = Rect2(320, 0, 80, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6kqyy"]
+atlas = ExtResource("4_beuhg")
+region = Rect2(400, 0, 80, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2jm3d"]
+atlas = ExtResource("4_beuhg")
+region = Rect2(480, 0, 80, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ymnjc"]
+atlas = ExtResource("4_beuhg")
+region = Rect2(560, 0, 80, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u0rmy"]
+atlas = ExtResource("4_beuhg")
+region = Rect2(640, 0, 80, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ye5pa"]
+atlas = ExtResource("4_beuhg")
+region = Rect2(720, 0, 80, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mtg73"]
+atlas = ExtResource("4_beuhg")
+region = Rect2(800, 0, 80, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_v0s4m"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aalht")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xh5af")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lhqs4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2upyj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qaag0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6kqyy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2jm3d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ymnjc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u0rmy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ye5pa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mtg73")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kyqrf"]
 texture = ExtResource("4_l53to")
@@ -14,7 +186,7 @@ region_rect = Rect2(64, 0, 64, 14)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cu5nb"]
 
-[node name="EndCredits" type="Control"]
+[node name="EndCredits" type="Control" unique_id=1541499016]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,51 +195,49 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_endcr")
 
-[node name="Background" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.12549, 0.07843, 0.05882, 1)
+[node name="Background" type="AnimatedSprite2D" parent="." unique_id=2131269671]
+position = Vector2(590, 390)
+scale = Vector2(8.68, 8.68)
+sprite_frames = SubResource("SpriteFrames_ql73s")
 
-[node name="CreditsContainer" type="VBoxContainer" parent="."]
+[node name="Tabi-Tabi" type="AnimatedSprite2D" parent="." unique_id=1092679957]
+position = Vector2(642, 120)
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_v0s4m")
+autoplay = "default"
+
+[node name="CreditsContainer" type="VBoxContainer" parent="." unique_id=1197324360]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -400.0
-offset_top = -250.0
-offset_right = 400.0
-offset_bottom = 150.0
+offset_left = -401.0
+offset_top = -294.0
+offset_right = 399.0
+offset_bottom = 210.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 alignment = 1
 
-[node name="Title" type="Label" parent="CreditsContainer"]
+[node name="Title" type="Label" parent="CreditsContainer" unique_id=615475401]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.94902, 0.74902, 0.20392, 1)
+theme_override_colors/font_color = Color(0.17254902, 0.63529414, 0.21568628, 1)
 theme_override_fonts/font = ExtResource("2_y5k35")
 theme_override_font_sizes/font_size = 64
-text = "TABI-TABI"
 horizontal_alignment = 1
 
-[node name="Subtitle" type="Label" parent="CreditsContainer"]
+[node name="Subtitle" type="Label" parent="CreditsContainer" unique_id=1605708760]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.099985994, 0.099985994, 0.099985994, 1)
 theme_override_fonts/font = ExtResource("2_y5k35")
 theme_override_font_sizes/font_size = 32
 text = "Maraming salamat sa pagbyahe!"
 horizontal_alignment = 1
 
-[node name="Spacer" type="Control" parent="CreditsContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-
-[node name="CreditsHeader" type="Label" parent="CreditsContainer"]
+[node name="CreditsHeader" type="Label" parent="CreditsContainer" unique_id=203598136]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85098, 0.20392, 0.20392, 1)
 theme_override_fonts/font = ExtResource("2_y5k35")
@@ -75,15 +245,27 @@ theme_override_font_sizes/font_size = 28
 text = "--- MGA LUMIKHA ---"
 horizontal_alignment = 1
 
-[node name="CreditsContent" type="Label" parent="CreditsContainer"]
+[node name="CreditsContent" type="Label" parent="CreditsContainer" unique_id=911107172]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_y5k35")
-theme_override_font_sizes/font_size = 24
-text = "Rani & Team
-Game Programming, UI/UX, and Art"
+theme_override_font_sizes/font_size = 21
+text = "The Alt + F4 Devs: Daedan, JP, Jyvhan, Mhalik, Rani, Ritzy 
+Core Logic & Backend:  Mhalik B. Perez 
+Player Interaction & Audio: Regina Annemarie I. Bool 
+UI/UX Integration: Jon Paul S. Berana 
+Script Programmer: Jyvhan Earl D. Ponce
+World & UI Art: Daedan Ryu E. Alcantara 
+Character Design: Ritzy Leewis G. Celestial "
 horizontal_alignment = 1
 
-[node name="BackButton" type="Button" parent="."]
+[node name="CreditsContent2" type="Label" parent="CreditsContainer" unique_id=333546104]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 23
+text = "Made for UPLB Game Jam 2026 in ~120 hours."
+horizontal_alignment = 1
+
+[node name="BackButton" type="Button" parent="." unique_id=1511395436]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 70)
 layout_mode = 1

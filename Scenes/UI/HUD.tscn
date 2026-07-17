@@ -4,15 +4,14 @@
 [ext_resource type="PackedScene" uid="uid://djr0npvfp8drl" path="res://Scenes/UI/DialogueBubble.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/QueuePanel.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/StrikeCounter.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://Scenes/UI/QuotaPanel.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://bi0dm2lebaq5c" path="res://Scenes/UI/QuotaPanel.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/StageBanner.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://Scenes/UI/Notification.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://cq8mlrme1x160" path="res://Scenes/UI/Notification.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Tooltip.tscn" id="8"]
-[ext_resource type="Script" path="res://scripts/UI/queue_tray.gd" id="9"]
-[ext_resource type="PackedScene" path="res://Scenes/UI/LevelCompletionPopup.tscn" id="10_lvlcp"]
-[ext_resource type="PackedScene" path="res://Scenes/UI/PauseMenu.tscn" id="11_psmn"]
-[ext_resource type="PackedScene" path="res://Scenes/UI/GameOverPopup.tscn" id="12_govp"]
-[ext_resource type="FontFile" path="res://Assets/Fonts/easvhs.ttf" id="13_font"]
+[ext_resource type="Script" uid="uid://b82lid4rx4ifm" path="res://scripts/UI/queue_tray.gd" id="9"]
+[ext_resource type="PackedScene" uid="uid://bpe1c7y3l3wpu" path="res://Scenes/UI/LevelCompletionPopup.tscn" id="10_lvlcp"]
+[ext_resource type="PackedScene" uid="uid://bpe1c7y3l4wpy" path="res://Scenes/UI/PauseMenu.tscn" id="11_psmn"]
+[ext_resource type="PackedScene" uid="uid://bpe1c7y3l5wpy" path="res://Scenes/UI/GameOverPopup.tscn" id="12_govp"]
 [ext_resource type="Texture2D" uid="uid://cuc48wme4ctdf" path="res://Assets/Sprites/UI/Pause Button.png" id="14_pbtex"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pb0"]
@@ -101,18 +100,17 @@ flat = true
 
 [node name="PauseSprite" type="AnimatedSprite2D" parent="TopBar/PauseButton" unique_id=2021113211]
 position = Vector2(30, 30)
-scale = Vector2(2.0, 2.0)
+scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_pb")
-
 
 [node name="DialogueBubble" parent="." unique_id=478563709 instance=ExtResource("2")]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -170.0
-offset_top = 74.0
-offset_right = 170.0
-offset_bottom = 142.0
+offset_left = -532.0
+offset_top = 559.0
+offset_right = -192.0
+offset_bottom = 627.0
 grow_horizontal = 2
 
 [node name="QueueTray" type="PanelContainer" parent="." unique_id=1578472759]
@@ -126,7 +124,6 @@ offset_right = -20.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 0
-mouse_filter = 0
 script = ExtResource("9")
 
 [node name="QueuePanel" parent="." unique_id=796691388 instance=ExtResource("3")]
@@ -160,20 +157,7 @@ offset_right = 87.0
 offset_bottom = 27.0
 
 [node name="LevelCompletionPopup" parent="." unique_id=2021113208 instance=ExtResource("10_lvlcp")]
-layout_mode = 3
-anchors_preset = 15
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="PauseMenu" parent="." unique_id=2021113209 instance=ExtResource("11_psmn")]
-layout_mode = 3
-anchors_preset = 15
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="GameOverPopup" parent="." unique_id=2021113210 instance=ExtResource("12_govp")]
-layout_mode = 3
-anchors_preset = 15
-grow_horizontal = 2
-grow_vertical = 2
-
