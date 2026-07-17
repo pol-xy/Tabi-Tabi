@@ -13,6 +13,7 @@ var is_dragging: bool = false
 var is_seated: bool = false
 var was_seated: bool = false  ## Preserved across _get_drag_data so seat_1.gd can detect swaps
 var current_seat_index: int = -1
+var _seat_anim_id: int = 0  ## Incremented on every play_seated_animation call; stale coroutines check this and abort
 
 var last_mouse_pos: Vector2
 var _drag_preview: AnimatedSprite2D = null
@@ -167,17 +168,28 @@ func play_seated_animation(grid_row: int):
 	_strip_card_chrome()
 	current_seat_index = grid_row  # Store for lift animation reference later
 
+	# Bump the generation ID so any previously-running coroutine of this
+	# function knows it's been superseded and should abort before touching
+	# the animation state again (e.g. old row-0 coroutine's _idle tail would
+	# otherwise overwrite a freshly-applied row-1 nakatalikod pose).
+	_seat_anim_id += 1
+	var my_id := _seat_anim_id
+
 	if grid_row == 0:
 		# Upper/front bench → nakaharap sa driver → play _drop_front then settle in _idle
 		var drop_anim := anim_prefix + "_drop_front"
 		if anim_sprite.sprite_frames.has_animation(drop_anim):
 			anim_sprite.play(drop_anim)
 			await anim_sprite.animation_finished
-		
+			if _seat_anim_id != my_id:
+				return  # A newer seating call superseded us — abort
+
 		_play_anim(anim_sprite, anim_prefix + "_blink")
 		if anim_sprite.sprite_frames.has_animation(anim_prefix + "_blink"):
 			await anim_sprite.animation_finished
-		
+			if _seat_anim_id != my_id:
+				return  # A newer seating call superseded us — abort
+
 		_play_anim(anim_sprite, anim_prefix + "_idle")
 	else:
 		# Lower/back bench → nakatalikod → play _drop_back then STOP on last frame
@@ -186,6 +198,8 @@ func play_seated_animation(grid_row: int):
 		if anim_sprite.sprite_frames.has_animation(drop_anim):
 			anim_sprite.play(drop_anim)
 			await anim_sprite.animation_finished
+			if _seat_anim_id != my_id:
+				return  # A newer seating call superseded us — abort
 		# Stay on last frame of _drop_back = nakatalikod ✅
 
 # PassengerCard is a Button, which draws its own background panel by
