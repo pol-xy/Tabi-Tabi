@@ -197,7 +197,7 @@ func test_palengke_conflict() -> bool:
 	report = RuleValidator.validate(grid)
 	test_ok = assert_true(not report.is_valid, "Sweaty passenger next to employee violates Hygiene Conflict") and test_ok
 	
-	# PDA / Lovey Dovey (size 2) next to employee - should be fine now!
+	# PDA / Lovey Dovey (size 2) next to employee
 	grid.clear_grid()
 	var pair = Passenger.new()
 	pair.id = "lovey_dovey"
@@ -274,7 +274,6 @@ func test_magkasama_rule() -> bool:
 	test_ok = assert_true(report.violated_rules.has("magkasama"), "Magkasama rule flagged") and test_ok
 	
 	return test_ok
-
 
 func test_new_proposed_traits_and_characters() -> bool:
 	print("--- Running Test: New Proposed Traits & Characters ---")
