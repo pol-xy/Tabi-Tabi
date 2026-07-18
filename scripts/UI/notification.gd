@@ -1,15 +1,51 @@
 extends VBoxContainer
 ## Scripts/UI/notification.gd
-## Small toast messages (e.g. "Rule satisfied!", "Wrong seat!"). Any
-## system can call push() — queues stack vertically and auto-dismiss.
 
 const DISPLAY_SECONDS := 1.8
 const FADE_SECONDS := 0.25
+const MAX_VISIBLE := 4  ## Safety cap: if this many toasts are already on
+## screen, the oldest is dismissed immediately to make room, so a burst of
+## complaints can never pile up indefinitely.
 
 @export var toast_scene: PackedScene  ## Optional: assign a custom toast
 ## PackedScene with its own styling. If unset, a plain Label is used.
 
+var _active_toasts: Array[Control] = []       ## Oldest-first, currently on screen
+var _active_messages: Dictionary = {}          ## message text -> Control, for dedupe
+
 func push(message: String, type: String = "info") -> void:
+	# An identical message already on screen just keeps running its own
+	# timer -- no need for a second copy of the same complaint stacked
+	# right under the first.
+	if _active_messages.has(message):
+		return
+
+	while _active_toasts.size() >= MAX_VISIBLE:
+		var oldest: Control = _active_toasts.pop_front()
+		if is_instance_valid(oldest):
+			_active_messages.erase(oldest.get_meta("message", ""))
+			oldest.queue_free()
+
+	var toast: Control = _build_toast(message, type)
+	toast.set_meta("message", message)
+	add_child(toast)
+	_active_toasts.append(toast)
+	_active_messages[message] = toast
+
+	toast.modulate.a = 0.0
+	var tween := create_tween()
+	tween.tween_property(toast, "modulate:a", 1.0, FADE_SECONDS)
+	tween.tween_interval(DISPLAY_SECONDS)
+	tween.tween_property(toast, "modulate:a", 0.0, FADE_SECONDS)
+	tween.tween_callback(_remove_toast.bind(toast))
+
+func _remove_toast(toast: Control) -> void:
+	_active_toasts.erase(toast)
+	if is_instance_valid(toast):
+		_active_messages.erase(toast.get_meta("message", ""))
+		toast.queue_free()
+
+func _build_toast(message: String, type: String) -> Control:
 	var toast: Control
 	if toast_scene:
 		toast = toast_scene.instantiate()
@@ -34,14 +70,7 @@ func push(message: String, type: String = "info") -> void:
 		pill.add_theme_stylebox_override("panel", box)
 		pill.add_child(label)
 		toast = pill
-
-	add_child(toast)
-	toast.modulate.a = 0.0
-	var tween := create_tween()
-	tween.tween_property(toast, "modulate:a", 1.0, FADE_SECONDS)
-	tween.tween_interval(DISPLAY_SECONDS)
-	tween.tween_property(toast, "modulate:a", 0.0, FADE_SECONDS)
-	tween.tween_callback(toast.queue_free)
+	return toast
 
 func _color_for_type(type: String) -> Color:
 	match type:

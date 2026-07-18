@@ -82,12 +82,26 @@ func on_rule_satisfied(clue_text: String = "") -> void:
 # rely on id uniqueness in UI code beyond this bridge until Dev 1 confirms
 # ids are guaranteed unique (e.g. assigned at spawn time, not hand-typed
 # per Resource).
+## Tracks which complaint strings were showing per-passenger as of the last
+## validation pass, so we only toast what's actually NEW -- otherwise every
+## seating re-announces every already-known complaint from every unhappy
+## passenger in the jeepney, which is what was flooding the toast stack.
+var _last_shown_complaints: Dictionary = {}  # passenger_id -> Array[String]
+
 func apply_validation_report(report: Dictionary) -> void:
+	var current_complaints: Dictionary = {}
 	for p_id in report.passenger_status:
 		var status: Dictionary = report.passenger_status[p_id]
 		if not status["is_happy"]:
-			for complaint in status["complaints"]:
-				notification_area.push(complaint, "error")
+			var complaints: Array = status["complaints"]
+			current_complaints[p_id] = complaints
+			var previously_shown: Array = _last_shown_complaints.get(p_id, [])
+			for complaint in complaints:
+				if complaint not in previously_shown:
+					notification_area.push(complaint, "error")
+	# Anything not in current_complaints is either now happy or unseated --
+	# either way it's fine for its complaints to show fresh if they recur.
+	_last_shown_complaints = current_complaints
 	# NOTE: this used to also emit stage_cleared when report.is_valid was
 	# true. Stage completion is now GameManager's call entirely (everyone
 	# happy = cleared early, timer hits zero = time's up), so this
