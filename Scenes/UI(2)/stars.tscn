@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://bwe4ymivm2av2"]
+
+[ext_resource type="Texture2D" uid="uid://d4mqp3aag7bri" path="res://Assets/Sprites/UI/Stars Animation.png" id="1_t5oiy"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aw6gc"]
+atlas = ExtResource("1_t5oiy")
+region = Rect2(0, 0, 72, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vpb0l"]
+atlas = ExtResource("1_t5oiy")
+region = Rect2(72, 0, 72, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nbalq"]
+atlas = ExtResource("1_t5oiy")
+region = Rect2(144, 0, 72, 18)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ql73s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aw6gc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vpb0l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nbalq")
+}],
+"loop": 1,
+"name": &"StarsAnimation",
+"speed": 5.0
+}]
+
+[node name="Stars" type="Node2D" unique_id=632756330]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1272981405]
+sprite_frames = SubResource("SpriteFrames_ql73s")
+animation = &"StarsAnimation"
+frame_progress = 0.31450778

@@ -1,58 +1,119 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene format=3 uid="uid://mv5wsddprkt3"]
 
-[ext_resource type="Script" path="res://scripts/UI/hud.gd" id="1"]
-[ext_resource type="PackedScene" path="res://Scenes/UI/DialogueBubble.tscn" id="2"]
+[ext_resource type="Script" uid="uid://bbhuosirq0rjo" path="res://scripts/UI/hud.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://djr0npvfp8drl" path="res://Scenes/UI/DialogueBubble.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/QueuePanel.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/StrikeCounter.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://Scenes/UI/QuotaPanel.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://bi0dm2lebaq5c" path="res://Scenes/UI/QuotaPanel.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/StageBanner.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://Scenes/UI/Notification.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://cq8mlrme1x160" path="res://Scenes/UI/Notification.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Tooltip.tscn" id="8"]
-[ext_resource type="Theme" path="res://Scenes/UI/jeepney_theme.tres" id="9"]
+[ext_resource type="Script" uid="uid://b82lid4rx4ifm" path="res://scripts/UI/queue_tray.gd" id="9"]
+[ext_resource type="PackedScene" uid="uid://bpe1c7y3l3wpu" path="res://Scenes/UI/LevelCompletionPopup.tscn" id="10_lvlcp"]
+[ext_resource type="PackedScene" uid="uid://bpe1c7y3l4wpy" path="res://Scenes/UI/PauseMenu.tscn" id="11_psmn"]
+[ext_resource type="PackedScene" uid="uid://bpe1c7y3l5wpy" path="res://Scenes/UI/GameOverPopup.tscn" id="12_govp"]
+[ext_resource type="Texture2D" uid="uid://cuc48wme4ctdf" path="res://Assets/Sprites/UI/Pause Button.png" id="14_pbtex"]
 
-[node name="HUD" type="CanvasLayer"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_pb0"]
+atlas = ExtResource("14_pbtex")
+region = Rect2(0, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pb1"]
+atlas = ExtResource("14_pbtex")
+region = Rect2(18, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pb2"]
+atlas = ExtResource("14_pbtex")
+region = Rect2(36, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pb3"]
+atlas = ExtResource("14_pbtex")
+region = Rect2(54, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pb4"]
+atlas = ExtResource("14_pbtex")
+region = Rect2(72, 0, 18, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pb5"]
+atlas = ExtResource("14_pbtex")
+region = Rect2(90, 0, 18, 22)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_pb"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pb0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pb1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pb2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pb3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pb4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pb5")
+}],
+"loop": 0,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="HUD" type="CanvasLayer" unique_id=1665897047]
 script = ExtResource("1")
 
-[node name="Root" type="Control" parent="."]
-theme = ExtResource("9")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-
-[node name="TopBar" type="HBoxContainer" parent="Root"]
-layout_mode = 1
+[node name="TopBar" type="HBoxContainer" parent="." unique_id=1770380210]
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 16.0
 offset_left = 20.0
+offset_top = 16.0
 offset_right = -20.0
-alignment = 0
+offset_bottom = 105.0
+grow_horizontal = 2
 theme_override_constants/separation = 16
 
-[node name="QuotaPanel" parent="Root/TopBar" instance=ExtResource("5")]
+[node name="QuotaPanel" parent="TopBar" unique_id=313560990 instance=ExtResource("5")]
 layout_mode = 2
 
-[node name="TopBarSpacer" type="Control" parent="Root/TopBar"]
+[node name="TopBarSpacer" type="Control" parent="TopBar" unique_id=948014752]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="StrikeCounter" parent="Root/TopBar" instance=ExtResource("4")]
+[node name="StrikeCounter" parent="TopBar" unique_id=542256293 instance=ExtResource("4")]
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="DialogueBubble" parent="Root" instance=ExtResource("2")]
-layout_mode = 1
+[node name="PauseButton" type="Button" parent="TopBar" unique_id=1029491823]
+process_mode = 3
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="PauseSprite" type="AnimatedSprite2D" parent="TopBar/PauseButton" unique_id=2021113211]
+position = Vector2(30, 30)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_pb")
+
+[node name="DialogueBubble" parent="." unique_id=478563709 instance=ExtResource("2")]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -170.0
-offset_top = 74.0
-offset_right = 170.0
+offset_left = -532.0
+offset_top = 559.0
+offset_right = -192.0
+offset_bottom = 627.0
+grow_horizontal = 2
 
-[node name="QueueTray" type="PanelContainer" parent="Root"]
-layout_mode = 1
+[node name="QueueTray" type="PanelContainer" parent="." unique_id=1578472759]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -61,33 +122,42 @@ offset_left = 20.0
 offset_top = -142.0
 offset_right = -20.0
 offset_bottom = -20.0
-mouse_filter = 2
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("9")
 
-[node name="QueuePanel" parent="Root" instance=ExtResource("3")]
-layout_mode = 1
+[node name="QueuePanel" parent="." unique_id=796691388 instance=ExtResource("3")]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 24.0
-offset_top = -138.0
+offset_top = -140.0
 offset_right = -24.0
 offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
 
-[node name="StageBanner" parent="Root" instance=ExtResource("6")]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="StageBanner" parent="." unique_id=1500337321 instance=ExtResource("6")]
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="NotificationArea" parent="Root" instance=ExtResource("7")]
-layout_mode = 1
+[node name="NotificationArea" parent="." unique_id=885472462 instance=ExtResource("7")]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -240.0
 offset_top = 90.0
 offset_right = -20.0
+offset_bottom = 90.0
+grow_horizontal = 0
 
-[node name="Tooltip" parent="Root" instance=ExtResource("8")]
-layout_mode = 1
+[node name="Tooltip" parent="." unique_id=763613866 instance=ExtResource("8")]
+offset_right = 87.0
+offset_bottom = 27.0
+
+[node name="LevelCompletionPopup" parent="." unique_id=2021113208 instance=ExtResource("10_lvlcp")]
+
+[node name="PauseMenu" parent="." unique_id=2021113209 instance=ExtResource("11_psmn")]
+
+[node name="GameOverPopup" parent="." unique_id=2021113210 instance=ExtResource("12_govp")]

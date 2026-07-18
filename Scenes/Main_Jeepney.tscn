@@ -1,9 +1,11 @@
 [gd_scene format=3 uid="uid://cfdcadtgbc4a4"]
 
 [ext_resource type="Script" uid="uid://c3w1nxndp1bfh" path="res://Scenes/seat_1.gd" id="1_tfd51"]
-[ext_resource type="PackedScene" uid="uid://cp47pc4gf3f3c" path="res://Scenes/PassengerCard.tscn" id="2_urg85"]
 [ext_resource type="Script" uid="uid://bpprlwb8yn4t" path="res://scripts/jeepney_grid.gd" id="3_urg85"]
-[ext_resource type="PackedScene" uid="uid://djr0npvfp8drl" path="res://Scenes/UI/DialogueBubble.tscn" id="4_bf34w"]
+[ext_resource type="Script" uid="uid://yltepmu8n5h8" path="res://scripts/main_jeepney.gd" id="5_gm001"]
+[ext_resource type="PackedScene" uid="uid://mv5wsddprkt3" path="res://Scenes/UI/HUD.tscn" id="5_svhdg"]
+[ext_resource type="Script" uid="uid://cbkihrtiuli5d" path="res://scripts/UI/bg_animator.gd" id="6_bganim"]
+[ext_resource type="Script" uid="uid://cq14ich4hekhe" path="res://scripts/UI/jeep_exterior.gd" id="7_jeepext"]
 
 [node name="Main_Jeepney" type="Control" unique_id=1653784688]
 layout_mode = 3
@@ -16,133 +18,122 @@ offset_right = 12.0
 offset_bottom = -45.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("5_gm001")
 
 [node name="Jeepney_BG" type="ColorRect" parent="." unique_id=1747000609]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -224.5
-offset_top = -141.75
-offset_right = 288.0
-offset_bottom = 142.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.14117648, 0.14117648, 0.14117648, 1)
 
-[node name="GridContainer" type="GridContainer" parent="Jeepney_BG" unique_id=1146529060]
+[node name="BG_Sprite" type="TextureRect" parent="Jeepney_BG" unique_id=-403962879]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("6_bganim")
+
+[node name="JeepExterior" type="TextureRect" parent="Jeepney_BG" unique_id=1875727646]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -134.0
-offset_top = -66.0
-offset_right = 134.0
-offset_bottom = 66.0
+offset_left = -350.0
+offset_top = -168.0
+offset_right = 350.0
+offset_bottom = 168.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/h_separation = 21
-theme_override_constants/v_separation = 62
-columns = 5
+mouse_filter = 2
+script = ExtResource("7_jeepext")
+
+[node name="GridContainer" type="Control" parent="Jeepney_BG" unique_id=1146529060]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -95.0
+offset_right = 200.0
+offset_bottom = 95.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="Seat1" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=2018713208]
 custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
+layout_mode = 0
 script = ExtResource("1_tfd51")
 
 [node name="Seat2" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=1470910757]
 custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
+layout_mode = 0
 script = ExtResource("1_tfd51")
 grid_col = 1
 
 [node name="Seat3" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=1663976812]
 custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
+layout_mode = 0
 script = ExtResource("1_tfd51")
 grid_col = 2
 
 [node name="Seat4" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=1715284878]
 custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
+layout_mode = 0
 script = ExtResource("1_tfd51")
 grid_col = 3
 
 [node name="Seat5" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=1822933662]
 custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
+layout_mode = 0
 script = ExtResource("1_tfd51")
 grid_col = 4
 
 [node name="Seat6" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=1639735771]
 custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
+layout_mode = 0
 script = ExtResource("1_tfd51")
 grid_row = 1
 
 [node name="Seat7" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=1166047467]
 custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
+layout_mode = 0
 script = ExtResource("1_tfd51")
 grid_row = 1
 grid_col = 1
 
 [node name="Seat8" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=1741771391]
 custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
+layout_mode = 0
 script = ExtResource("1_tfd51")
 grid_row = 1
 grid_col = 2
 
 [node name="Seat9" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=45402423]
 custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
+layout_mode = 0
 script = ExtResource("1_tfd51")
 grid_row = 1
 grid_col = 3
 
 [node name="Seat10" type="ColorRect" parent="Jeepney_BG/GridContainer" unique_id=2123647351]
 custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
+layout_mode = 0
 script = ExtResource("1_tfd51")
 grid_row = 1
 grid_col = 4
 
-[node name="PassengerCard" parent="." unique_id=859227506 instance=ExtResource("2_urg85")]
-layout_mode = 0
-offset_left = 238.0
-offset_top = 214.0
-offset_right = 314.0
-offset_bottom = 314.0
-
-[node name="PassengerCard2" parent="." unique_id=373788977 instance=ExtResource("2_urg85")]
-layout_mode = 0
-offset_left = 237.0
-offset_top = 334.0
-offset_right = 313.0
-offset_bottom = 434.0
-
-[node name="PassengerCard3" parent="." unique_id=1123814603 instance=ExtResource("2_urg85")]
-layout_mode = 0
-offset_left = 140.0
-offset_top = 335.0
-offset_right = 216.0
-offset_bottom = 435.0
-
-[node name="PassengerCard4" parent="." unique_id=1068204293 instance=ExtResource("2_urg85")]
-layout_mode = 0
-offset_left = 140.0
-offset_top = 214.0
-offset_right = 216.0
-offset_bottom = 314.0
-
 [node name="JeepneyGridManager" type="Node" parent="." unique_id=1059591609]
 script = ExtResource("3_urg85")
 
-[node name="HUD" type="CanvasLayer" parent="." unique_id=380051188]
-
-[node name="DialogueBubble" parent="HUD" unique_id=1604388256 instance=ExtResource("4_bf34w")]
+[node name="HUD" parent="." unique_id=1738003382 instance=ExtResource("5_svhdg")]

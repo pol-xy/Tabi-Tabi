@@ -24,10 +24,19 @@ func populate(passengers: Array[Passenger]) -> void:
 	clear()
 	for passenger in passengers:
 		var card = passenger_card_scene.instantiate()
-		card_row.add_child(card)
-		card.setup(passenger)
+		
+		# 1. Inject the data FIRST
+		card.passenger_data = passenger
+		
+		# 2. Connect your signals
 		card.card_selected.connect(_on_card_selected)
+		
+		# 3. Add it to the tree LAST. 
+		# This safely triggers _ready() in passenger_card.gd AFTER the data is injected.
+		card_row.add_child(card)
+		
 		_cards.append(card)
+		
 	if _cards.size() > 0:
 		_set_active(0)
 
@@ -61,9 +70,55 @@ func remove_passenger(passenger: Passenger) -> void:
 func is_empty() -> bool:
 	return _cards.is_empty()
 
+## Removes a passenger's card from queue bookkeeping WITHOUT freeing the
+## node -- use this when the card has been reparented elsewhere (e.g. into
+## a seat by seat_1.gd) rather than actually dismissed/removed from play.
+## remove_passenger() above is for the latter case and frees the node.
+func detach_passenger(passenger: Passenger) -> void:
+	for i in _cards.size():
+		if _cards[i].passenger_data == passenger:
+			_cards.remove_at(i)
+			break
+	if _cards.size() > 0:
+		_set_active(0)
+
 func _set_active(index: int) -> void:
 	for i in _cards.size():
 		_cards[i].is_active = (i == index)
 
 func _on_card_selected(passenger) -> void:
 	emit_signal("passenger_focused", passenger)
+
+func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
+	if GameManager._stage_finishing:
+		return false
+	if typeof(data) == TYPE_DICTIONARY and data.has("logic_data") and data.has("ui_node"):
+		return true
+	return false
+
+func _drop_data(_at_position: Vector2, data: Variant) -> void:
+	if GameManager._stage_finishing:
+		return
+	var passenger_node = data["ui_node"]
+	if not is_instance_valid(passenger_node):
+		return
+	var passenger = data["logic_data"]
+	
+	# NOTE: is_seated is already false by the time drop fires (cleared in _get_drag_data).
+	# was_seated is preserved so we can tell if the card came from a seat vs. queue.
+	if passenger_node.was_seated:
+		GameManager.unseat_passenger(passenger)
+		
+		var old_parent = passenger_node.get_parent()
+		if old_parent:
+			old_parent.remove_child(passenger_node)
+		card_row.add_child(passenger_node)
+		
+		passenger_node.set_standby()
+		passenger_node.restore_card_chrome()
+		# Clear was_seated so NOTIFICATION_DRAG_END doesn't restore the seated animation
+		# on a card that is now properly in the queue (nakaharap = idle).
+		passenger_node.was_seated = false
+		
+		_cards.append(passenger_node)
+		_set_active(0)

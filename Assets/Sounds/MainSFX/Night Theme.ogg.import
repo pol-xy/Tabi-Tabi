@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://ck58871qsx01g"
+path="res://.godot/imported/Night Theme.ogg-eed908b93093de67127daac09283bdf9.oggvorbisstr"
+
+[deps]
+
+source_file="res://Assets/Sounds/MainSFX/Night Theme.ogg"
+dest_files=["res://.godot/imported/Night Theme.ogg-eed908b93093de67127daac09283bdf9.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

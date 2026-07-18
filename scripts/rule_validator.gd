@@ -1,13 +1,7 @@
 class_name RuleValidator
 extends RefCounted
 
-# Validates the entire jeepney grid and returns a dictionary report of the status.
-# Report structure:
-# {
-#     "is_valid": bool,
-#     "violated_rules": Array[String],
-#     "passenger_status": Dictionary (key: String, value: {"is_happy": bool, "complaints": Array[String]})
-# }
+# Validates the entire jeepney grid,returns a dictionary report of the status
 static func validate(grid: JeepneyGrid) -> Dictionary:
 	var report = {
 		"is_valid": true,
@@ -32,7 +26,7 @@ static func validate(grid: JeepneyGrid) -> Dictionary:
 	_check_hygiene_conflict(grid, report)
 	_check_introvert_conflict(grid, report)
 	_check_magkasama_rule(grid, report)
-	_check_new_character_rules(grid, report)
+	_check_sleepy_rule(grid, report)
 	
 	# Evaluate final overall validity
 	for p_id in report.passenger_status:
@@ -42,6 +36,7 @@ static func validate(grid: JeepneyGrid) -> Dictionary:
 	report.erase("passenger_status_keys")
 			
 	return report
+
 
 # 1. The Tagabot (Fare Passer) Rule
 # Seat next to driver (highest index) must 
@@ -58,14 +53,16 @@ static func _check_tagabot_rule(grid: JeepneyGrid, report: Dictionary) -> void:
 				p.is_senior or 
 				p.is_pregnant or
 				p.is_parent_baby or
-				p.alights_soon
+				p.alights_soon or
+				p.is_introvert
 			)
 			if cannot_pass_fare:
 				_mark_unhappy(report, p, "tagabot", "Hindi ako makakapag-abot ng bayad dito (may condition/tulog/bulky/bababa na).")
 
-# 2. The Accessibility Rule
-# Tier 1 (Seniors, PWDs, Pregnant) must sit exactly at the edge (index 0).
-# Tier 2 (Heavy Loads) must sit near the door (index 0 or 1).
+# --- 2. The Accessibility Rule
+# Tier 1 (Seniors, PWDs, Pregnant) must sit at edge/idx 0
+# Tier 2 (Heavy Loads) must sit near the door/idx 0 or 1 ---
+
 static func _check_accessibility_rule(grid: JeepneyGrid, report: Dictionary) -> void:
 	var passengers = grid.get_unique_passengers()
 	for p in passengers:
@@ -90,7 +87,9 @@ static func _check_accessibility_rule(grid: JeepneyGrid, report: Dictionary) -> 
 			if not near_door:
 				_mark_unhappy(report, p, "accessibility", "Dapat malapit ako sa exit (index 0 or 1) dahil may dala akong mabigat.")
 
-# 3. Hygiene/Palengke Conflict (is_wet or is_sweaty next to is_employee or is_student)
+# --- 3. Hygiene/Palengke Conflict 
+# (is_wet or is_sweaty next to is_employee or is_student) ---
+
 static func _check_hygiene_conflict(grid: JeepneyGrid, report: Dictionary) -> void:
 	var passengers = grid.get_unique_passengers()
 	for p in passengers:
@@ -104,7 +103,9 @@ static func _check_hygiene_conflict(grid: JeepneyGrid, report: Dictionary) -> vo
 					_mark_unhappy(report, p, "palengke", "%s, baka madumihan ko ang katabi kong %s." % [reason_self, role_name])
 					_mark_unhappy(report, n, "palengke", "%s yung katabi ko, madudumihan ang uniporme ko!" % reason_neighbor)
 
-# 4. Introvert Conflict (is_introvert next to is_noisy)
+# --- 4. Introvert Conflict 
+# (is_introvert next to is_noisy) ---
+
 static func _check_introvert_conflict(grid: JeepneyGrid, report: Dictionary) -> void:
 	var passengers = grid.get_unique_passengers()
 	for p in passengers:
@@ -127,8 +128,9 @@ static func _check_introvert_conflict(grid: JeepneyGrid, report: Dictionary) -> 
 							_mark_unhappy(report, p, "introvert_conflict", "Masyadong maingay ang lasing na malapit sa akin.")
 							_mark_unhappy(report, other, "introvert_conflict", "Maingay ako, mukhang naiirita ang mga katabi ko.")
 
-# 5. Magkasama (Companion) Rule
-# Companions must be side-by-side or directly facing.
+# --- 5. Magkasama (Companion) Rule
+# Companions must be side-by-side or directly facing eo ---
+
 static func _check_magkasama_rule(grid: JeepneyGrid, report: Dictionary) -> void:
 	var passengers = grid.get_unique_passengers()
 	for p in passengers:
@@ -182,44 +184,15 @@ static func _check_magkasama_rule(grid: JeepneyGrid, report: Dictionary) -> void
 
 
 # 7. Holdaper and Graveyard Worker custom rules
-static func _check_new_character_rules(grid: JeepneyGrid, report: Dictionary) -> void:
+static func _check_sleepy_rule(grid: JeepneyGrid, report: Dictionary) -> void:
 	var passengers = grid.get_unique_passengers()
 	for p in passengers:
-		# Holdaper: must be seated at the front (index grid.col_count - 1)
-		if p.is_holdaper:
-			var slots = grid.get_occupied_slots(p)
-			if not slots.is_empty():
-				var col = slots[slots.size() - 1].y
-				if col != grid.col_count - 1:
-					_mark_unhappy(report, p, "holdaper_panic", "Gusto ko sa tabi ng driver sasakay!")
-					# Nearby passengers take a happiness hit
-					var neighbors = grid.get_adjacent_neighbors(p)
-					for n in neighbors:
-						_mark_unhappy(report, n, "holdaper_panic", "Mukhang holdaper itong katabi ko, natatakot ako!")
-		
-		# Graveyard-Shift Worker: Sleepy-heavy, wants a quiet corner
-		if p.is_graveyard_worker:
-			var slots = grid.get_occupied_slots(p)
-			if not slots.is_empty():
-				var col = slots[0].y
-				var is_corner = (col == 0 or col == grid.col_count - 1)
-				if not is_corner:
-					_mark_unhappy(report, p, "graveyard_worker", "Gusto ko sana sa dulo/sulok para makapahinga.")
-				
-				# Cannot be next to a noisy passenger
-				var neighbors = grid.get_adjacent_neighbors(p)
-				for n in neighbors:
-					if n.is_noisy:
-						_mark_unhappy(report, p, "graveyard_worker", "Masyadong maingay ang katabi ko, hindi ako makatulog.")
-				
-				# Cannot be within 2 seats of Drunk Man
-				for other in passengers:
-					if other.is_drunk_man:
-						var slots_o = grid.get_occupied_slots(other)
-						if not slots_o.is_empty():
-							var col_o = slots_o[0].y
-							if abs(col - col_o) <= 2:
-								_mark_unhappy(report, p, "graveyard_worker", "Masyadong maingay ang lasing na malapit sa akin.")
+		if p.is_sleepy:
+			var neighbors = grid.get_adjacent_neighbors(p)
+			for n in neighbors:
+				if n.is_noisy:
+					_mark_unhappy(report, p, "introvert_conflict", "Masyadong maingay ang katabi ko, gusto ko ng katahimikan.")
+					_mark_unhappy(report, n, "introvert_conflict", "Maingay ako, mukhang naiirita ang katabi ko.")
 
 # Helper to mark passenger unhappy and record complaint
 static func _mark_unhappy(report: Dictionary, passenger: Passenger, rule_name: String, complaint: String) -> void:

@@ -1,37 +1,37 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://bi0dm2lebaq5c"]
 
-[ext_resource type="Script" path="res://scripts/UI/quota_panel.gd" id="1"]
+[ext_resource type="Script" uid="uid://g6cn6d4k073f" path="res://scripts/UI/quota_panel.gd" id="1"]
+[ext_resource type="FontFile" uid="uid://dtxeaqt2nqy4q" path="res://Assets/Fonts/easvhs.ttf" id="2_ifn5d"]
 
-[node name="QuotaPanel" type="PanelContainer"]
+[node name="QuotaPanel" type="PanelContainer" unique_id=1443643253]
 custom_minimum_size = Vector2(200, 0)
 script = ExtResource("1")
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="Margin" type="MarginContainer" parent="." unique_id=1125194449]
 layout_mode = 2
 theme_override_constants/margin_left = 14
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 14
 theme_override_constants/margin_bottom = 10
 
-[node name="VBox" type="VBoxContainer" parent="Margin"]
+[node name="VBox" type="VBoxContainer" parent="Margin" unique_id=1288940181]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="QuotaLabel" type="Label" parent="Margin/VBox"]
+[node name="QuotaLabel" type="Label" parent="Margin/VBox" unique_id=581313383]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ifn5d")
+theme_override_font_sizes/font_size = 19
 text = "ARAW-ARAW NA KITA"
-theme_override_font_sizes/font_size = 10
-theme_override_colors/font_color = Color(0.227, 0.153, 0.094, 0.65)
 
-[node name="AmountLabel" type="Label" parent="Margin/VBox"]
+[node name="AmountLabel" type="Label" parent="Margin/VBox" unique_id=402087960]
 layout_mode = 2
-text = "₱0 / ₱0"
-theme_override_font_sizes/font_size = 22
 theme_override_colors/font_color = Color(0.227, 0.153, 0.094, 1)
-theme_override_colors/font_outline_color = Color(1.0, 0.788, 0.235, 1)
 theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 21
+text = "₱0 / ₱0"
 
-[node name="ProgressBar" type="ProgressBar" parent="Margin/VBox"]
+[node name="ProgressBar" type="ProgressBar" parent="Margin/VBox" unique_id=214100246]
 custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 show_percentage = false

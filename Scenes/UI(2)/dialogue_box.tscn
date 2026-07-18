@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://oc7ktsjrkaue"]
+
+[ext_resource type="Texture2D" uid="uid://bsr1adoax3jr1" path="res://Assets/Sprites/UI/Dialogue Box asset.png" id="1_xo3oj"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aw6gc"]
+atlas = ExtResource("1_xo3oj")
+region = Rect2(0, 0, 107, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vpb0l"]
+atlas = ExtResource("1_xo3oj")
+region = Rect2(107, 0, 107, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nbalq"]
+atlas = ExtResource("1_xo3oj")
+region = Rect2(214, 0, 107, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u77bu"]
+atlas = ExtResource("1_xo3oj")
+region = Rect2(321, 0, 107, 28)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ql73s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aw6gc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vpb0l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nbalq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u77bu")
+}],
+"loop": 0,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="DialogueBox" type="Node2D" unique_id=632756330]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1272981405]
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_ql73s")
+autoplay = "default"

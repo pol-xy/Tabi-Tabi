@@ -1,0 +1,129 @@
+[gd_scene format=3 uid="uid://jkxgs38qvnq3"]
+
+[ext_resource type="Texture2D" uid="uid://dwdtme5vch06j" path="res://Assets/Sprites/Jeepneys/Jeep6/frame_0_delay-0.1s.png" id="1_uow8r"]
+[ext_resource type="Texture2D" uid="uid://b23cu1gail4p7" path="res://Assets/Sprites/Jeepneys/Jeep6/frame_1_delay-0.1s.png" id="2_r3aon"]
+[ext_resource type="Texture2D" uid="uid://bhwnfe514fae6" path="res://Assets/Sprites/Jeepneys/Jeep6/frame_2_delay-0.1s.png" id="3_wjwyx"]
+[ext_resource type="Texture2D" uid="uid://bdbxm6dmq56me" path="res://Assets/Sprites/Jeepneys/Jeep6/frame_3_delay-0.1s.png" id="4_bl8aj"]
+[ext_resource type="Texture2D" uid="uid://klvq7axqelbo" path="res://Assets/Sprites/Jeepneys/Jeep6/frame_4_delay-0.1s.png" id="5_ib3tf"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_v0s4m"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_uow8r")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_r3aon")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_wjwyx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_bl8aj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_ib3tf")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v0s4m"]
+size = Vector2(66, 43.6875)
+
+[node name="Jeep6" type="Node2D" unique_id=1601962495]
+position = Vector2(546, 324)
+scale = Vector2(0.25, 0.25)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=914706916]
+position = Vector2(4, -8)
+sprite_frames = SubResource("SpriteFrames_v0s4m")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.65835476
+
+[node name="Seats" type="Node2D" parent="." unique_id=16581149]
+
+[node name="Seat01" type="Area2D" parent="Seats" unique_id=200911469]
+position = Vector2(12, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat01" unique_id=420863425]
+position = Vector2(-355, -49.15625)
+shape = SubResource("RectangleShape2D_v0s4m")
+
+[node name="Marker2D" type="Marker2D" parent="Seats/Seat01" unique_id=1474090436]
+position = Vector2(-356, -48)
+
+[node name="Seat02" type="Area2D" parent="Seats" unique_id=1140170382]
+position = Vector2(32, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat02" unique_id=1552064743]
+position = Vector2(-254, -49)
+shape = SubResource("RectangleShape2D_v0s4m")
+
+[node name="Marker2D" type="Marker2D" parent="Seats/Seat02" unique_id=402046228]
+position = Vector2(-253, -48)
+
+[node name="Seat03" type="Area2D" parent="Seats" unique_id=275932082]
+position = Vector2(52, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat03" unique_id=257623969]
+position = Vector2(-154, -49)
+shape = SubResource("RectangleShape2D_v0s4m")
+
+[node name="Marker2D" type="Marker2D" parent="Seats/Seat03" unique_id=1628892609]
+position = Vector2(-153, -49)
+
+[node name="Seat04" type="Area2D" parent="Seats" unique_id=306116131]
+position = Vector2(76, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat04" unique_id=2143503801]
+position = Vector2(-54, -49)
+shape = SubResource("RectangleShape2D_v0s4m")
+
+[node name="Marker2D" type="Marker2D" parent="Seats/Seat04" unique_id=787806690]
+position = Vector2(-53, -47)
+
+[node name="Seat05" type="Area2D" parent="Seats" unique_id=621821843]
+position = Vector2(-388, 108)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat05" unique_id=1986685934]
+position = Vector2(46, -49)
+shape = SubResource("RectangleShape2D_v0s4m")
+
+[node name="Marker2D" type="Marker2D" parent="Seats/Seat05" unique_id=1592318389]
+position = Vector2(45, -48)
+
+[node name="Seat06" type="Area2D" parent="Seats" unique_id=379981830]
+position = Vector2(136, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat06" unique_id=100179735]
+position = Vector2(-356, 56)
+shape = SubResource("RectangleShape2D_v0s4m")
+
+[node name="Marker2D" type="Marker2D" parent="Seats/Seat06" unique_id=845420876]
+position = Vector2(-357, 56)
+
+[node name="Seat07" type="Area2D" parent="Seats" unique_id=1920108361]
+position = Vector2(152, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat07" unique_id=1462944099]
+position = Vector2(-254, 56)
+shape = SubResource("RectangleShape2D_v0s4m")
+
+[node name="Marker2D" type="Marker2D" parent="Seats/Seat07" unique_id=167749553]
+position = Vector2(-250, 56)
+
+[node name="Seat08" type="Area2D" parent="Seats" unique_id=310117905]
+position = Vector2(176, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Seats/Seat08" unique_id=1933111045]
+position = Vector2(-155, 57)
+shape = SubResource("RectangleShape2D_v0s4m")
+
+[node name="Marker2D" type="Marker2D" parent="Seats/Seat08" unique_id=1370876232]
+position = Vector2(-154, 61)
+
+[node name="PassengerContainer" type="Node2D" parent="." unique_id=215710295]
+position = Vector2(-135, 7)

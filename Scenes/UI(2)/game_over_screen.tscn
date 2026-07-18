@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://bykyba6dnj84k"]
+
+[ext_resource type="Texture2D" uid="uid://dfn330yc61ltm" path="res://Assets/Sprites/UI/Game over Screen.png" id="1_x703a"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2d0jx"]
+atlas = ExtResource("1_x703a")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7xn6c"]
+atlas = ExtResource("1_x703a")
+region = Rect2(96, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_05bpn"]
+atlas = ExtResource("1_x703a")
+region = Rect2(192, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lbyn3"]
+atlas = ExtResource("1_x703a")
+region = Rect2(288, 0, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ql73s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2d0jx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7xn6c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_05bpn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lbyn3")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="GameOverScreen" type="Node2D" unique_id=632756330]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1272981405]
+sprite_frames = SubResource("SpriteFrames_ql73s")
+frame_progress = 0.49344614

@@ -1,0 +1,119 @@
+[gd_scene format=3 uid="uid://dio8oaiaylstx"]
+
+[ext_resource type="Texture2D" uid="uid://c83l16a70j7wc" path="res://Assets/Sprites/UI/Overhead Emotes.png" id="1_a7rwh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a7rwh"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(45, 0, 15, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g4une"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(60, 0, 15, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mauhn"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(75, 0, 15, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sboti"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(0, 0, 15, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6frsf"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(15, 0, 15, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1yi0i"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(30, 0, 15, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tbwp7"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(135, 0, 15, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s2lnl"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(150, 0, 15, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r3ehw"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(165, 0, 15, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_etb1x"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(90, 0, 15, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jicte"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(105, 0, 15, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vvfsw"]
+atlas = ExtResource("1_a7rwh")
+region = Rect2(120, 0, 15, 12)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ql73s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a7rwh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g4une")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mauhn")
+}],
+"loop": 1,
+"name": &"Check",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sboti")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6frsf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1yi0i")
+}],
+"loop": 1,
+"name": &"Cross",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tbwp7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s2lnl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r3ehw")
+}],
+"loop": 1,
+"name": &"RedWarning",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_etb1x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jicte")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vvfsw")
+}],
+"loop": 0,
+"name": &"YellowWarning",
+"speed": 10.0
+}]
+
+[node name="OverheadEmotes" type="Node2D" unique_id=1375323772]
+position = Vector2(0, -1)
+scale = Vector2(5, 5)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1080459171]
+sprite_frames = SubResource("SpriteFrames_ql73s")
+animation = &"YellowWarning"
+autoplay = "YellowWarning"
