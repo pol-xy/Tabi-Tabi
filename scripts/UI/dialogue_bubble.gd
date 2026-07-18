@@ -40,9 +40,17 @@ func set_text(bbcode_text: String) -> void:
 	await get_tree().process_frame  # let the container resize to new text height first
 	queue_redraw()
 	show_bubble()
-	
-	await get_tree().create_timer(2.0).timeout
+
+	await get_tree().create_timer(_read_duration_for(bbcode_text)).timeout
 	hide_bubble()
+
+## Roughly how long an average reader needs to read this text, with a floor
+## so short lines don't vanish instantly and no real ceiling for long ones.
+func _read_duration_for(bbcode_text: String) -> float:
+	var plain_len := bbcode_text.length()
+	const SECONDS_PER_CHAR := 0.1  # ~ a comfortable reading pace
+	const MIN_SECONDS := 5
+	return max(MIN_SECONDS, plain_len * SECONDS_PER_CHAR)
 
 func point_at(world_or_ui_position: Vector2, offset: Vector2 = Vector2(0, -70)) -> void:
 	global_position = world_or_ui_position + offset

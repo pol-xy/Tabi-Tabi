@@ -248,6 +248,7 @@ func on_passenger_seated(passenger: Passenger) -> void:
 	var report: Dictionary = RuleValidator.validate(current_grid)
 	if hud:
 		hud.apply_validation_report(report)
+	_broadcast_seat_feedback(report)
 
 	if report.is_valid:
 		play_sfx("correct_seat")
@@ -265,6 +266,43 @@ func unseat_passenger(passenger: Passenger) -> void:
 	var report: Dictionary = RuleValidator.validate(current_grid)
 	if hud:
 		hud.apply_validation_report(report)
+	_broadcast_seat_feedback(report)
+
+## Pops the Check/Cross emote above every currently seated card, based on
+## the freshest validation report. Broadcasting to ALL seated cards (not
+## just the one that just moved) matters because some rules (hygiene,
+## introvert conflicts, etc.) flip a *neighbor's* happiness too.
+func _broadcast_seat_feedback(report: Dictionary) -> void:
+	var statuses: Dictionary = report.get("passenger_status", {})
+	for seat in _seat_nodes:
+		if seat == null:
+			continue
+		for child in seat.get_children():
+			if child is PassengerCard and child.passenger_data != null:
+				var status: Dictionary = statuses.get(child.passenger_data.id, {"is_happy": true})
+				child.show_feedback(status.get("is_happy", true))
+
+## Glows every seat that could legally accept this passenger right now.
+## Called by PassengerCard the instant a drag starts, so the player sees
+## where they're allowed to drop it (a bulky/2-seat passenger, for example,
+## will only light up seats with room next to them).
+func highlight_available_seats(passenger: Passenger) -> void:
+	if current_grid == null or passenger == null:
+		return
+	for seat in _seat_nodes:
+		if seat == null or not seat.visible:
+			continue
+		if not seat.has_method("show_available_highlight"):
+			continue
+		if current_grid.can_place_passenger(passenger, seat.grid_row, seat.grid_col):
+			seat.show_available_highlight()
+
+## Turns off every seat glow. Called on NOTIFICATION_DRAG_END regardless of
+## whether the drop succeeded, so a cancelled drag doesn't leave seats lit.
+func clear_seat_highlights() -> void:
+	for seat in _seat_nodes:
+		if seat and seat.has_method("clear_highlight"):
+			seat.clear_highlight()
 
 func trigger_penalty(passenger: Passenger) -> void:
 	_penalty_count += 1

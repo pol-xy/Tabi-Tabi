@@ -3,6 +3,8 @@ extends Button
 
 signal card_selected(passenger)
 
+const OverheadEmoteScene := preload("res://Scenes/UI(2)/overhead_emotes.tscn")
+
 @onready var anim_sprite = $AnimatedSprite2D
 
 var passenger_data 
@@ -17,6 +19,9 @@ var _seat_anim_id: int = 0  # Incremented on every play_seated_animation call
 
 var last_mouse_pos: Vector2
 var _drag_preview: AnimatedSprite2D = null
+
+var _feedback_emote: Node2D = null
+var _feedback_tween: Tween = null
 
 func _ready():
 	_determine_anim_prefix()
@@ -63,6 +68,7 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 	set_drag_preview(preview_wrapper)
 
 	modulate.a = 0.4  # original card dims in place while its preview is dragged
+	GameManager.highlight_available_seats(passenger_data)
 
 	return {"ui_node": self, "logic_data": passenger_data}
 
@@ -87,6 +93,7 @@ func _notification(what):
 	if what == NOTIFICATION_DRAG_END:
 		is_dragging = false
 		_drag_preview = null
+		GameManager.clear_seat_highlights()
 		if not is_seated:
 			modulate.a = 1.0
 			if was_seated and current_seat_index >= 0:
@@ -174,6 +181,52 @@ func play_seated_animation(grid_row: int):
 			await anim_sprite.animation_finished
 			if _seat_anim_id != my_id:
 				return 
+
+## Pops the prepared Check/Cross emote animation above this card for a
+## couple seconds, then fades it out. Called by GameManager after every
+## seat/unseat validation pass -- replaces the old plain-text complaint
+## notification for this passenger's happy/unhappy state.
+func show_feedback(is_happy: bool) -> void:
+	if _feedback_tween and _feedback_tween.is_valid():
+		_feedback_tween.kill()
+	if _feedback_emote and is_instance_valid(_feedback_emote):
+		_feedback_emote.queue_free()
+		_feedback_emote = null
+
+	_feedback_emote = OverheadEmoteScene.instantiate()
+	add_child(_feedback_emote)
+	_feedback_emote.modulate.a = 1.0
+	# Sits above the passenger's head. Nudge this offset in the editor/here
+	# if it doesn't line up with a particular sprite's frame size.
+	_feedback_emote.position = Vector2(size.x / 2.0, -70)
+
+	var emote_sprite: AnimatedSprite2D = _feedback_emote.get_node("AnimatedSprite2D")
+	var anim_name := "Check" if is_happy else "Cross"
+	emote_sprite.play(anim_name)
+	# The sheet's animations are set to loop, which would make this blink
+	# forever. Freeze it on its last frame the moment it gets there instead.
+	emote_sprite.frame_changed.connect(_on_feedback_frame_changed.bind(emote_sprite))
+
+	var emote_ref := _feedback_emote
+	_feedback_tween = create_tween()
+	_feedback_tween.tween_interval(2.8)
+	_feedback_tween.tween_property(emote_ref, "modulate:a", 0.0, 0.4)
+	_feedback_tween.tween_callback(func():
+		if is_instance_valid(emote_ref):
+			emote_ref.queue_free()
+		if _feedback_emote == emote_ref:
+			_feedback_emote = null
+	)
+
+func _on_feedback_frame_changed(sprite: AnimatedSprite2D) -> void:
+	if not is_instance_valid(sprite) or sprite.sprite_frames == null:
+		return
+	var anim := sprite.animation
+	if not sprite.sprite_frames.has_animation(anim):
+		return
+	var last_frame := sprite.sprite_frames.get_frame_count(anim) - 1
+	if sprite.frame == last_frame:
+		sprite.pause()  # holds on this frame instead of looping back to 0
 
 func _strip_card_chrome():
 	var empty := StyleBoxEmpty.new()

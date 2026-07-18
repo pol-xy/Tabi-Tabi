@@ -4,9 +4,50 @@ extends ColorRect
 @export var grid_col: int 
 @onready var jeepney_grid = get_tree().root.get_node("Main_Jeepney/JeepneyGridManager")
 
+const GLOW_COLOR := Color(1.0, 0.92, 0.3, 0.28)
+const GLOW_COLOR_PEAK := Color(1.0, 0.92, 0.3, 0.6)
+const HOVER_COLOR := Color(0.0, 0.658, 0.089, 0.65)
+
+var _is_highlighted: bool = false
+var _glow_tween: Tween = null
+
 func _ready():
 	# Hides the flat placeholder rectangle
 	color = Color(1, 1, 1, 0)
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
+
+## Called by GameManager the moment a card starts being dragged, for every
+## seat that could legally take that passenger.
+func show_available_highlight() -> void:
+	_is_highlighted = true
+	_start_pulse()
+
+## Called by GameManager when the drag ends (drop or cancel).
+func clear_highlight() -> void:
+	_is_highlighted = false
+	if _glow_tween and _glow_tween.is_valid():
+		_glow_tween.kill()
+	color = Color(1, 1, 1, 0)
+
+func _start_pulse() -> void:
+	if _glow_tween and _glow_tween.is_valid():
+		_glow_tween.kill()
+	color = GLOW_COLOR
+	_glow_tween = create_tween().set_loops()
+	_glow_tween.tween_property(self, "color", GLOW_COLOR_PEAK, 0.45)
+	_glow_tween.tween_property(self, "color", GLOW_COLOR, 0.45)
+
+func _on_mouse_entered() -> void:
+	if not _is_highlighted:
+		return
+	if _glow_tween and _glow_tween.is_valid():
+		_glow_tween.kill()
+	color = HOVER_COLOR
+
+func _on_mouse_exited() -> void:
+	if _is_highlighted:
+		_start_pulse()
 
 # Check if the object hovering over this seat is a valid passenger
 func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:

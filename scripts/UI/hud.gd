@@ -56,20 +56,14 @@ func on_rule_satisfied(clue_text: String = "") -> void:
 	notification_area.push("Satisfied: %s" % clue_text if clue_text else "Rule satisfied!", "success")
 
 # --- Rule validation ---
-var _last_shown_complaints: Dictionary = {}  # passenger_id -> Array[String]
-
+# NOTE: unhappy/happy state used to also push each complaint string here as
+# a toast (notification_area.push(complaint, "error")). That's now shown as
+# the Check/Cross emote popping above the seated card instead -- see
+# GameManager._broadcast_seat_feedback() / PassengerCard.show_feedback().
+# Kept this function (rather than deleting call sites) in case we want to
+# resurface complaint text elsewhere later, e.g. in a tooltip on the emote.
 func apply_validation_report(report: Dictionary) -> void:
-	var current_complaints: Dictionary = {}
-	for p_id in report.passenger_status:
-		var status: Dictionary = report.passenger_status[p_id]
-		if not status["is_happy"]:
-			var complaints: Array = status["complaints"]
-			current_complaints[p_id] = complaints
-			var previously_shown: Array = _last_shown_complaints.get(p_id, [])
-			for complaint in complaints:
-				if complaint not in previously_shown:
-					notification_area.push(complaint, "error")
-	_last_shown_complaints = current_complaints
+	pass
 
 # --- Passenger interaction ---
 
