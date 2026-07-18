@@ -3,20 +3,14 @@ extends VBoxContainer
 
 const DISPLAY_SECONDS := 1.8
 const FADE_SECONDS := 0.25
-const MAX_VISIBLE := 4  ## Safety cap: if this many toasts are already on
-## screen, the oldest is dismissed immediately to make room, so a burst of
-## complaints can never pile up indefinitely.
+const MAX_VISIBLE := 4  
 
-@export var toast_scene: PackedScene  ## Optional: assign a custom toast
-## PackedScene with its own styling. If unset, a plain Label is used.
+@export var toast_scene: PackedScene 
 
-var _active_toasts: Array[Control] = []       ## Oldest-first, currently on screen
-var _active_messages: Dictionary = {}          ## message text -> Control, for dedupe
+var _active_toasts: Array[Control] = []  ## Oldest-first, currently on screen
+var _active_messages: Dictionary = {}    ## Message text -> Control, for dedupe
 
 func push(message: String, type: String = "info") -> void:
-	# An identical message already on screen just keeps running its own
-	# timer -- no need for a second copy of the same complaint stacked
-	# right under the first.
 	if _active_messages.has(message):
 		return
 
