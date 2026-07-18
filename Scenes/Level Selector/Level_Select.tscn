@@ -6,6 +6,91 @@
 [ext_resource type="Texture2D" uid="uid://dnpntkl0cnnq6" path="res://Assets/Lvl2.png" id="3_3lcpm"]
 [ext_resource type="Texture2D" uid="uid://020ydf6xn3up" path="res://Assets/Lvl3.png" id="4_lqen5"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_ogane"]
+atlas = ExtResource("1_siq6q")
+region = Rect2(0, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jadfe"]
+atlas = ExtResource("1_siq6q")
+region = Rect2(160, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j0jog"]
+atlas = ExtResource("1_siq6q")
+region = Rect2(320, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p8il8"]
+atlas = ExtResource("1_siq6q")
+region = Rect2(480, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ly2hg"]
+atlas = ExtResource("1_siq6q")
+region = Rect2(640, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tfhus"]
+atlas = ExtResource("1_siq6q")
+region = Rect2(800, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t2y6g"]
+atlas = ExtResource("1_siq6q")
+region = Rect2(960, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_50hj7"]
+atlas = ExtResource("1_siq6q")
+region = Rect2(1120, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m4jiv"]
+atlas = ExtResource("1_siq6q")
+region = Rect2(1280, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7pn8e"]
+atlas = ExtResource("1_siq6q")
+region = Rect2(1440, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jos4v"]
+atlas = ExtResource("1_siq6q")
+region = Rect2(1600, 0, 160, 90)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uj04i"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ogane")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jadfe")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j0jog")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p8il8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ly2hg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tfhus")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t2y6g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_50hj7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m4jiv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7pn8e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jos4v")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 10.0
+}]
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lqen5"]
 texture = ExtResource("2_7komq")
 region_rect = Rect2(0, 0, 14, 17)
@@ -17,6 +102,8 @@ region_rect = Rect2(0, 0, 14, 17)
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ogane"]
 texture = ExtResource("2_7komq")
 region_rect = Rect2(14, 0, 14, 17)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ogane"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3lcpm"]
 texture = ExtResource("3_3lcpm")
@@ -50,18 +137,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=662042197]
+[node name="TextureRect" type="AnimatedSprite2D" parent="." unique_id=1875896516]
 texture_filter = 1
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("1_siq6q")
-stretch_mode = 6
+position = Vector2(590, 390)
+scale = Vector2(8.68, 8.68)
+sprite_frames = SubResource("SpriteFrames_uj04i")
+autoplay = "default"
+frame = 10
 
-[node name="GridContainer" type="GridContainer" parent="TextureRect" unique_id=8570677]
+[node name="GridContainer" type="GridContainer" parent="." unique_id=8570677]
 custom_minimum_size = Vector2(14, 17)
 layout_mode = 1
 anchors_preset = 8
@@ -69,16 +153,16 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -405.75
+offset_top = -91.0
+offset_right = 421.75
+offset_bottom = 79.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/h_separation = 200
 columns = 3
 
-[node name="Level1" type="Button" parent="TextureRect/GridContainer" unique_id=200119870]
+[node name="Level1" type="Button" parent="GridContainer" unique_id=200119870]
 unique_name_in_owner = true
 texture_filter = 1
 custom_minimum_size = Vector2(140, 170)
@@ -86,9 +170,10 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_lqen5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_ly2hg")
 theme_override_styles/hover = SubResource("StyleBoxTexture_ogane")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ogane")
 script = ExtResource("1_ogane")
 
-[node name="Level2" type="Button" parent="TextureRect/GridContainer" unique_id=1370843846]
+[node name="Level2" type="Button" parent="GridContainer" unique_id=1370843846]
 unique_name_in_owner = true
 texture_filter = 1
 custom_minimum_size = Vector2(140, 170)
@@ -98,7 +183,7 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_uj04i")
 theme_override_styles/hover = SubResource("StyleBoxTexture_7komq")
 script = ExtResource("1_ogane")
 
-[node name="Level3" type="Button" parent="TextureRect/GridContainer" unique_id=619498288]
+[node name="Level3" type="Button" parent="GridContainer" unique_id=619498288]
 unique_name_in_owner = true
 texture_filter = 1
 custom_minimum_size = Vector2(140, 170)
@@ -108,6 +193,6 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_j0jog")
 theme_override_styles/hover = SubResource("StyleBoxTexture_p8il8")
 script = ExtResource("1_ogane")
 
-[connection signal="pressed" from="TextureRect/GridContainer/Level1" to="TextureRect/GridContainer/Level1" method="_on_level_1_button_pressed"]
-[connection signal="pressed" from="TextureRect/GridContainer/Level2" to="TextureRect/GridContainer/Level1" method="_on_level_2_pressed"]
-[connection signal="pressed" from="TextureRect/GridContainer/Level3" to="TextureRect/GridContainer/Level1" method="_on_level_3_pressed"]
+[connection signal="pressed" from="GridContainer/Level1" to="GridContainer/Level1" method="_on_level_1_button_pressed"]
+[connection signal="pressed" from="GridContainer/Level2" to="GridContainer/Level1" method="_on_level_2_pressed"]
+[connection signal="pressed" from="GridContainer/Level3" to="GridContainer/Level1" method="_on_level_3_pressed"]
