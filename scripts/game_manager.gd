@@ -518,23 +518,24 @@ func _build_l1_s2_roster() -> Array[Passenger]:
 	var list: Array[Passenger] = []
 	list.append(_make("l1_s2_pregnant", "Pregnant", {"is_pregnant": true,
 		"monologue_text": "May gender reveal party mamaya."}))
-	list.append(_make("l1_s2_balikbayan", "Balikbayan", {"is_balikbayan": true, "is_heavy_load": true,
-		"monologue_text": "May dalang dalawang maleta."}))
+	# Balikbayan removed (design cut) -- Market Goer covers the Tier 2 Heavy slot.
+	list.append(_make("l1_s2_market_goer", "Market Goer", {"is_heavy_load": true,
+		"monologue_text": "May bitbit na sako ng bigas."}))
 	list.append(_make("l1_s2_near_stop", "Regular Commuter", {"alights_soon": true,
 		"monologue_text": "Sa malapit lang."}))
 	list.append(_make("l1_s2_jb_suarez", "JB Suarez", {"is_noisy": true,
 		"monologue_text": "Nasigaw kapag may kamote."}))
-	list.append(_make("l1_s2_market_goer", "Market Goer", {"is_heavy_load": true, "is_wet": true,
-		"monologue_text": "Galing palengke."}))
+	list.append(_make_regular("l1_s2_regular_1", "Papunta sa paroroonan."))
 	list.append(_make_regular("l1_s2_regular_2", "Papunta sa paroroonan."))
 	return list
 
 func _build_l1_s3_roster() -> Array[Passenger]:
 	var list: Array[Passenger] = []
-	list.append(_make("l1_s3_holdaper", "Suspicious Passenger", {"is_holdaper": true,
-		"monologue_text": "Suspicious."}))
+	# Holdaper removed (design cut) -- White Lady fills the night-exclusive slot.
+	list.append(_make("l1_s3_white_lady", "White Lady", {"is_white_lady": true,
+		"monologue_text": "Maputla at tahimik."}))
 	list.append(_make("l1_s3_employee", "Employee", {"is_employee": true,
-		"monologue_text": "Maayos at plantsado ang uniform."}))
+		"monologue_text": "Amoy Sauvage Elixir."}))
 	list.append(_make("l1_s3_sweaty", "Regular Commuter", {"is_sweaty": true,
 		"monologue_text": "Basang-basa ng pawis."}))
 	list.append(_make_regular("l1_s3_regular_1", "Papunta sa paroroonan."))
@@ -545,20 +546,21 @@ func _build_l1_s3_roster() -> Array[Passenger]:
 
 func _build_l2_s1_roster() -> Array[Passenger]:
 	var list: Array[Passenger] = []
-	list.append(_make("l2_s1_graveyard", "Graveyard-Shift Worker", {"is_graveyard_worker": true, "is_sleepy": true,
-		"monologue_text": "Antok na."}))
+	# Graveyard-Shift Worker removed (design cut) -- plain Sleepy commuter instead.
+	list.append(_make("l2_s1_sleepy", "Regular Commuter", {"is_sleepy": true,
+		"monologue_text": "Antok na antok."}))
 	list.append(_make("l2_s1_jb_suarez", "JB Suarez", {"is_noisy": true,
 		"monologue_text": "Nasigaw sa kamote."}))
 	var lover_a := _make("l2_s1_lover_a", "Lovey Dovey A", {"is_companion": true, "companion_id": "l2_s1_lover_b",
-		"monologue_text": "."})
+		"monologue_text": "May lock at susi na emoji sa bio"})
 	var lover_b := _make("l2_s1_lover_b", "Lovey Dovey B", {"is_companion": true, "companion_id": "l2_s1_lover_a",
-		"monologue_text": "."})
+		"monologue_text": "May lock at susi na emoji sa bio"})
 	list.append(lover_a)
 	list.append(lover_b)
 	list.append(_make("l2_s1_student", "Student", {"is_student": true,
 		"monologue_text": "Fresh na fresh, bagong ligo."}))
 	list.append(_make("l2_s1_sweaty", "Regular Commuter", {"is_sweaty": true,
-		"monologue_text": "Kakatakbo lang papuntang sakayan."}))
+		"monologue_text": "Kakatapos lang mag jogging."}))
 	list.append(_make("l2_s1_near_stop", "Regular Commuter", {"alights_soon": true,
 		"monologue_text": "Malapit lang."}))
 	return list
@@ -567,45 +569,47 @@ func _build_l2_s2_roster() -> Array[Passenger]:
 	var list: Array[Passenger] = []
 	list.append(_make("l2_s2_senior", "Senior", {"is_senior": true,
 		"monologue_text": "May apo na sa tuhod."}))
-	list.append(_make("l2_s2_balikbayan", "Balikbayan", {"is_balikbayan": true, "is_heavy_load": true,
-		"monologue_text": "Maraming dalang pasalubong."}))
+	# Balikbayan removed (design cut) -- Market Goer covers the Tier 2 Heavy slot.
+	list.append(_make("l2_s2_market_goer", "Market Goer", {"is_heavy_load": true,
+		"monologue_text": "May bitbit na mga gulay."}))
 	list.append(_make("l2_s2_parent_baby", "Parent + Baby", {"is_parent_baby": true,
 		"monologue_text": "Dakilang ina."}))
 	list.append(_make("l2_s2_employee", "Employee", {"is_employee": true,
-		"monologue_text": "Amoy sauvage elixir."}))
+		"monologue_text": "Amoy bench atlantis."}))
 	list.append(_make("l2_s2_wet", "Regular Commuter", {"is_wet": true,
 		"monologue_text": "Nabasa sa ulan kanina."}))
 	list.append(_make("l2_s2_sweaty", "Regular Commuter", {"is_sweaty": true,
 		"monologue_text": "Asim kilig."}))
-	list.append(_make("l2_s2_pwd", "PWD", {"is_pwd": true,
-		"monologue_text": "Pauwi na galing trabaho."}))
+	# PWD removed (design cut) -- an extra Normal fills the slot.
+	list.append(_make_regular("l2_s2_regular_1", "Papunta sa paroroonan."))
 	list.append(_make_regular("l2_s2_regular_2", "Papunta sa paroroonan."))
 	return list
 
 func _build_l2_s3_roster() -> Array[Passenger]:
 	var list: Array[Passenger] = []
-	list.append(_make("l2_s3_drunk", "Drunk Man", {"is_drunk_man": true, "is_noisy": true,
-		"monologue_text": "Tinamaain ng CLVB."}))
-	list.append(_make("l2_s3_holdaper", "Suspicious Passenger", {"is_holdaper": true,
-		"monologue_text": "Suspicious"}))
+	# Drunk Man removed (design cut) -- plain Noisy commuter instead.
+	list.append(_make("l2_s3_noisy", "Regular Commuter", {"is_noisy": true,
+		"monologue_text": "May kausap sa phone."}))
+	# Holdaper removed (design cut) -- an extra Normal fills the slot.
 	list.append(_make("l2_s3_student", "Student", {"is_student": true,
 		"monologue_text": "Kaka retouch lang."}))
 	list.append(_make("l2_s3_wet", "Regular Commuter", {"is_wet": true,
-		"monologue_text": "Nabasa ng ulan kanina."}))
+		"monologue_text": "Nabasa ng ulan."}))
 	list.append(_make("l2_s3_parent_baby", "Parent + Baby", {"is_parent_baby": true,
 		"monologue_text": "Dakilang ina."}))
 	list.append(_make("l2_s3_white_lady", "White Lady", {"is_white_lady": true,
 		"monologue_text": "..."}))
+	list.append(_make_regular("l2_s3_regular_1", "Papunta sa paroroonan."))
 	list.append(_make_regular("l2_s3_regular_2", "Papunta sa paroroonan."))
 	return list
 
-# --- Level 3: Full House Logic (8-seater, 2x4, full capacity) ---------------
-
+# --- Level 3: Full House Logic (10-seater, 2x5, full capacity) --------------
+ 
 func _build_l3_s1_roster() -> Array[Passenger]:
 	var list: Array[Passenger] = []
 	list.append(_make("l3_s1_pwd", "PWD", {"is_pwd": true,
 		"monologue_text": "May saklay."}))
-	list.append(_make("l3_s1_market_goer", "Market Goer", {"is_heavy_load": true, "is_wet": true,
+	list.append(_make("l3_s1_market_goer", "Market Goer", {"is_heavy_load": true,
 		"monologue_text": "May dalang timba ng isda."}))
 	var lover_a := _make("l3_s1_lover_a", "Lovey Dovey A", {"is_companion": true, "companion_id": "l3_s1_lover_b",
 		"monologue_text": "HHWW (Holding Hands While Waiting)."})
@@ -617,45 +621,72 @@ func _build_l3_s1_roster() -> Array[Passenger]:
 		"monologue_text": "Bagong ligo."}))
 	list.append(_make("l3_s1_sweaty", "Regular Commuter", {"is_sweaty": true,
 		"monologue_text": "Amoy araw."}))
+	# Harder variant: 2 of the 4 filler Normals swapped for a Noisy/Introvert
+	# pair, adding a second spacing constraint alongside the existing
+	# hygiene (Employee/Sweaty) one.
+	list.append(_make("l3_s1_noisy", "Regular Commuter", {"is_noisy": true,
+		"monologue_text": "May kausp sa phone."}))
+	list.append(_make("l3_s1_introvert", "Regular Commuter", {"is_introvert": true,
+		"monologue_text": "Shy type."}))
 	list.append(_make_regular("l3_s1_regular_1", "Papunta sa paroroonan."))
 	list.append(_make_regular("l3_s1_regular_2", "Papunta sa paroroonan."))
 	return list
-
+ 
 func _build_l3_s2_roster() -> Array[Passenger]:
 	var list: Array[Passenger] = []
 	list.append(_make("l3_s2_pregnant", "Pregnant", {"is_pregnant": true,
 		"monologue_text": "7 months na siya (hindi lang halata)."}))
-	list.append(_make("l3_s2_balikbayan", "Balikbayan", {"is_balikbayan": true, "is_heavy_load": true,
-		"monologue_text": "May malaking bagahe."}))
+	# Balikbayan removed (design cut) -- Market Goer covers the Tier 2 Heavy slot.
+	list.append(_make("l3_s2_market_goer", "Market Goer", {"is_heavy_load": true,
+		"monologue_text": "May malaking bayong."}))
 	list.append(_make("l3_s2_student", "Student", {"is_student": true,
 		"monologue_text": "Amoy bench atlantis."}))
 	list.append(_make("l3_s2_jb_suarez", "JB Suarez", {"is_noisy": true,
 		"monologue_text": "MAIIPIT KA NGA NI!"}))
-	list.append(_make("l3_s2_graveyard", "Graveyard-Shift Worker", {"is_graveyard_worker": true, "is_sleepy": true,
+	# Graveyard-Shift Worker removed (design cut) -- plain Sleepy commuter instead.
+	list.append(_make("l3_s2_sleepy", "Regular Commuter", {"is_sleepy": true,
 		"monologue_text": "Wala pang tulog."}))
 	list.append(_make("l3_s2_wet", "Regular Commuter", {"is_wet": true,
 		"monologue_text": "Nabasa sa ulan kanina."}))
+	# Harder variant: 2 of the 4 filler Normals swapped for Parent+Baby and
+	# a Near-Stop passenger -- both are Tagabot-excluded, same as Pregnant
+	# and Sleepy already are, so 4 of the roster's 8 non-filler passengers
+	# now compete to avoid the single Tagabot seat instead of 2.
+	list.append(_make("l3_s2_parent_baby", "Parent + Baby", {"is_parent_baby": true,
+		"monologue_text": "Sana'y hindi magising ang bunso ko."}))
+	list.append(_make("l3_s2_near_stop", "Regular Commuter", {"alights_soon": true,
+		"monologue_text": "Sa malapit lang."}))
 	list.append(_make_regular("l3_s2_regular_1", "Papunta sa paroroonan."))
 	list.append(_make_regular("l3_s2_regular_2", "Papunta sa paroroonan."))
 	return list
-
-
+ 
+ 
 func _build_l3_s3_roster() -> Array[Passenger]:
 	var list: Array[Passenger] = []
 	list.append(_make("l3_s3_senior", "Senior", {"is_senior": true,
-		"monologue_text": "Buhay na siya noong martial law."}))
-	list.append(_make("l3_s3_drunk", "Drunk Man", {"is_drunk_man": true, "is_noisy": true,
-		"monologue_text": "Magmamaoy ata."}))
+		"monologue_text": "67 years old."}))
+	# Drunk Man removed (design cut) -- plain Noisy commuter instead.
+	list.append(_make("l3_s3_noisy", "Regular Commuter", {"is_noisy": true,
+		"monologue_text": "Lakas magpatugtog sa phone."}))
 	list.append(_make("l3_s3_parent_baby", "Parent + Baby", {"is_parent_baby": true,
 		"monologue_text": "Karga ang baby."}))
 	list.append(_make("l3_s3_employee", "Employee", {"is_employee": true,
 		"monologue_text": "Umiiwas sa dugyot."}))
 	list.append(_make("l3_s3_introvert", "Regular Commuter", {"is_introvert": true,
-		"monologue_text": "Yes, ang sagot sa dine-in or takeout?"}))
+		"monologue_text": "'Yes' ang sagot sa 'dine-in or takeout?'"}))
 	list.append(_make("l3_s3_sweaty", "Regular Commuter", {"is_sweaty": true,
 		"monologue_text": "Pawis na pawis"}))
+	# Holdaper removed (design cut) -- White Lady fills the night-exclusive slot.
 	list.append(_make("l3_s3_white_lady", "White Lady", {"is_white_lady": true,
-		"monologue_text": "..."}))
-	list.append(_make("l3_s3_holdaper", "Suspicious Passenger", {"is_holdaper": true,
-		"monologue_text": "Masama ang tingin sa mga kwintas."}))
+		"monologue_text": "Sa Balete Drive ang baba."}))
+	# Harder variant: 2 of the 3 filler Normals swapped for a Lovey Dovey
+	# pair -- Noisy now has to stay clear of BOTH Introvert and Parent+Baby
+	# at once, on top of everything else already going on in this stage.
+	var lover_a := _make("l3_s3_lover_a", "Lovey Dovey A", {"is_companion": true, "companion_id": "l3_s3_lover_b",
+		"monologue_text": "Magkasama kahit gabi na."})
+	var lover_b := _make("l3_s3_lover_b", "Lovey Dovey B", {"is_companion": true, "companion_id": "l3_s3_lover_a",
+		"monologue_text": "Magkasama kahit gabi na."})
+	list.append(lover_a)
+	list.append(lover_b)
+	list.append(_make_regular("l3_s3_regular_1", "Papunta sa paroroonan."))
 	return list
