@@ -30,6 +30,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -290.0
+offset_right = 190.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_db2sy")
@@ -40,10 +42,10 @@ layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_left = 121.0
-offset_top = -50.0
-offset_right = 521.0
-offset_bottom = 50.0
+offset_left = 82.0
+offset_top = -154.0
+offset_right = 482.0
+offset_bottom = 154.0
 grow_vertical = 2
 
 [node name="PlayButton" type="Button" parent="VBoxContainer" unique_id=1078389934]
@@ -58,6 +60,18 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_l53to")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_cu5nb")
 text = "Byahe Na!"
 
+[node name="CreditsButton" type="Button" parent="VBoxContainer" unique_id=582473269]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_y5k35")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxTexture_kyqrf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_kyqrf")
+theme_override_styles/hover = SubResource("StyleBoxTexture_l53to")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cu5nb")
+text = "Credits"
+
 [node name="QuitButton" type="Button" parent="VBoxContainer" unique_id=586925597]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(400, 100)
@@ -71,4 +85,5 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_cu5nb")
 text = "Exit"
 
 [connection signal="pressed" from="VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/CreditsButton" to="." method="_on_credits_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

@@ -88,7 +88,7 @@ animations = [{
 }],
 "loop": 1,
 "name": &"default",
-"speed": 5.0
+"speed": 10.0
 }]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_aalht"]
@@ -199,6 +199,7 @@ script = ExtResource("1_endcr")
 position = Vector2(590, 390)
 scale = Vector2(8.68, 8.68)
 sprite_frames = SubResource("SpriteFrames_ql73s")
+autoplay = "default"
 
 [node name="Tabi-Tabi" type="AnimatedSprite2D" parent="." unique_id=1092679957]
 position = Vector2(642, 120)
