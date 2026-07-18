@@ -1,40 +1,5 @@
 extends Node
 ## scripts/game_manager.gd
-## AUTOLOAD (Singleton) — register as "GameManager" in Project Settings > Autoload.
-##
-## v3: Level/Stage structure, replacing the old flat stage list.
-##   - The campaign is now 3 Levels x 3 Stages each (levels[i].stages[j]).
-##   - Each Level also carries its own grid size (rows/cols), since the
-##     jeepney design calls for 8-seater levels (2x4) and a 10-seater
-##     level (2x5). JeepneyGrid.set_dimensions() is called whenever a new
-##     level is entered so the grid (and the seat nodes wired to it) match.
-##   - Everything from v2 (timer-based stages, star rating, anger-meter
-##     penalties) is unchanged in behavior -- just nested one level deeper.
-##
-## Integration points:
-##   - main_jeepney.gd calls register_hud(), register_grid(),
-##     register_seat_nodes(), then start_campaign().
-##   - Dev 2's seat_1.gd calls on_passenger_seated(passenger) after a
-##     successful place_passenger().
-##   - Whoever wires an AngerBar's `depleted` signal (per queue card, or a
-##     Holdaper boarding-window timer) calls trigger_penalty(passenger) --
-##     that's the single entry point for the "anger meter hit zero" case.
-##
-## GRID RESIZING NOTE (Dev 2/3): _apply_grid_dimensions() hides any seat
-## node whose grid_row/grid_col falls outside the active level's size (e.g.
-## column 4 on an 8-seater level's 2x4 grid). It relies on seat_1.gd's
-## exported grid_row/grid_col vars already being readable off the node --
-## no seat_1.gd changes needed. Hidden seats also can't accept drops in
-## practice, since JeepneyGrid.can_place_passenger() bounds-checks against
-## the grid's *current* row_count/col_count anyway.
-##
-## NOTE ON HUD COMPATIBILITY: hud.gd may have changed since this script was
-## written (your team's feat/UI branch). Calls to brand-new HUD methods
-## (update_timer, show_stage_result) are guarded with has_method() so this
-## script won't crash against an older or newer HUD -- worst case, the
-## timer/result just won't visually display until HUD adds those methods.
-## hud.start_stage(title, passengers, X) and hud.apply_validation_report()
-## are assumed to still exist, since those predate this change.
 
 signal campaign_complete
 signal campaign_failed(level_index: int, stage_index: int)
@@ -123,7 +88,7 @@ func play_sfx(stream_name: String) -> void:
 	player.stream = stream
 	player.bus = "SFX"
 	
-	# Tune specific SFX volumes so they don't overpower the background music
+	# Tuning specific SFX volumes
 	match stream_name:
 		"transition":
 			player.volume_db = -10.0
@@ -252,21 +217,12 @@ func register_hud(hud_node: Node) -> void:
 func register_grid(grid_node: JeepneyGrid) -> void:
 	current_grid = grid_node
 
-## Background node running bg_animator.gd (BGAnimator). Optional -- if a
-## scene doesn't have one wired up, _apply_background_state() below just
-## no-ops via has_method(), same defensive pattern as the HUD calls.
 func register_background(background_node: Node) -> void:
 	background = background_node
 
-## Decorative jeep exterior sprite running jeep_exterior.gd. Purely visual
-## (idle-loop animation, one of 6 liveries) -- NOT the gameplay seat system.
-## Optional, same has_method() defensive pattern as register_background.
 func register_jeep_exterior(jeep_node: Node) -> void:
 	jeep_exterior = jeep_node
 
-## Needed so a fresh stage can wipe leftover passenger cards left sitting
-## in seats from the previous stage -- clear_grid() only resets the
-## logical data, not whatever's still visually parented there.
 func register_seat_nodes(seats: Array) -> void:
 	_seat_nodes = seats
 
@@ -279,14 +235,8 @@ func start_campaign() -> void:
 	emit_signal("level_started", current_level_index)
 	_start_current_stage()
 
-## Read-only helper for Dev 2/3 -- e.g. to stop accepting drag-drops once
-## time's up or while the clear animation is playing.
 func is_stage_active() -> bool:
 	return _timer_active and not _stage_finishing
-
-# --- Called by Dev 2's seat script, every time a passenger is dropped -------
-# (also fires on reshuffles -- that's intentional, it's how we notice the
-# player fixed a problem.)
 
 func on_passenger_seated(passenger: Passenger) -> void:
 	if current_grid == null or passenger == null or _stage_finishing:
@@ -308,7 +258,6 @@ func on_passenger_seated(passenger: Passenger) -> void:
 	if seated_count >= _current_roster_size and _current_roster_size > 0:
 		_try_finish_stage(report)
 
-
 func unseat_passenger(passenger: Passenger) -> void:
 	if current_grid == null or passenger == null:
 		return
@@ -316,12 +265,6 @@ func unseat_passenger(passenger: Passenger) -> void:
 	var report: Dictionary = RuleValidator.validate(current_grid)
 	if hud:
 		hud.apply_validation_report(report)
-
-# --- The anger-meter penalty trigger ----------------------------------------
-## Single entry point for "a passenger's anger meter hit zero" (queue-side
-## impatience, or a Holdaper boarding-window timer). Per the new design
-## this no longer causes an instant fail -- it just costs a star at the
-## end of the stage, and removes that passenger from their seat if seated.
 
 func trigger_penalty(passenger: Passenger) -> void:
 	_penalty_count += 1
@@ -331,9 +274,6 @@ func trigger_penalty(passenger: Passenger) -> void:
 
 # --- Stage / Level flow ---------------------------------------------------
 
-## Advances to the next stage within the current level. If the current
-## level has no more stages (or we haven't entered a level yet, i.e. right
-## after start_campaign()), rolls over into the next level instead.
 func _advance_stage() -> void:
 	current_stage_index += 1
 
@@ -346,21 +286,16 @@ func _advance_stage() -> void:
 			_advance_level()
 		return
 
-	play_sfx("transition") # Transition SFX between stages!
+	play_sfx("transition") # Transition SFX between stages
 	_start_current_stage()
 
-## Moves to the next level, resets the stage counter, and ends the
-## campaign once levels run out. Emits level_started so HUD/StageBanner
-## can show a level transition if it wants to (optional -- start_stage()'s
-## title already includes the level name, so wiring this up is not
-## required for the game to function).
 func _advance_level() -> void:
 	current_level_index += 1
 	current_stage_index = 0
 
 	if current_level_index >= levels.size():
 		_timer_active = false
-		play_bgm("level_completed") # Play Level Completed BGM at the end credits!
+		play_bgm("level_completed")
 		emit_signal("campaign_complete")
 		return
 
@@ -368,7 +303,7 @@ func _advance_level() -> void:
 	_start_current_stage()
 
 func _on_level_completed_continued() -> void:
-	play_sfx("transition") # Transition SFX when continuing to next level!
+	play_sfx("transition")
 	_advance_level()
 
 func _get_level(index: int) -> Dictionary:
@@ -402,11 +337,6 @@ func _start_current_stage() -> void:
 		hud.start_stage(display_title, stage["passengers"], stage["time_limit_sec"])
 	_notify_timer_update()
 
-## Resizes the logical grid for the incoming level and shows/hides seat
-## nodes to match (e.g. an 8-seater level hides the 5th column's seats on
-## the 10-seat scene). Seats outside the active dimensions are also
-## implicitly un-droppable, since can_place_passenger() bounds-checks
-## against the grid's current row_count/col_count.
 func _apply_grid_dimensions(rows: int, cols: int) -> void:
 	if current_grid:
 		current_grid.set_dimensions(rows, cols)
@@ -417,26 +347,14 @@ func _apply_grid_dimensions(rows: int, cols: int) -> void:
 		var seat_active: bool = seat.grid_row < rows and seat.grid_col < cols
 		seat.visible = seat_active
 
-## Tells the registered background (if any) whether the incoming stage is a
-## "Night Shift" stage. BGAnimator.set_night(true) plays the one-shot day->
-## night transition and settles into the night loop; set_night(false) snaps
-## straight back to the day loop. Calling it repeatedly with the same value
-## is a safe no-op (see BGAnimator.set_night), so this can run every stage.
 func _apply_background_state(stage: Dictionary) -> void:
 	if background and background.has_method("set_night"):
 		background.set_night(stage.get("is_night", false))
 
-## Swaps the decorative jeep exterior sprite to match the current stage's
-## jeep_variant (1-6). Runs every stage (not just once per level), so the
-## jeepney can visibly differ between e.g. Puzzle 1.1 and Puzzle 1.2.
-## No-ops if a stage has no jeep_variant set, or if nothing's registered a
-## jeep exterior node.
 func _apply_jeep_exterior(stage: Dictionary) -> void:
 	if jeep_exterior and jeep_exterior.has_method("set_variant") and stage.has("jeep_variant"):
 		jeep_exterior.set_variant(stage["jeep_variant"])
 
-## Frees any passenger cards still visually parented under a seat from the
-## previous stage (they were reparented there by seat_1.gd on drop).
 func _clear_seat_visuals() -> void:
 	for seat in _seat_nodes:
 		if seat == null:
@@ -444,10 +362,6 @@ func _clear_seat_visuals() -> void:
 		for child in seat.get_children():
 			child.queue_free()
 
-## Checked every time the roster is fully seated. Only ends the stage (and
-## awards speed-based stars) once everyone is actually happy -- otherwise
-## the player keeps reshuffling for free, same as before, just now racing
-## the clock instead of a quota.
 func _try_finish_stage(report: Dictionary) -> void:
 	var unhappy := 0
 	for p_id in report.get("passenger_status", {}):
@@ -455,7 +369,7 @@ func _try_finish_stage(report: Dictionary) -> void:
 			unhappy += 1
 
 	if unhappy > 0:
-		return  # stay on this stage; complaints already shown via apply_validation_report
+		return  # complaints already shown via apply_validation_report
 
 	_timer_active = false
 	_stage_finishing = true
@@ -471,7 +385,6 @@ func _try_finish_stage(report: Dictionary) -> void:
 	await get_tree().create_timer(STAGE_CLEAR_PAUSE_SEC).timeout
 	_advance_stage()
 
-## Time ran out before everyone was seated & happy.
 func _end_stage_by_timeout() -> void:
 	if _stage_finishing:
 		return
@@ -573,9 +486,8 @@ func _notify(text: String, type: String = "info") -> void:
 		hud.notification_area.push(text, type)
 
 # --- Roster builders -------------------------------------------------------
-# id scheme: l{level}_s{stage}_{descriptor}. Companions link via
-# companion_id (Lovey Dovey pairs are TWO Passenger resources/sprites, not
-# one bulky seat_size=2 passenger -- confirmed with design).
+# id scheme: l{level}_s{stage}_{descriptor}
+# Lovey Dovey pairs are TWO Passenger resources/sprites, not seat_size=2 
 
 func _make(id: String, p_name: String, overrides: Dictionary) -> Passenger:
 	var p := Passenger.new()
