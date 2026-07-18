@@ -1,13 +1,7 @@
 class_name RuleValidator
 extends RefCounted
 
-# Validates the entire jeepney grid and returns a dictionary report of the status.
-# Report structure:
-# {
-#     "is_valid": bool,
-#     "violated_rules": Array[String],
-#     "passenger_status": Dictionary (key: String, value: {"is_happy": bool, "complaints": Array[String]})
-# }
+# Validates the entire jeepney grid,returns a dictionary report of the status
 static func validate(grid: JeepneyGrid) -> Dictionary:
 	var report = {
 		"is_valid": true,
@@ -43,9 +37,10 @@ static func validate(grid: JeepneyGrid) -> Dictionary:
 			
 	return report
 
-# 1. The Tagabot (Fare Passer) Rule
-# Seat next to driver (highest index) must 
-# not have sleeping, bulky, PWD, senior, pregnant, or alights soon passengers.
+# --- 1. The Tagabot (Fare Passer) Rule
+# Seat next to driver (highest index) must not have sleeping,
+# bulky, PWD, senior, pregnant, or alights soon ---
+
 static func _check_tagabot_rule(grid: JeepneyGrid, report: Dictionary) -> void:
 	for r in range(grid.row_count):
 		var p = grid.get_passenger_at(r, grid.col_count - 1)
@@ -63,9 +58,10 @@ static func _check_tagabot_rule(grid: JeepneyGrid, report: Dictionary) -> void:
 			if cannot_pass_fare:
 				_mark_unhappy(report, p, "tagabot", "Hindi ako makakapag-abot ng bayad dito (may condition/tulog/bulky/bababa na).")
 
-# 2. The Accessibility Rule
-# Tier 1 (Seniors, PWDs, Pregnant) must sit exactly at the edge (index 0).
-# Tier 2 (Heavy Loads) must sit near the door (index 0 or 1).
+# --- 2. The Accessibility Rule
+# Tier 1 (Seniors, PWDs, Pregnant) must sit at edge/idx 0
+# Tier 2 (Heavy Loads) must sit near the door/idx 0 or 1 ---
+
 static func _check_accessibility_rule(grid: JeepneyGrid, report: Dictionary) -> void:
 	var passengers = grid.get_unique_passengers()
 	for p in passengers:
@@ -90,7 +86,9 @@ static func _check_accessibility_rule(grid: JeepneyGrid, report: Dictionary) -> 
 			if not near_door:
 				_mark_unhappy(report, p, "accessibility", "Dapat malapit ako sa exit (index 0 or 1) dahil may dala akong mabigat.")
 
-# 3. Hygiene/Palengke Conflict (is_wet or is_sweaty next to is_employee or is_student)
+# --- 3. Hygiene/Palengke Conflict 
+# (is_wet or is_sweaty next to is_employee or is_student) ---
+
 static func _check_hygiene_conflict(grid: JeepneyGrid, report: Dictionary) -> void:
 	var passengers = grid.get_unique_passengers()
 	for p in passengers:
@@ -104,7 +102,9 @@ static func _check_hygiene_conflict(grid: JeepneyGrid, report: Dictionary) -> vo
 					_mark_unhappy(report, p, "palengke", "%s, baka madumihan ko ang katabi kong %s." % [reason_self, role_name])
 					_mark_unhappy(report, n, "palengke", "%s yung katabi ko, madudumihan ang uniporme ko!" % reason_neighbor)
 
-# 4. Introvert Conflict (is_introvert next to is_noisy)
+# --- 4. Introvert Conflict 
+# (is_introvert next to is_noisy) ---
+
 static func _check_introvert_conflict(grid: JeepneyGrid, report: Dictionary) -> void:
 	var passengers = grid.get_unique_passengers()
 	for p in passengers:
@@ -127,8 +127,9 @@ static func _check_introvert_conflict(grid: JeepneyGrid, report: Dictionary) -> 
 							_mark_unhappy(report, p, "introvert_conflict", "Masyadong maingay ang lasing na malapit sa akin.")
 							_mark_unhappy(report, other, "introvert_conflict", "Maingay ako, mukhang naiirita ang mga katabi ko.")
 
-# 5. Magkasama (Companion) Rule
-# Companions must be side-by-side or directly facing.
+# --- 5. Magkasama (Companion) Rule
+# Companions must be side-by-side or directly facing eo ---
+
 static func _check_magkasama_rule(grid: JeepneyGrid, report: Dictionary) -> void:
 	var passengers = grid.get_unique_passengers()
 	for p in passengers:
@@ -181,7 +182,8 @@ static func _check_magkasama_rule(grid: JeepneyGrid, report: Dictionary) -> void
 					_mark_unhappy(report, companion, "magkasama", "Dapat kaharap ko ang kasama ko sa kabilang bench.")
 
 
-# 7. Holdaper and Graveyard Worker custom rules
+# --- 6. Holdaper and Graveyard Worker custom rules ---
+
 static func _check_new_character_rules(grid: JeepneyGrid, report: Dictionary) -> void:
 	var passengers = grid.get_unique_passengers()
 	for p in passengers:
