@@ -5,6 +5,91 @@
 [ext_resource type="FontFile" uid="uid://dtxeaqt2nqy4q" path="res://Assets/Fonts/easvhs.ttf" id="2_y5k35"]
 [ext_resource type="Texture2D" uid="uid://d1x25d32txpl8" path="res://Assets/Menu Button.png" id="4_l53to"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_l53to"]
+atlas = ExtResource("1_db2sy")
+region = Rect2(0, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cu5nb"]
+atlas = ExtResource("1_db2sy")
+region = Rect2(160, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kyqrf"]
+atlas = ExtResource("1_db2sy")
+region = Rect2(320, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dh8yx"]
+atlas = ExtResource("1_db2sy")
+region = Rect2(480, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b4wew"]
+atlas = ExtResource("1_db2sy")
+region = Rect2(640, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_27udg"]
+atlas = ExtResource("1_db2sy")
+region = Rect2(800, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d4706"]
+atlas = ExtResource("1_db2sy")
+region = Rect2(960, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lck1b"]
+atlas = ExtResource("1_db2sy")
+region = Rect2(1120, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hd5et"]
+atlas = ExtResource("1_db2sy")
+region = Rect2(1280, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hqltq"]
+atlas = ExtResource("1_db2sy")
+region = Rect2(1440, 0, 160, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_waeys"]
+atlas = ExtResource("1_db2sy")
+region = Rect2(1600, 0, 160, 90)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uj04i"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l53to")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cu5nb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kyqrf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dh8yx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b4wew")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_27udg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d4706")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lck1b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hd5et")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hqltq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_waeys")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 10.0
+}]
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kyqrf"]
 texture = ExtResource("4_l53to")
 region_rect = Rect2(0, 0, 64, 14)
@@ -24,33 +109,28 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_lq24o")
 
-[node name="Background" type="TextureRect" parent="." unique_id=1950480994]
+[node name="Background" type="AnimatedSprite2D" parent="." unique_id=63862641]
 texture_filter = 1
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -290.0
-offset_right = 190.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("1_db2sy")
-stretch_mode = 6
+position = Vector2(590, 390)
+scale = Vector2(8.68, 8.68)
+sprite_frames = SubResource("SpriteFrames_uj04i")
+autoplay = "default"
+frame = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=808876946]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_left = 82.0
+offset_left = 110.0
 offset_top = -154.0
-offset_right = 482.0
+offset_right = 447.0
 offset_bottom = 154.0
 grow_vertical = 2
 
 [node name="PlayButton" type="Button" parent="VBoxContainer" unique_id=1078389934]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(400, 100)
+custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_y5k35")
 theme_override_font_sizes/font_size = 48
@@ -62,7 +142,7 @@ text = "Byahe Na!"
 
 [node name="CreditsButton" type="Button" parent="VBoxContainer" unique_id=582473269]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(400, 100)
+custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_y5k35")
 theme_override_font_sizes/font_size = 48
@@ -74,7 +154,7 @@ text = "Credits"
 
 [node name="QuitButton" type="Button" parent="VBoxContainer" unique_id=586925597]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(400, 100)
+custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_y5k35")
 theme_override_font_sizes/font_size = 48
