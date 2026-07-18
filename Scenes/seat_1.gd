@@ -5,12 +5,7 @@ extends ColorRect
 @onready var jeepney_grid = get_tree().root.get_node("Main_Jeepney/JeepneyGridManager")
 
 func _ready():
-	# Hides the flat placeholder rectangle without touching Clip Children --
-	# clipping uses this node's own render (including alpha) as a stencil
-	# mask for any reparented children (like a seated passenger), which is
-	# what was fading them out. A fully transparent fill keeps this node
-	# clickable/droppable while drawing nothing itself, and doesn't affect
-	# children's opacity at all.
+	# Hides the flat placeholder rectangle
 	color = Color(1, 1, 1, 0)
 
 # Check if the object hovering over this seat is a valid passenger
