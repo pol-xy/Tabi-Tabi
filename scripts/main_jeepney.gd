@@ -10,6 +10,8 @@ extends Control
 # --- Keyboard selection & navigation ---
 var selected_row: int = 0
 var selected_col: int = 0
+var is_in_queue_panel: bool = false
+var selected_queue_index: int = 0
 var lifted_card: PassengerCard = null
 var lifted_seat: Node = null
 var selector_cursor: Panel = null
@@ -24,6 +26,9 @@ func _ready() -> void:
 	if not grid_manager.dimensions_changed.is_connected(_on_grid_dimensions_changed):
 		grid_manager.dimensions_changed.connect(_on_grid_dimensions_changed)
 
+	if not grid_manager.grid_changed.is_connected(_update_selector_position):
+		grid_manager.grid_changed.connect(_update_selector_position)
+
 	if not GameManager.campaign_complete.is_connected(_on_campaign_complete):
 		GameManager.campaign_complete.connect(_on_campaign_complete)
 
@@ -36,11 +41,16 @@ func _on_campaign_complete() -> void:
 func _on_grid_dimensions_changed(_rows: int, cols: int) -> void:
 	selected_row = 0
 	selected_col = 0
+	is_in_queue_panel = false
+	selected_queue_index = 0
 	
 	# Deselect any lifted card during level changes
 	if lifted_card:
-		if is_instance_valid(lifted_card) and lifted_seat:
-			lifted_card.position = (lifted_seat.size - lifted_card.size) / 2.0
+		if is_instance_valid(lifted_card):
+			if lifted_seat:
+				lifted_card.position = (lifted_seat.size - lifted_card.size) / 2.0
+			else:
+				lifted_card.position.y += 10
 			lifted_card.modulate.a = 1.0
 		lifted_card = null
 		lifted_seat = null
@@ -109,13 +119,55 @@ func _create_selector_cursor() -> void:
 func _update_selector_position() -> void:
 	if selector_cursor == null:
 		return
-	var seat = _get_seat_node(selected_row, selected_col)
-	if seat:
-		selector_cursor.position = seat.position
-		selector_cursor.size = seat.size
-		selector_cursor.show()
-	else:
+
+	if is_in_queue_panel:
+		# --- Navigate Queue Panel ---
+		var hud = GameManager.hud
+		if hud and hud.queue_panel:
+			var queue_panel = hud.queue_panel
+			if not queue_panel._cards.is_empty():
+				selected_queue_index = clamp(selected_queue_index, 0, queue_panel._cards.size() - 1)
+				var card = queue_panel._cards[selected_queue_index]
+				if card and is_instance_valid(card):
+					# Position selection box exactly over the queue card using global coordinates
+					selector_cursor.global_position = card.global_position
+					selector_cursor.size = card.size
+					selector_cursor.show()
+					
+					# Focus the bubble on this queue card's passenger
+					queue_panel.passenger_focused.emit(card.passenger_data)
+					return
 		selector_cursor.hide()
+	else:
+		# --- Navigate Jeepney Grid ---
+		var seated = grid_manager.get_unique_passengers()
+		if seated.is_empty() and lifted_card == null:
+			# Hide selection box if no passengers are seated yet (per user request)
+			selector_cursor.hide()
+			return
+			
+		# If transitioning from empty, snap cursor to first seated passenger
+		if not seated.is_empty():
+			var current_occupied = grid_manager.seats[selected_row][selected_col] != null
+			if not current_occupied:
+				var found = false
+				for r in range(grid_manager.row_count):
+					for c in range(grid_manager.col_count):
+						if grid_manager.seats[r][c] != null:
+							selected_row = r
+							selected_col = c
+							found = true
+							break
+					if found:
+						break
+
+		var seat = _get_seat_node(selected_row, selected_col)
+		if seat:
+			selector_cursor.global_position = seat.global_position
+			selector_cursor.size = seat.size
+			selector_cursor.show()
+		else:
+			selector_cursor.hide()
 
 func _get_seat_node(row: int, col: int) -> Node:
 	for seat in GameManager._seat_nodes:
@@ -138,104 +190,216 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	var moved = false
-	if event.is_action_pressed("ui_left") or (event is InputEventKey and event.pressed and event.keycode == KEY_A):
-		selected_col = max(0, selected_col - 1)
-		moved = true
-	elif event.is_action_pressed("ui_right") or (event is InputEventKey and event.pressed and event.keycode == KEY_D):
-		selected_col = min(grid_manager.col_count - 1, selected_col + 1)
-		moved = true
-	elif event.is_action_pressed("ui_up") or (event is InputEventKey and event.pressed and event.keycode == KEY_W):
-		selected_row = max(0, selected_row - 1)
-		moved = true
-	elif event.is_action_pressed("ui_down") or (event is InputEventKey and event.pressed and event.keycode == KEY_S):
-		selected_row = min(grid_manager.row_count - 1, selected_row + 1)
-		moved = true
-	elif event.is_action_pressed("ui_accept"):
-		_handle_keyboard_action()
-		get_viewport().set_input_as_handled()
+	
+	if is_in_queue_panel:
+		# --- Controls when in Queue Panel ---
+		if event.is_action_pressed("ui_left") or (event is InputEventKey and event.pressed and event.keycode == KEY_A):
+			var hud = GameManager.hud
+			if hud and hud.queue_panel and not hud.queue_panel._cards.is_empty():
+				selected_queue_index = max(0, selected_queue_index - 1)
+				moved = true
+		elif event.is_action_pressed("ui_right") or (event is InputEventKey and event.pressed and event.keycode == KEY_D):
+			var hud = GameManager.hud
+			if hud and hud.queue_panel and not hud.queue_panel._cards.is_empty():
+				selected_queue_index = min(hud.queue_panel._cards.size() - 1, selected_queue_index + 1)
+				moved = true
+		elif event.is_action_pressed("ui_up") or (event is InputEventKey and event.pressed and event.keycode == KEY_W):
+			# Go up to the jeepney grid lower bench
+			is_in_queue_panel = false
+			selected_row = 1
+			selected_col = clamp(selected_queue_index, 0, grid_manager.col_count - 1)
+			moved = true
+		elif event.is_action_pressed("ui_accept"):
+			_handle_keyboard_action()
+			get_viewport().set_input_as_handled()
+	else:
+		# --- Controls when in Jeepney Grid ---
+		if event.is_action_pressed("ui_left") or (event is InputEventKey and event.pressed and event.keycode == KEY_A):
+			selected_col = max(0, selected_col - 1)
+			moved = true
+		elif event.is_action_pressed("ui_right") or (event is InputEventKey and event.pressed and event.keycode == KEY_D):
+			selected_col = min(grid_manager.col_count - 1, selected_col + 1)
+			moved = true
+		elif event.is_action_pressed("ui_up") or (event is InputEventKey and event.pressed and event.keycode == KEY_W):
+			selected_row = max(0, selected_row - 1)
+			moved = true
+		elif event.is_action_pressed("ui_down") or (event is InputEventKey and event.pressed and event.keycode == KEY_S):
+			# Go down to queue panel (only if lower bench or if empty and pressing down to enter queue)
+			if selected_row == 1 or grid_manager.get_unique_passengers().is_empty():
+				var hud = GameManager.hud
+				if hud and hud.queue_panel and not hud.queue_panel._cards.is_empty():
+					is_in_queue_panel = true
+					selected_queue_index = clamp(selected_col, 0, hud.queue_panel._cards.size() - 1)
+					moved = true
+			else:
+				selected_row = 1
+				moved = true
+		elif event.is_action_pressed("ui_accept"):
+			_handle_keyboard_action()
+			get_viewport().set_input_as_handled()
 
 	if moved:
 		_update_selector_position()
 		get_viewport().set_input_as_handled()
 
 func _handle_keyboard_action() -> void:
-	var current_seat = _get_seat_node(selected_row, selected_col)
-	if current_seat == null:
+	var hud = GameManager.hud
+	if hud == null:
 		return
 		
-	var current_card = _get_passenger_card_at_seat(current_seat)
-	
-	if lifted_card == null:
-		# --- Pick up passenger ---
-		if current_card != null:
-			lifted_card = current_card
-			lifted_seat = current_seat
-			lifted_card.position.y -= 10
-			lifted_card.modulate.a = 0.7
-			GameManager.play_sfx("drag_passenger")
-			print("[Keyboard] Picked up: ", lifted_card.passenger_data.id)
-	else:
-		# --- Drop passenger ---
-		if current_seat == lifted_seat:
-			# Deselect / Cancel movement
-			lifted_card.position = (lifted_seat.size - lifted_card.size) / 2.0
-			lifted_card.modulate.a = 1.0
+	if is_in_queue_panel:
+		# =====================================================================
+		# ACTIONS ON QUEUE PANEL
+		# =====================================================================
+		var queue_panel = hud.queue_panel
+		if queue_panel == null or queue_panel._cards.is_empty():
+			return
+			
+		selected_queue_index = clamp(selected_queue_index, 0, queue_panel._cards.size() - 1)
+		var current_card = queue_panel._cards[selected_queue_index]
+		
+		if lifted_card == null:
+			# --- Pick up passenger from queue ---
+			if current_card != null:
+				lifted_card = current_card
+				lifted_seat = null # no source seat (from queue)
+				lifted_card.position.y -= 10
+				lifted_card.modulate.a = 0.7
+				GameManager.play_sfx("drag_passenger")
+				print("[Keyboard] Picked up from queue: ", lifted_card.passenger_data.id)
+		else:
+			# --- Drop passenger / Cancel selection ---
+			if is_instance_valid(lifted_card):
+				if lifted_seat:
+					lifted_card.position = (lifted_seat.size - lifted_card.size) / 2.0
+				else:
+					lifted_card.position.y += 10
+				lifted_card.modulate.a = 1.0
 			lifted_card = null
 			lifted_seat = null
 			GameManager.play_sfx("click_select")
-			print("[Keyboard] Deselected")
-		else:
-			var passenger = lifted_card.passenger_data
-			var target_occupant = grid_manager.seats[selected_row][selected_col]
-			var row_a = lifted_seat.grid_row
-			var col_a = lifted_seat.grid_col
+			print("[Keyboard] Deselected queue card")
+	else:
+		# =====================================================================
+		# ACTIONS ON JEEPNEY GRID
+		# =====================================================================
+		var current_seat = _get_seat_node(selected_row, selected_col)
+		if current_seat == null:
+			return
 			
-			if target_occupant == null:
-				# --- Move to empty seat ---
-				grid_manager.seats[row_a][col_a] = null
-				grid_manager.place_passenger(passenger, selected_row, selected_col)
-				
-				lifted_seat.remove_child(lifted_card)
-				current_seat.add_child(lifted_card)
-				
-				lifted_card.is_seated = true
+		var current_card = _get_passenger_card_at_seat(current_seat)
+		
+		if lifted_card == null:
+			# --- Pick up passenger from seat ---
+			if current_card != null:
+				lifted_card = current_card
+				lifted_seat = current_seat
+				lifted_card.position.y -= 10
+				lifted_card.modulate.a = 0.7
+				GameManager.play_sfx("drag_passenger")
+				print("[Keyboard] Picked up from seat: ", lifted_card.passenger_data.id)
+		else:
+			# --- Drop / Place passenger on seat ---
+			if current_seat == lifted_seat:
+				# Deselect / Cancel
+				lifted_card.position = (lifted_seat.size - lifted_card.size) / 2.0
 				lifted_card.modulate.a = 1.0
-				lifted_card.position = (current_seat.size - lifted_card.size) / 2.0
-				lifted_card.play_seated_animation(selected_row)
-				
-				GameManager.on_passenger_seated(passenger)
+				lifted_card = null
+				lifted_seat = null
 				GameManager.play_sfx("click_select")
-				print("[Keyboard] Moved to empty seat: (", selected_row, ", ", selected_col, ")")
+				print("[Keyboard] Deselected")
 			else:
-				# --- Swap with occupied seat ---
-				var ui_node_b = current_card
-				if ui_node_b != null:
-					lifted_seat.remove_child(lifted_card)
-					current_seat.remove_child(ui_node_b)
+				var passenger = lifted_card.passenger_data
+				var target_occupant = grid_manager.seats[selected_row][selected_col]
+				
+				if target_occupant == null:
+					# --- Move to empty seat ---
+					if lifted_seat:
+						# Case A: Seated to Empty
+						var row_a = lifted_seat.grid_row
+						var col_a = lifted_seat.grid_col
+						grid_manager.seats[row_a][col_a] = null
+						lifted_seat.remove_child(lifted_card)
+					else:
+						# Case B: Queue to Empty
+						var old_parent = lifted_card.get_parent()
+						if old_parent:
+							old_parent.remove_child(lifted_card)
 					
 					current_seat.add_child(lifted_card)
-					lifted_seat.add_child(ui_node_b)
+					grid_manager.place_passenger(passenger, selected_row, selected_col)
 					
 					lifted_card.is_seated = true
-					ui_node_b.is_seated = true
 					lifted_card.modulate.a = 1.0
-					ui_node_b.modulate.a = 1.0
-					
 					lifted_card.position = (current_seat.size - lifted_card.size) / 2.0
-					ui_node_b.position = (lifted_seat.size - ui_node_b.size) / 2.0
-					
-					grid_manager.seats[row_a][col_a] = null
-					grid_manager.seats[selected_row][selected_col] = null
-					grid_manager.place_passenger(passenger, selected_row, selected_col)
-					grid_manager.place_passenger(target_occupant, row_a, col_a)
-					
 					lifted_card.play_seated_animation(selected_row)
-					ui_node_b.play_seated_animation(row_a)
 					
 					GameManager.on_passenger_seated(passenger)
-					GameManager.on_passenger_seated(target_occupant)
 					GameManager.play_sfx("click_select")
-					print("[Keyboard] Swapped: (", row_a, ",", col_a, ") <-> (", selected_row, ",", selected_col, ")")
-			
-			lifted_card = null
-			lifted_seat = null
+					print("[Keyboard] Seated at empty slot: (", selected_row, ", ", selected_col, ")")
+				else:
+					# --- Swap with occupied seat ---
+					var ui_node_b = current_card
+					if ui_node_b != null:
+						if lifted_seat:
+							# Case A: Seated-to-Seated Swap
+							var row_a = lifted_seat.grid_row
+							var col_a = lifted_seat.grid_col
+							
+							lifted_seat.remove_child(lifted_card)
+							current_seat.remove_child(ui_node_b)
+							
+							current_seat.add_child(lifted_card)
+							lifted_seat.add_child(ui_node_b)
+							
+							lifted_card.is_seated = true
+							ui_node_b.is_seated = true
+							lifted_card.modulate.a = 1.0
+							ui_node_b.modulate.a = 1.0
+							
+							lifted_card.position = (current_seat.size - lifted_card.size) / 2.0
+							ui_node_b.position = (lifted_seat.size - ui_node_b.size) / 2.0
+							
+							grid_manager.seats[row_a][col_a] = null
+							grid_manager.seats[selected_row][selected_col] = null
+							grid_manager.place_passenger(passenger, selected_row, selected_col)
+							grid_manager.place_passenger(target_occupant, row_a, col_a)
+							
+							lifted_card.play_seated_animation(selected_row)
+							ui_node_b.play_seated_animation(row_a)
+							
+							GameManager.on_passenger_seated(passenger)
+							GameManager.on_passenger_seated(target_occupant)
+							GameManager.play_sfx("click_select")
+							print("[Keyboard] Swapped: (", row_a, ",", col_a, ") <-> (", selected_row, ",", selected_col, ")")
+						else:
+							# Case B: Queue-to-Occupied Swap (Kick occupant to queue)
+							var queue_panel = hud.queue_panel
+							
+							# 1. Kick occupant B to queue
+							GameManager.unseat_passenger(target_occupant)
+							current_seat.remove_child(ui_node_b)
+							queue_panel.card_row.add_child(ui_node_b)
+							ui_node_b.set_standby()
+							ui_node_b.restore_card_chrome()
+							queue_panel._cards.append(ui_node_b)
+							queue_panel._set_active(0)
+							
+							# 2. Place incoming passenger A (from queue) in target seat
+							var old_parent = lifted_card.get_parent()
+							if old_parent:
+								old_parent.remove_child(lifted_card)
+							current_seat.add_child(lifted_card)
+							
+							lifted_card.is_seated = true
+							lifted_card.modulate.a = 1.0
+							lifted_card.position = (current_seat.size - lifted_card.size) / 2.0
+							lifted_card.play_seated_animation(selected_row)
+							
+							grid_manager.place_passenger(passenger, selected_row, selected_col)
+							GameManager.on_passenger_seated(passenger)
+							GameManager.play_sfx("click_select")
+							print("[Keyboard] Kicked occupant, seated card from queue")
+				
+				lifted_card = null
+				lifted_seat = null

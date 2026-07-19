@@ -2,6 +2,7 @@ class_name JeepneyGrid
 extends Node
 
 signal dimensions_changed(rows: int, cols: int)
+signal grid_changed
 
 var row_count: int = 2
 var col_count: int = 5 # Default is 5, but will change dynamically
@@ -63,16 +64,21 @@ func place_passenger(passenger: Passenger, row: int, col: int) -> bool:
 	for i in range(passenger.seat_size_passenger):
 		seats[row][col + i] = passenger
 		
+	grid_changed.emit()
 	return true
 
 # Removes all occurrences of a passenger from the grid
 func remove_passenger(passenger: Passenger) -> void:
 	if passenger == null:
 		return
+	var changed = false
 	for r in range(row_count):
 		for c in range(col_count):
 			if seats[r][c] == passenger:
 				seats[r][c] = null
+				changed = true
+	if changed:
+		grid_changed.emit()
 
 # Retrieves passenger at specific coordinates
 func get_passenger_at(row: int, col: int) -> Passenger:
