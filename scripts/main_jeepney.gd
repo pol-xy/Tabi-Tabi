@@ -112,8 +112,8 @@ func _create_selector_cursor() -> void:
 	style.corner_radius_bottom_right = 6
 	
 	selector_cursor.add_theme_stylebox_override("panel", style)
-	if _grid_container:
-		_grid_container.add_child(selector_cursor)
+	if hud:
+		hud.add_child(selector_cursor)
 	_update_selector_position()
 
 func _update_selector_position() -> void:
@@ -122,16 +122,16 @@ func _update_selector_position() -> void:
 
 	if is_in_queue_panel:
 		# --- Navigate Queue Panel ---
-		var hud = GameManager.hud
-		if hud and hud.queue_panel:
-			var queue_panel = hud.queue_panel
+		var hud_node = GameManager.hud
+		if hud_node and hud_node.queue_panel:
+			var queue_panel = hud_node.queue_panel
 			if not queue_panel._cards.is_empty():
 				selected_queue_index = clamp(selected_queue_index, 0, queue_panel._cards.size() - 1)
 				var card = queue_panel._cards[selected_queue_index]
 				if card and is_instance_valid(card):
-					# Position selection box exactly over the queue card using global coordinates
-					selector_cursor.global_position = card.global_position
-					selector_cursor.size = card.size
+					# Position selection box over the queue card on the HUD canvas
+					selector_cursor.global_position = card.global_position - Vector2(2, 2)
+					selector_cursor.size = card.size + Vector2(4, 4)
 					selector_cursor.show()
 					
 					# Focus the bubble on this queue card's passenger
@@ -143,8 +143,8 @@ func _update_selector_position() -> void:
 		# Allow free navigation to all seats (occupied or empty)
 		var seat = _get_seat_node(selected_row, selected_col)
 		if seat:
-			selector_cursor.global_position = seat.global_position
-			selector_cursor.size = seat.size
+			selector_cursor.global_position = seat.global_position - Vector2(2, 2)
+			selector_cursor.size = seat.size + Vector2(4, 4)
 			selector_cursor.show()
 		else:
 			selector_cursor.hide()
