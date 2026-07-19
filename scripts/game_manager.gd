@@ -66,8 +66,12 @@ func play_bgm(stream_name: String) -> void:
 		return
 	
 	# Ensure BGM loops forever so it doesn't stop during long level sessions
+	# But do NOT loop victory or game over fanfares.
 	if "loop" in stream:
-		stream.loop = true
+		if stream_name in ["level_completed", "game_over"]:
+			stream.loop = false
+		else:
+			stream.loop = true
 		
 	if _bgm_player.stream == stream and _bgm_player.playing:
 		return
