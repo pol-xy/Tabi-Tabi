@@ -28,7 +28,7 @@ func _ready() -> void:
 	level_completion_popup.continue_pressed.connect(func(): level_completed_continued.emit())
 	pause_button.pressed.connect(_on_pause_button_pressed)
 	game_over_popup.retry_pressed.connect(func(): stage_retry_requested.emit())
-	pause_menu.pause_toggled.connect(set_pause_button_state)
+	pause_menu.pause_toggled.connect(_on_pause_toggled)
 
 # --- Stage lifecycle ---
 
@@ -93,9 +93,11 @@ func _on_passenger_focused(passenger: Passenger) -> void:
 
 func show_level_complete_popup(level_title: String) -> void:
 	level_completion_popup.show_popup(level_title)
+	_hide_keyboard_selector()
 
 func show_game_over_popup() -> void:
 	game_over_popup.show_popup()
+	_hide_keyboard_selector()
 
 func _on_pause_button_pressed() -> void:
 	pause_menu.toggle_pause()
@@ -104,6 +106,22 @@ func set_pause_button_state(is_paused: bool) -> void:
 	var sprite_node = get_node_or_null("TopBar/PauseButton/PauseSprite")
 	if is_instance_valid(sprite_node) and sprite_node is AnimatedSprite2D:
 		sprite_node.frame = 3 if is_paused else 0
+
+func _on_pause_toggled(is_paused: bool) -> void:
+	set_pause_button_state(is_paused)
+	var selector = get_node_or_null("KeyboardSelectorCursor")
+	if selector:
+		if is_paused:
+			selector.hide()
+		else:
+			var parent_node = get_parent()
+			if parent_node and parent_node.has_method("_update_selector_position"):
+				parent_node._update_selector_position()
+
+func _hide_keyboard_selector() -> void:
+	var selector = get_node_or_null("KeyboardSelectorCursor")
+	if selector:
+		selector.hide()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
