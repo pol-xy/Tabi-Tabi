@@ -33,6 +33,11 @@ func _ready() -> void:
 		GameManager.campaign_complete.connect(_on_campaign_complete)
 
 	_create_selector_cursor()
+	
+	if hud and hud.queue_panel:
+		if not hud.queue_panel.queue_changed.is_connected(_update_selector_position):
+			hud.queue_panel.queue_changed.connect(_update_selector_position)
+
 	GameManager.start_campaign()
 
 func _on_campaign_complete() -> void:

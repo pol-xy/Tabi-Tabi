@@ -9,6 +9,7 @@ extends ScrollContainer
 ## when a passenger is successfully seated or dismissed.
 
 signal passenger_focused(passenger: Passenger)  ## HUD listens to this, forwards to DialogueBubble.
+signal queue_changed
 
 @export var passenger_card_scene: PackedScene
 
@@ -39,11 +40,13 @@ func populate(passengers: Array[Passenger]) -> void:
 		
 	if _cards.size() > 0:
 		_set_active(0)
+	queue_changed.emit()
 
 func clear() -> void:
 	for card in _cards:
 		card.queue_free()
 	_cards.clear()
+	queue_changed.emit()
 
 ## Call when the front passenger is seated or dismissed — advances focus
 ## to the next passenger in line.
@@ -54,6 +57,7 @@ func advance() -> void:
 	front.queue_free()
 	if _cards.size() > 0:
 		_set_active(0)
+	queue_changed.emit()
 
 ## Call if a specific passenger (not necessarily the front) leaves the
 ## queue — relevant if the order-of-entry mechanic (UV Express) lets
@@ -66,6 +70,7 @@ func remove_passenger(passenger: Passenger) -> void:
 			break
 	if _cards.size() > 0:
 		_set_active(0)
+	queue_changed.emit()
 
 func is_empty() -> bool:
 	return _cards.is_empty()
@@ -81,6 +86,7 @@ func detach_passenger(passenger: Passenger) -> void:
 			break
 	if _cards.size() > 0:
 		_set_active(0)
+	queue_changed.emit()
 
 func _set_active(index: int) -> void:
 	for i in _cards.size():
@@ -122,3 +128,4 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		
 		_cards.append(passenger_node)
 		_set_active(0)
+		queue_changed.emit()
