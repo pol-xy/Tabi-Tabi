@@ -10,7 +10,7 @@ extends Control
 # --- Keyboard selection & navigation ---
 var selected_row: int = 0
 var selected_col: int = 0
-var is_in_queue_panel: bool = false
+var is_in_queue_panel: bool = true
 var selected_queue_index: int = 0
 var lifted_card: PassengerCard = null
 var lifted_seat: Node = null
@@ -41,7 +41,7 @@ func _on_campaign_complete() -> void:
 func _on_grid_dimensions_changed(_rows: int, cols: int) -> void:
 	selected_row = 0
 	selected_col = 0
-	is_in_queue_panel = false
+	is_in_queue_panel = true
 	selected_queue_index = 0
 	
 	# Deselect any lifted card during level changes
@@ -101,11 +101,11 @@ func _create_selector_cursor() -> void:
 	
 	var style = StyleBoxFlat.new()
 	style.draw_center = false
-	style.border_width_left = 3
-	style.border_width_right = 3
-	style.border_width_top = 3
-	style.border_width_bottom = 3
-	style.border_color = Color(1.0, 0.9, 0.1, 0.8) # Vibrant yellow
+	style.border_width_left = 4
+	style.border_width_right = 4
+	style.border_width_top = 4
+	style.border_width_bottom = 4
+	style.border_color = Color(1.0, 0.95, 0.0, 1.0) # Extremely bright, solid neon yellow
 	style.corner_radius_top_left = 6
 	style.corner_radius_top_right = 6
 	style.corner_radius_bottom_left = 6
@@ -140,27 +140,7 @@ func _update_selector_position() -> void:
 		selector_cursor.hide()
 	else:
 		# --- Navigate Jeepney Grid ---
-		var seated = grid_manager.get_unique_passengers()
-		if seated.is_empty() and lifted_card == null:
-			# Hide selection box if no passengers are seated yet (per user request)
-			selector_cursor.hide()
-			return
-			
-		# If transitioning from empty, snap cursor to first seated passenger
-		if not seated.is_empty():
-			var current_occupied = grid_manager.seats[selected_row][selected_col] != null
-			if not current_occupied:
-				var found = false
-				for r in range(grid_manager.row_count):
-					for c in range(grid_manager.col_count):
-						if grid_manager.seats[r][c] != null:
-							selected_row = r
-							selected_col = c
-							found = true
-							break
-					if found:
-						break
-
+		# Allow free navigation to all seats (occupied or empty)
 		var seat = _get_seat_node(selected_row, selected_col)
 		if seat:
 			selector_cursor.global_position = seat.global_position
@@ -224,8 +204,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			selected_row = max(0, selected_row - 1)
 			moved = true
 		elif event.is_action_pressed("ui_down") or (event is InputEventKey and event.pressed and event.keycode == KEY_S):
-			# Go down to queue panel (only if lower bench or if empty and pressing down to enter queue)
-			if selected_row == 1 or grid_manager.get_unique_passengers().is_empty():
+			# Go down to queue panel if already at the lower bench (row 1)
+			if selected_row == 1:
 				var hud = GameManager.hud
 				if hud and hud.queue_panel and not hud.queue_panel._cards.is_empty():
 					is_in_queue_panel = true
